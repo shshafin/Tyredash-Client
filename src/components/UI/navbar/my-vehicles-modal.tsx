@@ -72,6 +72,9 @@ export function VehicleModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
       // Update state
       setVehicles(updatedVehicles)
 
+      // Dispatch a custom event to notify other components
+      window.dispatchEvent(new Event("vehiclesUpdated"))
+
       // Show success message
       toast.success(`Vehicle removed successfully`)
 

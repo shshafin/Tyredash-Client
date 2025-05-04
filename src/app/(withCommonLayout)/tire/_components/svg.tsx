@@ -1,4 +1,4 @@
-export const GridView = () => {
+export const GridViewIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -16,7 +16,7 @@ export const GridView = () => {
   );
 };
 
-export const ListView = () => {
+export const ListViewIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

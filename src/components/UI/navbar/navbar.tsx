@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -26,6 +26,11 @@ import { VehicleModal } from "./my-vehicles-modal"
 
 export const Navbar = () => {
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false)
+  const [vehicleCount, setVehicleCount] = useState(0)
+
+  // Add a state to track user vehicles and the latest model
+  const [userVehicles, setUserVehicles] = useState<any[]>([])
+  const [latestModel, setLatestModel] = useState<string>("")
 
   const handleOpenVehicleModal = () => {
     setIsVehicleModalOpen(true)
@@ -33,7 +38,68 @@ export const Navbar = () => {
 
   const handleCloseVehicleModal = () => {
     setIsVehicleModalOpen(false)
+    // Update vehicle data when modal closes
+    loadVehicles()
   }
+
+  // Function to load vehicles and update state
+  const loadVehicles = () => {
+    try {
+      if (typeof window !== "undefined") {
+        const savedVehicles = localStorage.getItem("userVehicles")
+
+        if (savedVehicles) {
+          const parsedVehicles = JSON.parse(savedVehicles)
+          const vehicles = Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles]
+
+          setUserVehicles(vehicles)
+          setVehicleCount(vehicles.length)
+
+          // Get the latest vehicle's model (last item in the array)
+          if (vehicles.length > 0) {
+            const latestVehicle = vehicles[vehicles.length - 1]
+            if (latestVehicle.model) {
+              setLatestModel(latestVehicle.model)
+            } else {
+              setLatestModel("")
+            }
+          } else {
+            setLatestModel("")
+          }
+        } else {
+          // Reset all states if no vehicles in localStorage
+          setUserVehicles([])
+          setVehicleCount(0)
+          setLatestModel("")
+        }
+      }
+    } catch (err) {
+      console.error("Error loading vehicles:", err)
+      setUserVehicles([])
+      setVehicleCount(0)
+      setLatestModel("")
+    }
+  }
+
+  // Load vehicles on initial render and set up event listeners
+  useEffect(() => {
+    // Initial load
+    loadVehicles()
+
+    // Set up event listeners for changes
+    const handleStorageChange = () => {
+      loadVehicles()
+    }
+
+    // Listen for both storage events and our custom vehiclesUpdated event
+    window.addEventListener("storage", handleStorageChange)
+    window.addEventListener("vehiclesUpdated", handleStorageChange)
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange)
+      window.removeEventListener("vehiclesUpdated", handleStorageChange)
+    }
+  }, [])
 
   return (
     <>
@@ -87,11 +153,11 @@ export const Navbar = () => {
             <div className="flex gap-2 items-center">
               <NavbarLogin />
               <div
-                className="flex items-center gap-2 border-x border-gray-500 px-2 cursor-pointer hover:text-primary transition-colors"
+                className="flex items-center gap-2 border-x border-gray-500 px-2 cursor-pointer hover:text-primary transition-colors relative"
                 onClick={handleOpenVehicleModal}
               >
                 <Car size={16} />
-                <span className="text-sm md:text-xs md:hidden lg:flex">My Vehicles</span>
+                <span className="text-sm md:text-xs md:hidden lg:flex">{latestModel || "My Vehicles"}</span>
               </div>
               <div className="flex items-center gap-2">
                 <ShoppingCart size={16} />
@@ -155,7 +221,7 @@ export const Navbar = () => {
               onClick={handleOpenVehicleModal}
             >
               <Car size={16} />
-              <span className="text-sm">My Vehicles</span>
+              <span className="text-sm">{latestModel || "My Vehicles"}</span>
             </div>
 
             {/* Cart */}

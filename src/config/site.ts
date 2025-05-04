@@ -7,11 +7,11 @@ export const siteConfig = {
   navItems: [
     {
       label: "TIRES",
-      href: "/tires",
+      href: "/tire",
     },
     {
       label: "WHEELS",
-      href: "/wheels",
+      href: "/wheel",
     },
     {
       label: "APPOINTMENTS",
@@ -37,11 +37,11 @@ export const siteConfig = {
   navMenuItems: [
     {
       label: "TIRES",
-      href: "/tires",
+      href: "/tire",
     },
     {
       label: "WHEELS",
-      href: "/wheels",
+      href: "/wheel",
     },
     {
       label: "APPOINTMENTS",

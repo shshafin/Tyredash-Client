@@ -1,110 +1,161 @@
-"use client";
+"use client"
 
-import { useGetTires } from "@/src/hooks/tire.hook";
-import { useState, useEffect, useRef } from "react";
-import { useKeenSlider } from "keen-slider/react";
-import "keen-slider/keen-slider.min.css";
-import { BrandDropdown } from "./dropdowns/BrandDropdown";
-import YearDropdown from "./dropdowns/YearDropdown";
-import LoadingTire from "./loading-tire";
-import ErrorLoadingTire from "./error-loading-tire";
-import ProductCard from "./tire-product-card";
-import { GridView, ListView } from "./svg";
-import TireNotFound from "./tire-not-found";
-import TirePagination from "./tire-pagination";
-import { Search, X } from "lucide-react";
-import { MakeDropdown } from "./dropdowns/MakeDropdown";
-import { ModelDropdown } from "./dropdowns/ModelDropdown";
-import { TrimDropdown } from "./dropdowns/TrimDropdown";
-import { DrivingTypeDropdown } from "./dropdowns/DrivingTypeDropdown";
+import { useGetTires } from "@/src/hooks/tire.hook"
+import { useState, useEffect, useRef } from "react"
+import "keen-slider/keen-slider.min.css"
+import { BrandDropdown } from "./dropdowns/BrandDropdown"
+import YearDropdown from "./dropdowns/YearDropdown"
+import LoadingTire from "./loading-tire"
+import ErrorLoadingTire from "./error-loading-tire"
+import ProductCard from "./tire-product-card"
+import { GridViewIcon, ListViewIcon } from "./svg"
+import TireNotFound from "./tire-not-found"
+import TirePagination from "./tire-pagination"
+import { Search, X, Car } from "lucide-react"
+import { MakeDropdown } from "./dropdowns/MakeDropdown"
+import { ModelDropdown } from "./dropdowns/ModelDropdown"
+import { TrimDropdown } from "./dropdowns/TrimDropdown"
+import { DrivingTypeDropdown } from "./dropdowns/DrivingTypeDropdown"
+import ProductCardList from "./product-list-view"
+
+interface VehicleInfo {
+  year: string
+  make: string
+  model: string
+  trim: string
+  tireSize: string
+}
 
 const TireProductPage = () => {
-  const { data: Tires, isLoading, isError } = useGetTires({});
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [selectedMakes, setSelectedMakes] = useState<string[]>([]);
-  const [selectedModels, setSelectedModels] = useState<string[]>([]);
-  const [selectedTrims, setSelectedTrims] = useState<string[]>([]);
-  const [selectedDrivingTypes, setSelectedDrivingTypes] = useState<string[]>(
-    []
-  );
-  const [selectedYears, setSelectedYears] = useState<string[]>([]);
-  const [filteredTires, setFilteredTires] = useState<any[]>([]);
-  const [isMobile, setIsMobile] = useState(false);
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const sidebarRef = useRef<HTMLDivElement>(null);
-  const [sortOption, setSortOption] = useState("featured");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const { data: Tires, isLoading, isError } = useGetTires({})
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([])
+  const [selectedMakes, setSelectedMakes] = useState<string[]>([])
+  const [selectedModels, setSelectedModels] = useState<string[]>([])
+  const [selectedTrims, setSelectedTrims] = useState<string[]>([])
+  const [selectedDrivingTypes, setSelectedDrivingTypes] = useState<string[]>([])
+  const [selectedYears, setSelectedYears] = useState<string[]>([])
+  const [filteredTires, setFilteredTires] = useState<any[]>([])
+  const [isMobile, setIsMobile] = useState(false)
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
+  const sidebarRef = useRef<HTMLDivElement>(null)
+  const [sortOption, setSortOption] = useState("featured")
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+
+  // User vehicles state
+  const [userVehicles, setUserVehicles] = useState<VehicleInfo[]>([])
+  const [showOnlyUserVehicles, setShowOnlyUserVehicles] = useState(false)
+
+  // Load user vehicles from localStorage
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const savedVehicles = localStorage.getItem("userVehicles")
+        if (savedVehicles) {
+          const parsedVehicles = JSON.parse(savedVehicles)
+          setUserVehicles(Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles])
+        }
+      }
+    } catch (err) {
+      console.error("Error loading vehicles from localStorage:", err)
+    }
+  }, [])
+
+  // Listen for changes to localStorage
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try {
+        if (typeof window !== "undefined") {
+          const savedVehicles = localStorage.getItem("userVehicles")
+          if (savedVehicles) {
+            const parsedVehicles = JSON.parse(savedVehicles)
+            setUserVehicles(Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles])
+          } else {
+            setUserVehicles([])
+          }
+        }
+      } catch (err) {
+        console.error("Error loading vehicles from localStorage:", err)
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+    return () => {
+      window.removeEventListener("storage", handleStorageChange)
+    }
+  }, [])
 
   //  on mobile
   useEffect(() => {
     const checkIfMobile = () => {
-      const mobile = window.innerWidth < 1024;
-      setIsMobile(mobile);
-    };
+      const mobile = window.innerWidth < 1024
+      setIsMobile(mobile)
+    }
 
-    checkIfMobile();
-    window.addEventListener("resize", checkIfMobile);
+    checkIfMobile()
+    window.addEventListener("resize", checkIfMobile)
 
     return () => {
-      window.removeEventListener("resize", checkIfMobile);
-    };
-  }, []);
+      window.removeEventListener("resize", checkIfMobile)
+    }
+  }, [])
 
   // Handle clicks outside sidebar on mobile
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        isMobile &&
-        mobileFilterOpen &&
-        sidebarRef.current &&
-        !sidebarRef.current.contains(event.target as Node)
-      ) {
-        setMobileFilterOpen(false);
+      if (isMobile && mobileFilterOpen && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        setMobileFilterOpen(false)
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isMobile, mobileFilterOpen]);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isMobile, mobileFilterOpen])
 
   // Apply filters
   useEffect(() => {
-    if (!Tires?.data) return;
+    if (!Tires?.data) return
 
     let filtered = Tires.data.filter((tire: any) => {
       // Search filter
       const matchesSearch =
         tire.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tire.description.toLowerCase().includes(searchTerm.toLowerCase());
+        tire.description.toLowerCase().includes(searchTerm.toLowerCase())
 
       // Brand filter
-      const matchesBrand =
-        selectedBrands.length === 0 || selectedBrands.includes(tire.brand.name);
+      const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(tire.brand.name)
 
       // Make filter
-      const matchesMake =
-        selectedMakes.length === 0 || selectedMakes.includes(tire.make.make);
+      const matchesMake = selectedMakes.length === 0 || selectedMakes.includes(tire.make.make)
 
       // Driving Type filter
       const matchesDrivingType =
-        selectedDrivingTypes.length === 0 ||
-        selectedDrivingTypes.includes(tire.drivingType.title);
+        selectedDrivingTypes.length === 0 || selectedDrivingTypes.includes(tire.drivingType.title)
 
       // Trim filter
-      const matchesTrim =
-        selectedTrims.length === 0 || selectedTrims.includes(tire.trim.trim);
+      const matchesTrim = selectedTrims.length === 0 || selectedTrims.includes(tire.trim.trim)
 
       // Model filter
-      const matchesModel =
-        selectedModels.length === 0 ||
-        selectedModels.includes(tire.model.model);
+      const matchesModel = selectedModels.length === 0 || selectedModels.includes(tire.model.model)
 
       // Year filter
-      const matchesYear =
-        selectedYears.length === 0 || selectedYears.includes(tire.year.year);
+      const matchesYear = selectedYears.length === 0 || selectedYears.includes(tire.year.year)
+
+      // User vehicles filter
+      let matchesUserVehicle = true
+      if (showOnlyUserVehicles && userVehicles.length > 0) {
+        matchesUserVehicle = userVehicles.some((vehicle) => {
+          // const matchesVehicleMake = !vehicle.make || vehicle.make === tire.make.make
+          const matchesVehicleModel = !vehicle.model || vehicle.model === tire.model.model
+          // const matchesVehicleYear = !vehicle.year || vehicle.year == tire.year.year
+          // const matchesVehicleTrim = !vehicle.trim || vehicle.trim === tire.trim.trim
+          // console.log({ vehicle, matchesVehicleMake, matchesVehicleModel, matchesVehicleYear, matchesVehicleTrim })
+          // return matchesVehicleMake && matchesVehicleModel && matchesVehicleYear && matchesVehicleTrim
+          return matchesVehicleModel
+        })
+      }
 
       return (
         matchesSearch &&
@@ -113,23 +164,21 @@ const TireProductPage = () => {
         matchesMake &&
         matchesTrim &&
         matchesDrivingType &&
-        matchesModel
-      );
-    });
+        matchesModel &&
+        matchesUserVehicle
+      )
+    })
 
     // Sort the filtered tires
     if (sortOption === "price-low") {
-      filtered = filtered.sort((a: any, b: any) => a.price - b.price);
+      filtered = filtered.sort((a: any, b: any) => a.price - b.price)
     } else if (sortOption === "price-high") {
-      filtered = filtered.sort((a: any, b: any) => b.price - a.price);
+      filtered = filtered.sort((a: any, b: any) => b.price - a.price)
     } else if (sortOption === "newest") {
-      filtered = filtered.sort(
-        (a: any, b: any) =>
-          Number.parseInt(b.year.year) - Number.parseInt(a.year.year)
-      );
+      filtered = filtered.sort((a: any, b: any) => Number.parseInt(b.year.year) - Number.parseInt(a.year.year))
     }
 
-    setFilteredTires(filtered);
+    setFilteredTires(filtered)
   }, [
     Tires,
     searchTerm,
@@ -140,110 +189,79 @@ const TireProductPage = () => {
     selectedTrims,
     selectedDrivingTypes,
     sortOption,
-  ]);
+    showOnlyUserVehicles,
+    userVehicles,
+  ])
 
   // Extract unique brands and years for filters
-  const brands: any = Tires?.data
-    ? [
-        ...(new Set(Tires.data.map((tire: any) => tire.brand.name)) as any),
-      ].sort()
-    : [];
+  const brands: any = Tires?.data ? [...(new Set(Tires.data.map((tire: any) => tire.brand.name)) as any)].sort() : []
 
-  const makes: any = Tires?.data
-    ? [
-        ...(new Set(Tires.data.map((tire: any) => tire.make.make)) as any),
-      ].sort()
-    : [];
+  const makes: any = Tires?.data ? [...(new Set(Tires.data.map((tire: any) => tire.make.make)) as any)].sort() : []
 
-  const models: any = Tires?.data
-    ? [
-        ...(new Set(Tires.data.map((tire: any) => tire.model.model)) as any),
-      ].sort()
-    : [];
+  const models: any = Tires?.data ? [...(new Set(Tires.data.map((tire: any) => tire.model.model)) as any)].sort() : []
 
   const drivingTypes: any = Tires?.data
-    ? [
-        ...(new Set(
-          Tires.data.map((tire: any) => tire.drivingType.title)
-        ) as any),
-      ].sort()
-    : [];
+    ? [...(new Set(Tires.data.map((tire: any) => tire.drivingType.title)) as any)].sort()
+    : []
 
-  const trims: any = Tires?.data
-    ? [
-        ...(new Set(Tires.data.map((tire: any) => tire.trim.trim)) as any),
-      ].sort()
-    : [];
+  const trims: any = Tires?.data ? [...(new Set(Tires.data.map((tire: any) => tire.trim.trim)) as any)].sort() : []
 
   const years: any = Tires?.data
     ? [...(new Set(Tires.data.map((tire: any) => tire.year.year)) as any)].sort(
-        (a, b) => Number.parseInt(b) - Number.parseInt(a)
+        (a, b) => Number.parseInt(b) - Number.parseInt(a),
       )
-    : [];
+    : []
 
   // Toggle brand selection
   const toggleBrand = (brand: string) => {
-    setSelectedBrands((prev) =>
-      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
-    );
-  };
+    setSelectedBrands((prev) => (prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]))
+  }
 
   // Toggle make selection
   const toggleMake = (make: string) => {
-    setSelectedMakes((prev) =>
-      prev.includes(make) ? prev.filter((b) => b !== make) : [...prev, make]
-    );
-  };
+    setSelectedMakes((prev) => (prev.includes(make) ? prev.filter((b) => b !== make) : [...prev, make]))
+  }
 
   // Toggle driving type selection
   const toggleDrivingType = (drivingType: string) => {
     setSelectedDrivingTypes((prev) =>
-      prev.includes(drivingType)
-        ? prev.filter((b) => b !== drivingType)
-        : [...prev, drivingType]
-    );
-  };
+      prev.includes(drivingType) ? prev.filter((b) => b !== drivingType) : [...prev, drivingType],
+    )
+  }
 
   // Toggle trim selection
   const toggleTrim = (trim: string) => {
-    setSelectedTrims((prev) =>
-      prev.includes(trim) ? prev.filter((b) => b !== trim) : [...prev, trim]
-    );
-  };
+    setSelectedTrims((prev) => (prev.includes(trim) ? prev.filter((b) => b !== trim) : [...prev, trim]))
+  }
 
   // Toggle model selection
   const toggleModel = (model: string) => {
-    setSelectedModels((prev) =>
-      prev.includes(model) ? prev.filter((b) => b !== model) : [...prev, model]
-    );
-  };
+    setSelectedModels((prev) => (prev.includes(model) ? prev.filter((b) => b !== model) : [...prev, model]))
+  }
 
   // Toggle year selection
   const toggleYear = (year: string) => {
-    setSelectedYears((prev) =>
-      prev.includes(year) ? prev.filter((y) => y !== year) : [...prev, year]
-    );
-  };
+    setSelectedYears((prev) => (prev.includes(year) ? prev.filter((y) => y !== year) : [...prev, year]))
+  }
 
   // Clear all filters
   const clearFilters = () => {
-    setSearchTerm("");
-    setSelectedBrands([]);
-    setSelectedMakes([]);
-    setSelectedModels([]);
-    setSelectedYears([]);
-    setSelectedDrivingTypes([]);
-    setSelectedTrims([]);
-  };
+    setSearchTerm("")
+    setSelectedBrands([])
+    setSelectedMakes([])
+    setSelectedModels([])
+    setSelectedYears([])
+    setSelectedDrivingTypes([])
+    setSelectedTrims([])
+    setShowOnlyUserVehicles(false)
+  }
 
   // Sidebar filters component
   const FiltersComponent = () => (
     <div className="h-full overflow-y-auto">
       <div className="space-y-8 p-6">
         <div>
-          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-            Search
-          </h3>
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Search</h3>
 
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -252,7 +270,7 @@ const TireProductPage = () => {
               placeholder="Search tires..."
               value={searchTerm}
               onChange={(e) => {
-                e.preventDefault();
+                e.preventDefault()
                 setSearchTerm(e.target.value)
               }}
               className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
@@ -261,73 +279,85 @@ const TireProductPage = () => {
               <button
                 type="button"
                 onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
                 <X className="h-4 w-4" />
               </button>
             )}
           </div>
         </div>
 
+        {/* My Vehicles Filter */}
+        {userVehicles.length > 0 && (
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">My Vehicles</h3>
+              <span className="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-orange-900 dark:text-orange-300">
+                {userVehicles.length}
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center">
+                <input
+                  id="show-my-vehicles"
+                  type="checkbox"
+                  checked={showOnlyUserVehicles}
+                  onChange={() => setShowOnlyUserVehicles(!showOnlyUserVehicles)}
+                  className="w-4 h-4 text-orange-500 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label
+                  htmlFor="show-my-vehicles"
+                  className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
+                >
+                  Show only tires for my vehicles
+                </label>
+              </div>
+
+              {showOnlyUserVehicles && (
+                <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg space-y-2">
+                  {userVehicles.map((vehicle, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm">
+                      <Car className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                      <span className="text-gray-700 dark:text-gray-300">
+                        {vehicle.year} {vehicle.make} {vehicle.model} {vehicle.trim}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-            Brands
-          </h3>
-          <BrandDropdown
-            brands={brands}
-            selectedBrands={selectedBrands}
-            setSelectedBrands={setSelectedBrands}
-          />
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Brands</h3>
+          <BrandDropdown brands={brands} selectedBrands={selectedBrands} setSelectedBrands={setSelectedBrands} />
         </div>
 
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-            Makes
-          </h3>
-          <MakeDropdown
-            makes={makes}
-            selectedMakes={selectedMakes}
-            setSelectedMakes={setSelectedMakes}
-          />
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Makes</h3>
+          <MakeDropdown makes={makes} selectedMakes={selectedMakes} setSelectedMakes={setSelectedMakes} />
         </div>
 
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-            Models
-          </h3>
-          <ModelDropdown
-            models={models}
-            selectedModels={selectedModels}
-            setSelectedModels={setSelectedModels}
-          />
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Models</h3>
+          <ModelDropdown models={models} selectedModels={selectedModels} setSelectedModels={setSelectedModels} />
         </div>
 
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-            Trims
-          </h3>
-          <TrimDropdown
-            trims={trims}
-            selectedTrims={selectedTrims}
-            setSelectedTrims={setSelectedTrims}
-          />
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Trims</h3>
+          <TrimDropdown trims={trims} selectedTrims={selectedTrims} setSelectedTrims={setSelectedTrims} />
         </div>
 
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-            Years
-          </h3>
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Years</h3>
 
-          <YearDropdown
-            years={years}
-            selectedYears={selectedYears}
-            setSelectedYears={setSelectedYears}
-          />
+          <YearDropdown years={years} selectedYears={selectedYears} setSelectedYears={setSelectedYears} />
         </div>
 
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-            Driving Types
-          </h3>
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Driving Types</h3>
 
           <DrivingTypeDropdown
             drivingTypes={drivingTypes}
@@ -339,207 +369,14 @@ const TireProductPage = () => {
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
           <button
             onClick={clearFilters}
-            className="w-full py-2.5 px-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+            className="w-full py-2.5 px-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+          >
             Reset Filters
           </button>
         </div>
       </div>
     </div>
-  );
-
-  // List view product card
-  const ProductCardList = ({ tire }: { tire: any }) => {
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [sliderRef, instanceRef] = useKeenSlider({
-      initial: 0,
-      slideChanged(slider) {
-        setCurrentSlide(slider.track.details.rel);
-      },
-    });
-
-    return (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all duration-300 group flex flex-col sm:flex-row">
-        <div className="relative w-full sm:w-1/3 sm:max-w-[280px]">
-          <div
-            ref={sliderRef}
-            className="keen-slider h-[220px] bg-gray-100 dark:bg-gray-900">
-            {tire.images && tire.images.length > 0 ? (
-              tire.images.map((image: string, index: number) => (
-                <div
-                  key={index}
-                  className="keen-slider__slide flex items-center justify-center p-4">
-                  <img
-                    src={`${process.env.NEXT_PUBLIC_BASE_URL}${image}`}
-                    alt={`${tire.name} - Image ${index + 1}`}
-                    className="object-contain max-h-full max-w-full"
-                  />
-                </div>
-              ))
-            ) : (
-              <div className="keen-slider__slide flex items-center justify-center">
-                <span className="text-gray-400 dark:text-gray-500">
-                  No Images Available
-                </span>
-              </div>
-            )}
-          </div>
-
-          {tire.images && tire.images.length > 1 && (
-            <>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  instanceRef.current?.prev();
-                }}
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
-                aria-label="Previous image">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-gray-700 dark:text-gray-300"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  instanceRef.current?.next();
-                }}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
-                aria-label="Next image">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-gray-700 dark:text-gray-300"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-              <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
-                {tire.images.map((_: any, idx: number) => (
-                  <button
-                    key={idx}
-                    onClick={() => instanceRef.current?.moveToIdx(idx)}
-                    className={`h-1.5 rounded-full transition-all ${
-                      currentSlide === idx
-                        ? "w-6 bg-gradient-to-r from-orange-600 to-orange-400"
-                        : "w-1.5 bg-gray-300 dark:bg-gray-600"
-                    }`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-
-          {/* Discount badge */}
-          <div className="absolute top-2 left-2">
-            <div className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md">
-              -20%
-            </div>
-          </div>
-        </div>
-
-        <div className="p-5 flex-grow flex flex-col">
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <svg
-                  key={star}
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={`h-3.5 w-3.5 ${
-                    star <= 5
-                      ? "text-yellow-400 fill-yellow-400"
-                      : "text-gray-300 dark:text-gray-600 fill-gray-300 dark:fill-gray-600"
-                  }`}
-                  viewBox="0 0 20 20"
-                  fill="currentColor">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-              <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
-                5.0
-              </span>
-            </div>
-            <div className="flex gap-2">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                {tire.year.year}
-              </span>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-blue-200">
-                {tire.brand.name}
-              </span>
-            </div>
-          </div>
-
-          <h3 className="font-medium text-lg line-clamp-1 mb-2 text-gray-900 dark:text-gray-100">
-            {tire.name}
-          </h3>
-
-          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-4 flex-grow">
-            {tire.description}
-          </p>
-
-          <div className="flex items-center justify-between mt-auto pt-2">
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-500 dark:text-gray-400 line-through">
-                ${(tire.price * 1.2).toFixed(2)}
-              </span>
-              <span className="text-lg font-bold text-gray-900 dark:text-white">
-                ${tire.price.toFixed(2)}
-              </span>
-            </div>
-            <div className="flex gap-2">
-              <button className="py-2 px-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 mr-1.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                  />
-                </svg>
-                Add to Cart
-              </button>
-              <button className="py-2 px-3 bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 flex items-center">
-                View Details
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3.5 w-3.5 ml-1.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  )
 
   // Active filters display
   const ActiveFilters = () => {
@@ -551,9 +388,10 @@ const TireProductPage = () => {
       selectedYears.length > 0 ||
       selectedTrims.length > 0 ||
       selectedDrivingTypes.length > 0 ||
-      selectedModels.length > 0;
+      selectedModels.length > 0 ||
+      showOnlyUserVehicles
 
-    if (!hasActiveFilters) return null;
+    if (!hasActiveFilters) return null
 
     return (
       <div className="flex flex-wrap gap-2 mb-6">
@@ -563,7 +401,21 @@ const TireProductPage = () => {
             <button
               onClick={() => setSearchTerm("")}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label="Remove search filter">
+              aria-label="Remove search filter"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        )}
+
+        {showOnlyUserVehicles && (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            My Vehicles Only
+            <button
+              onClick={() => setShowOnlyUserVehicles(false)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label="Remove my vehicles filter"
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -572,12 +424,14 @@ const TireProductPage = () => {
         {selectedBrands.map((brand) => (
           <span
             key={brand}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {brand}
             <button
               onClick={() => toggleBrand(brand)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${brand} filter`}>
+              aria-label={`Remove ${brand} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -586,12 +440,14 @@ const TireProductPage = () => {
         {selectedMakes.map((make) => (
           <span
             key={make}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {make}
             <button
               onClick={() => toggleMake(make)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${make} filter`}>
+              aria-label={`Remove ${make} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -600,12 +456,14 @@ const TireProductPage = () => {
         {selectedDrivingTypes.map((drivingType) => (
           <span
             key={drivingType}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {drivingType}
             <button
               onClick={() => toggleDrivingType(drivingType)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${drivingType} filter`}>
+              aria-label={`Remove ${drivingType} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -614,12 +472,14 @@ const TireProductPage = () => {
         {selectedModels.map((model) => (
           <span
             key={model}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {model}
             <button
               onClick={() => toggleModel(model)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${model} filter`}>
+              aria-label={`Remove ${model} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -628,12 +488,14 @@ const TireProductPage = () => {
         {selectedTrims.map((trim) => (
           <span
             key={trim}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {trim}
             <button
               onClick={() => toggleTrim(trim)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${trim} filter`}>
+              aria-label={`Remove ${trim} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -642,12 +504,14 @@ const TireProductPage = () => {
         {selectedYears.map((year) => (
           <span
             key={year}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {year}
             <button
               onClick={() => toggleYear(year)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${year} filter`}>
+              aria-label={`Remove ${year} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -656,18 +520,19 @@ const TireProductPage = () => {
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="text-xs text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 font-medium hover:underline">
+            className="text-xs text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 font-medium hover:underline"
+          >
             Clear All
           </button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   // Loading state
-  if (isLoading) return <LoadingTire />;
+  if (isLoading) return <LoadingTire />
   // Error state
-  if (isError) return <ErrorLoadingTire />;
+  if (isError) return <ErrorLoadingTire />
 
   return (
     <div className=" min-h-screen">
@@ -680,8 +545,7 @@ const TireProductPage = () => {
                 Premium Tire Collection
               </h1>
               <p className="text-gray-600 dark:text-gray-400">
-                Find the perfect tires for your vehicle from our extensive
-                collection
+                Find the perfect tires for your vehicle from our extensive collection
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -692,8 +556,9 @@ const TireProductPage = () => {
                     ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white"
                     : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
                 }`}
-                aria-label="Grid view">
-                <GridView />
+                aria-label="Grid view"
+              >
+                <GridViewIcon />
               </button>
               <button
                 onClick={() => setViewMode("list")}
@@ -702,8 +567,9 @@ const TireProductPage = () => {
                     ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white"
                     : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
                 }`}
-                aria-label="List view">
-                <ListView />
+                aria-label="List view"
+              >
+                <ListViewIcon />
               </button>
             </div>
           </div>
@@ -715,27 +581,23 @@ const TireProductPage = () => {
             className={`fixed inset-y-0 left-0 z-40 w-full max-w-xs bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-lg transform ${
               mobileFilterOpen ? "translate-x-0" : "-translate-x-full"
             } transition-transform duration-300 ease-in-out lg:relative lg:inset-auto lg:shadow-none lg:transform-none lg:block`}
-            ref={sidebarRef}>
+            ref={sidebarRef}
+          >
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 lg:hidden">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                Filters
-              </h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Filters</h2>
               <button
                 onClick={() => setMobileFilterOpen(false)}
                 className="lg:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
-                aria-label="Close filters">
+                aria-label="Close filters"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 text-gray-500 dark:text-gray-400"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
@@ -747,7 +609,8 @@ const TireProductPage = () => {
             <div
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
               onClick={() => setMobileFilterOpen(false)}
-              aria-hidden="true"></div>
+              aria-hidden="true"
+            ></div>
           )}
 
           {/* Main content */}
@@ -757,22 +620,22 @@ const TireProductPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Showing{" "}
-                    <span className="font-medium">{filteredTires.length}</span>{" "}
-                    products
+                    Showing <span className="font-medium">{filteredTires.length}</span> products
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   {/* Mobile filter button */}
                   <button
                     onClick={() => setMobileFilterOpen(true)}
-                    className="lg:hidden py-2 px-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 flex items-center">
+                    className="lg:hidden py-2 px-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 flex items-center"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-4 w-4 mr-2"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke="currentColor">
+                      stroke="currentColor"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -787,9 +650,7 @@ const TireProductPage = () => {
 
               {/* Sort options */}
               <div className="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 shadow-sm">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Sort by:
-                </span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Sort by:</span>
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => setSortOption("featured")}
@@ -797,7 +658,8 @@ const TireProductPage = () => {
                       sortOption === "featured"
                         ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white shadow-sm"
                         : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}>
+                    }`}
+                  >
                     Featured
                   </button>
                   <button
@@ -806,7 +668,8 @@ const TireProductPage = () => {
                       sortOption === "price-low"
                         ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white shadow-sm"
                         : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}>
+                    }`}
+                  >
                     Price: Low to High
                   </button>
                   <button
@@ -815,7 +678,8 @@ const TireProductPage = () => {
                       sortOption === "price-high"
                         ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white shadow-sm"
                         : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}>
+                    }`}
+                  >
                     Price: High to Low
                   </button>
                   <button
@@ -824,7 +688,8 @@ const TireProductPage = () => {
                       sortOption === "newest"
                         ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white shadow-sm"
                         : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}>
+                    }`}
+                  >
                     Newest
                   </button>
                 </div>
@@ -837,19 +702,13 @@ const TireProductPage = () => {
               viewMode === "grid" ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                   {filteredTires.map((tire: any) => (
-                    <ProductCard
-                      key={tire._id}
-                      tire={tire}
-                    />
+                    <ProductCard key={tire._id} tire={tire} />
                   ))}
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
                   {filteredTires.map((tire: any) => (
-                    <ProductCardList
-                      key={tire._id}
-                      tire={tire}
-                    />
+                    <ProductCardList key={tire._id} tire={tire} />
                   ))}
                 </div>
               )
@@ -863,7 +722,7 @@ const TireProductPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TireProductPage;
+export default TireProductPage

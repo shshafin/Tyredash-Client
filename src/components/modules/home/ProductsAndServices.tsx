@@ -66,7 +66,9 @@ const CTA = ({ setStep }: any) => {
         <p className="text-gray-600 mb-4 text-sm sm:text-base">
           Schedule an in-store visit for consultation, repair, inspection and more.
         </p>
-        <button className="w-full bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded font-semibold text-sm sm:text-base">
+        <button
+          onClick={() => setStep(2)}
+          className="w-full bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded font-semibold text-sm sm:text-base">
           SCHEDULE SERVICE
         </button>
       </div>
@@ -148,6 +150,10 @@ const VehicleSelector = ({ setMainStep }: any) => {
           vehicles.push(vehicleData)
           // Save back to localStorage
           localStorage.setItem("userVehicles", JSON.stringify(vehicles))
+
+          // Dispatch custom event to notify other components about the change
+          window.dispatchEvent(new Event("vehiclesUpdated"))
+
           // Show success toast
           toast.success("Vehicle added successfully!")
         } else {
@@ -381,3 +387,4 @@ const VehicleSelector = ({ setMainStep }: any) => {
     </div>
   )
 }
+
