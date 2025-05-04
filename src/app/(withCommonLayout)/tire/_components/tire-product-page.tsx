@@ -4,8 +4,8 @@ import { useGetTires } from "@/src/hooks/tire.hook";
 import { useState, useEffect, useRef } from "react";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
-import { BrandDropdown } from "./BrandDropdown";
-import YearDropdown from "./YearDropdown";
+import { BrandDropdown } from "./dropdowns/BrandDropdown";
+import YearDropdown from "./dropdowns/YearDropdown";
 import LoadingTire from "./loading-tire";
 import ErrorLoadingTire from "./error-loading-tire";
 import ProductCard from "./tire-product-card";
@@ -13,9 +13,10 @@ import { GridView, ListView } from "./svg";
 import TireNotFound from "./tire-not-found";
 import TirePagination from "./tire-pagination";
 import { Search, X } from "lucide-react";
-import { MakeDropdown } from "./MakeDropdown";
-import { ModelDropdown } from "./ModelDropdown";
-import { TrimDropdown } from "./TrimDropdown";
+import { MakeDropdown } from "./dropdowns/MakeDropdown";
+import { ModelDropdown } from "./dropdowns/ModelDropdown";
+import { TrimDropdown } from "./dropdowns/TrimDropdown";
+import { DrivingTypeDropdown } from "./dropdowns/DrivingTypeDropdown";
 
 const TireProductPage = () => {
   const { data: Tires, isLoading, isError } = useGetTires({});
@@ -24,6 +25,9 @@ const TireProductPage = () => {
   const [selectedMakes, setSelectedMakes] = useState<string[]>([]);
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [selectedTrims, setSelectedTrims] = useState<string[]>([]);
+  const [selectedDrivingTypes, setSelectedDrivingTypes] = useState<string[]>(
+    []
+  );
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [filteredTires, setFilteredTires] = useState<any[]>([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -84,6 +88,11 @@ const TireProductPage = () => {
       const matchesMake =
         selectedMakes.length === 0 || selectedMakes.includes(tire.make.make);
 
+      // Driving Type filter
+      const matchesDrivingType =
+        selectedDrivingTypes.length === 0 ||
+        selectedDrivingTypes.includes(tire.drivingType.title);
+
       // Trim filter
       const matchesTrim =
         selectedTrims.length === 0 || selectedTrims.includes(tire.trim.trim);
@@ -103,6 +112,7 @@ const TireProductPage = () => {
         matchesYear &&
         matchesMake &&
         matchesTrim &&
+        matchesDrivingType &&
         matchesModel
       );
     });
@@ -128,6 +138,7 @@ const TireProductPage = () => {
     selectedMakes,
     selectedModels,
     selectedTrims,
+    selectedDrivingTypes,
     sortOption,
   ]);
 
@@ -147,6 +158,14 @@ const TireProductPage = () => {
   const models: any = Tires?.data
     ? [
         ...(new Set(Tires.data.map((tire: any) => tire.model.model)) as any),
+      ].sort()
+    : [];
+
+  const drivingTypes: any = Tires?.data
+    ? [
+        ...(new Set(
+          Tires.data.map((tire: any) => tire.drivingType.title)
+        ) as any),
       ].sort()
     : [];
 
@@ -173,6 +192,15 @@ const TireProductPage = () => {
   const toggleMake = (make: string) => {
     setSelectedMakes((prev) =>
       prev.includes(make) ? prev.filter((b) => b !== make) : [...prev, make]
+    );
+  };
+
+  // Toggle driving type selection
+  const toggleDrivingType = (drivingType: string) => {
+    setSelectedDrivingTypes((prev) =>
+      prev.includes(drivingType)
+        ? prev.filter((b) => b !== drivingType)
+        : [...prev, drivingType]
     );
   };
 
@@ -204,6 +232,7 @@ const TireProductPage = () => {
     setSelectedMakes([]);
     setSelectedModels([]);
     setSelectedYears([]);
+    setSelectedDrivingTypes([]);
     setSelectedTrims([]);
   };
 
@@ -289,6 +318,18 @@ const TireProductPage = () => {
             years={years}
             selectedYears={selectedYears}
             setSelectedYears={setSelectedYears}
+          />
+        </div>
+
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Driving Types
+          </h3>
+
+          <DrivingTypeDropdown
+            drivingTypes={drivingTypes}
+            selectedDrivingTypes={selectedDrivingTypes}
+            setSelectedDrivingTypes={setSelectedDrivingTypes}
           />
         </div>
 
@@ -506,6 +547,7 @@ const TireProductPage = () => {
       selectedMakes.length > 0 ||
       selectedYears.length > 0 ||
       selectedTrims.length > 0 ||
+      selectedDrivingTypes.length > 0 ||
       selectedModels.length > 0;
 
     if (!hasActiveFilters) return null;
@@ -547,6 +589,20 @@ const TireProductPage = () => {
               onClick={() => toggleMake(make)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
               aria-label={`Remove ${make} filter`}>
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        ))}
+
+        {selectedDrivingTypes.map((drivingType) => (
+          <span
+            key={drivingType}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            {drivingType}
+            <button
+              onClick={() => toggleDrivingType(drivingType)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${drivingType} filter`}>
               <X className="h-3.5 w-3.5" />
             </button>
           </span>

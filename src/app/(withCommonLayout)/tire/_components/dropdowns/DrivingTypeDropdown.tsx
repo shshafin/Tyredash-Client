@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 export const DrivingTypeDropdown = ({
-  makes: drivingTypes,
+  drivingTypes,
   selectedDrivingTypes,
   setSelectedDrivingTypes,
 }: any) => {
