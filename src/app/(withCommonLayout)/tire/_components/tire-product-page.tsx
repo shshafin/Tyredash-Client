@@ -4,8 +4,8 @@ import { useGetTires } from "@/src/hooks/tire.hook";
 import { useState, useEffect, useRef } from "react";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
-import { BrandDropdown } from "./BrandDropdown";
-import YearDropdown from "./YearDropdown";
+import { BrandDropdown } from "./dropdowns/BrandDropdown";
+import YearDropdown from "./dropdowns/YearDropdown";
 import LoadingTire from "./loading-tire";
 import ErrorLoadingTire from "./error-loading-tire";
 import ProductCard from "./tire-product-card";
@@ -13,14 +13,21 @@ import { GridView, ListView } from "./svg";
 import TireNotFound from "./tire-not-found";
 import TirePagination from "./tire-pagination";
 import { Search, X } from "lucide-react";
+import { MakeDropdown } from "./dropdowns/MakeDropdown";
+import { ModelDropdown } from "./dropdowns/ModelDropdown";
+import { TrimDropdown } from "./dropdowns/TrimDropdown";
+import { DrivingTypeDropdown } from "./dropdowns/DrivingTypeDropdown";
 
 const TireProductPage = () => {
   const { data: Tires, isLoading, isError } = useGetTires({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [priceRange, setPriceRange] = useState<[number, number]>([
-    0, 100000000,
-  ]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedMakes, setSelectedMakes] = useState<string[]>([]);
+  const [selectedModels, setSelectedModels] = useState<string[]>([]);
+  const [selectedTrims, setSelectedTrims] = useState<string[]>([]);
+  const [selectedDrivingTypes, setSelectedDrivingTypes] = useState<string[]>(
+    []
+  );
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [filteredTires, setFilteredTires] = useState<any[]>([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -77,15 +84,37 @@ const TireProductPage = () => {
       const matchesBrand =
         selectedBrands.length === 0 || selectedBrands.includes(tire.brand.name);
 
+      // Make filter
+      const matchesMake =
+        selectedMakes.length === 0 || selectedMakes.includes(tire.make.make);
+
+      // Driving Type filter
+      const matchesDrivingType =
+        selectedDrivingTypes.length === 0 ||
+        selectedDrivingTypes.includes(tire.drivingType.title);
+
+      // Trim filter
+      const matchesTrim =
+        selectedTrims.length === 0 || selectedTrims.includes(tire.trim.trim);
+
+      // Model filter
+      const matchesModel =
+        selectedModels.length === 0 ||
+        selectedModels.includes(tire.model.model);
+
       // Year filter
       const matchesYear =
         selectedYears.length === 0 || selectedYears.includes(tire.year.year);
 
-      // Price filter
-      const matchesPrice =
-        tire.price >= priceRange[0] && tire.price <= priceRange[1];
-
-      return matchesSearch && matchesBrand && matchesYear && matchesPrice;
+      return (
+        matchesSearch &&
+        matchesBrand &&
+        matchesYear &&
+        matchesMake &&
+        matchesTrim &&
+        matchesDrivingType &&
+        matchesModel
+      );
     });
 
     // Sort the filtered tires
@@ -106,7 +135,10 @@ const TireProductPage = () => {
     searchTerm,
     selectedBrands,
     selectedYears,
-    priceRange,
+    selectedMakes,
+    selectedModels,
+    selectedTrims,
+    selectedDrivingTypes,
     sortOption,
   ]);
 
@@ -117,30 +149,72 @@ const TireProductPage = () => {
       ].sort()
     : [];
 
+  const makes: any = Tires?.data
+    ? [
+        ...(new Set(Tires.data.map((tire: any) => tire.make.make)) as any),
+      ].sort()
+    : [];
+
+  const models: any = Tires?.data
+    ? [
+        ...(new Set(Tires.data.map((tire: any) => tire.model.model)) as any),
+      ].sort()
+    : [];
+
+  const drivingTypes: any = Tires?.data
+    ? [
+        ...(new Set(
+          Tires.data.map((tire: any) => tire.drivingType.title)
+        ) as any),
+      ].sort()
+    : [];
+
+  const trims: any = Tires?.data
+    ? [
+        ...(new Set(Tires.data.map((tire: any) => tire.trim.trim)) as any),
+      ].sort()
+    : [];
+
   const years: any = Tires?.data
     ? [...(new Set(Tires.data.map((tire: any) => tire.year.year)) as any)].sort(
         (a, b) => Number.parseInt(b) - Number.parseInt(a)
       )
     : [];
 
-  // Find min and max price
-  const minPrice = Tires?.data
-    ? Math.min(...Tires.data.map((tire: any) => tire.price))
-    : 0;
-  const maxPrice = Tires?.data
-    ? Math.max(...Tires.data.map((tire: any) => tire.price))
-    : 1000;
-
-  useEffect(() => {
-    if (minPrice !== undefined && maxPrice !== undefined) {
-      setPriceRange([minPrice, maxPrice]);
-    }
-  }, [minPrice, maxPrice]);
-
   // Toggle brand selection
   const toggleBrand = (brand: string) => {
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
+    );
+  };
+
+  // Toggle make selection
+  const toggleMake = (make: string) => {
+    setSelectedMakes((prev) =>
+      prev.includes(make) ? prev.filter((b) => b !== make) : [...prev, make]
+    );
+  };
+
+  // Toggle driving type selection
+  const toggleDrivingType = (drivingType: string) => {
+    setSelectedDrivingTypes((prev) =>
+      prev.includes(drivingType)
+        ? prev.filter((b) => b !== drivingType)
+        : [...prev, drivingType]
+    );
+  };
+
+  // Toggle trim selection
+  const toggleTrim = (trim: string) => {
+    setSelectedTrims((prev) =>
+      prev.includes(trim) ? prev.filter((b) => b !== trim) : [...prev, trim]
+    );
+  };
+
+  // Toggle model selection
+  const toggleModel = (model: string) => {
+    setSelectedModels((prev) =>
+      prev.includes(model) ? prev.filter((b) => b !== model) : [...prev, model]
     );
   };
 
@@ -154,9 +228,12 @@ const TireProductPage = () => {
   // Clear all filters
   const clearFilters = () => {
     setSearchTerm("");
-    setPriceRange([minPrice, maxPrice]);
     setSelectedBrands([]);
+    setSelectedMakes([]);
+    setSelectedModels([]);
     setSelectedYears([]);
+    setSelectedDrivingTypes([]);
+    setSelectedTrims([]);
   };
 
   // Sidebar filters component
@@ -192,76 +269,6 @@ const TireProductPage = () => {
         </div>
 
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-            Price Range
-          </h3>
-          <div className="space-y-6">
-            <div className="relative pt-1">
-              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
-                <div
-                  className="absolute h-2 bg-gradient-to-r from-orange-600 to-orange-400 rounded-full"
-                  style={{
-                    left: `${((priceRange[0] - minPrice) / (maxPrice - minPrice)) * 100}%`,
-                    right: `${100 - ((priceRange[1] - minPrice) / (maxPrice - minPrice)) * 100}%`,
-                  }}></div>
-                <div
-                  className="absolute h-4 w-4 bg-white border-2 border-orange-500 rounded-full -mt-1 transform -translate-x-1/2"
-                  style={{
-                    left: `${((priceRange[0] - minPrice) / (maxPrice - minPrice)) * 100}%`,
-                  }}></div>
-                <div
-                  className="absolute h-4 w-4 bg-white border-2 border-orange-500 rounded-full -mt-1 transform -translate-x-1/2"
-                  style={{
-                    left: `${((priceRange[1] - minPrice) / (maxPrice - minPrice)) * 100}%`,
-                  }}></div>
-              </div>
-              <input
-                type="range"
-                min={minPrice}
-                max={maxPrice}
-                value={priceRange[0]}
-                onChange={(e) =>
-                  setPriceRange([
-                    Number.parseInt(e.target.value),
-                    priceRange[1],
-                  ])
-                }
-                className="absolute top-0 left-0 w-full h-2 appearance-none bg-transparent pointer-events-none"
-                style={{
-                  zIndex: 2,
-                  background: "transparent",
-                }}
-              />
-              <input
-                type="range"
-                min={minPrice}
-                max={maxPrice}
-                value={priceRange[1]}
-                onChange={(e) =>
-                  setPriceRange([
-                    priceRange[0],
-                    Number.parseInt(e.target.value),
-                  ])
-                }
-                className="absolute top-0 left-0 w-full h-2 appearance-none bg-transparent pointer-events-none"
-                style={{
-                  zIndex: 2,
-                  background: "transparent",
-                }}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 shadow-sm">
-                <span className="text-sm font-medium">${priceRange[0]}</span>
-              </div>
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 shadow-sm">
-                <span className="text-sm font-medium">${priceRange[1]}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
           <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
             Brands
           </h3>
@@ -269,6 +276,39 @@ const TireProductPage = () => {
             brands={brands}
             selectedBrands={selectedBrands}
             setSelectedBrands={setSelectedBrands}
+          />
+        </div>
+
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Makes
+          </h3>
+          <MakeDropdown
+            makes={makes}
+            selectedMakes={selectedMakes}
+            setSelectedMakes={setSelectedMakes}
+          />
+        </div>
+
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Models
+          </h3>
+          <ModelDropdown
+            models={models}
+            selectedModels={selectedModels}
+            setSelectedModels={setSelectedModels}
+          />
+        </div>
+
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Trims
+          </h3>
+          <TrimDropdown
+            trims={trims}
+            selectedTrims={selectedTrims}
+            setSelectedTrims={setSelectedTrims}
           />
         </div>
 
@@ -285,6 +325,18 @@ const TireProductPage = () => {
         </div>
 
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Driving Types
+          </h3>
+
+          <DrivingTypeDropdown
+            drivingTypes={drivingTypes}
+            selectedDrivingTypes={selectedDrivingTypes}
+            setSelectedDrivingTypes={setSelectedDrivingTypes}
+          />
+        </div>
+
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
           <button
             onClick={clearFilters}
             className="w-full py-2.5 px-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
@@ -294,8 +346,6 @@ const TireProductPage = () => {
       </div>
     </div>
   );
-
-
 
   // List view product card
   const ProductCardList = ({ tire }: { tire: any }) => {
@@ -411,7 +461,7 @@ const TireProductPage = () => {
                   key={star}
                   xmlns="http://www.w3.org/2000/svg"
                   className={`h-3.5 w-3.5 ${
-                    star <= 4
+                    star <= 5
                       ? "text-yellow-400 fill-yellow-400"
                       : "text-gray-300 dark:text-gray-600 fill-gray-300 dark:fill-gray-600"
                   }`}
@@ -421,7 +471,7 @@ const TireProductPage = () => {
                 </svg>
               ))}
               <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
-                4.0
+                5.0
               </span>
             </div>
             <div className="flex gap-2">
@@ -497,8 +547,11 @@ const TireProductPage = () => {
       searchTerm ||
       selectedBrands.length > 0 ||
       selectedYears.length > 0 ||
-      priceRange[0] !== minPrice ||
-      priceRange[1] !== maxPrice;
+      selectedMakes.length > 0 ||
+      selectedYears.length > 0 ||
+      selectedTrims.length > 0 ||
+      selectedDrivingTypes.length > 0 ||
+      selectedModels.length > 0;
 
     if (!hasActiveFilters) return null;
 
@@ -530,6 +583,62 @@ const TireProductPage = () => {
           </span>
         ))}
 
+        {selectedMakes.map((make) => (
+          <span
+            key={make}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            {make}
+            <button
+              onClick={() => toggleMake(make)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${make} filter`}>
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        ))}
+
+        {selectedDrivingTypes.map((drivingType) => (
+          <span
+            key={drivingType}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            {drivingType}
+            <button
+              onClick={() => toggleDrivingType(drivingType)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${drivingType} filter`}>
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        ))}
+
+        {selectedModels.map((model) => (
+          <span
+            key={model}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            {model}
+            <button
+              onClick={() => toggleModel(model)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${model} filter`}>
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        ))}
+
+        {selectedTrims.map((trim) => (
+          <span
+            key={trim}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            {trim}
+            <button
+              onClick={() => toggleTrim(trim)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${trim} filter`}>
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        ))}
+
         {selectedYears.map((year) => (
           <span
             key={year}
@@ -544,30 +653,6 @@ const TireProductPage = () => {
           </span>
         ))}
 
-        {(priceRange[0] !== minPrice || priceRange[1] !== maxPrice) && (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
-            ${priceRange[0]} - ${priceRange[1]}
-            <button
-              onClick={() => setPriceRange([minPrice, maxPrice])}
-              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label="Reset price range">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3.5 w-3.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </span>
-        )}
-
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
@@ -580,9 +665,9 @@ const TireProductPage = () => {
   };
 
   // Loading state
-  if (isLoading) return <LoadingTire />
+  if (isLoading) return <LoadingTire />;
   // Error state
-  if (isError) return <ErrorLoadingTire />
+  if (isError) return <ErrorLoadingTire />;
 
   return (
     <div className=" min-h-screen">
@@ -773,9 +858,7 @@ const TireProductPage = () => {
             )}
 
             {/* Pagination placeholder - can be implemented if needed */}
-            {filteredTires.length > 0 && (
-              <TirePagination />
-            )}
+            {filteredTires.length > 0 && <TirePagination />}
           </div>
         </div>
       </div>
