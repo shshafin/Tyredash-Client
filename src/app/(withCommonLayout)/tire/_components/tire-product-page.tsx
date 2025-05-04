@@ -17,14 +17,7 @@ import { ModelDropdown } from "./dropdowns/ModelDropdown"
 import { TrimDropdown } from "./dropdowns/TrimDropdown"
 import { DrivingTypeDropdown } from "./dropdowns/DrivingTypeDropdown"
 import ProductCardList from "./product-list-view"
-
-interface VehicleInfo {
-  year: string
-  make: string
-  model: string
-  trim: string
-  tireSize: string
-}
+import { VehicleInfo } from "@/src/types"
 
 const TireProductPage = () => {
   const { data: Tires, isLoading, isError } = useGetTires({})
@@ -44,7 +37,6 @@ const TireProductPage = () => {
 
   // User vehicles state
   const [userVehicles, setUserVehicles] = useState<VehicleInfo[]>([])
-  const [showOnlyUserVehicles, setShowOnlyUserVehicles] = useState(false)
 
   // Load user vehicles from localStorage
   useEffect(() => {
@@ -145,7 +137,7 @@ const TireProductPage = () => {
 
       // User vehicles filter
       let matchesUserVehicle = true
-      if (showOnlyUserVehicles && userVehicles.length > 0) {
+      if ( userVehicles.length > 0) {
         matchesUserVehicle = userVehicles.some((vehicle) => {
           // const matchesVehicleMake = !vehicle.make || vehicle.make === tire.make.make
           const matchesVehicleModel = !vehicle.model || vehicle.model === tire.model.model
@@ -189,7 +181,6 @@ const TireProductPage = () => {
     selectedTrims,
     selectedDrivingTypes,
     sortOption,
-    showOnlyUserVehicles,
     userVehicles,
   ])
 
@@ -253,7 +244,6 @@ const TireProductPage = () => {
     setSelectedYears([])
     setSelectedDrivingTypes([])
     setSelectedTrims([])
-    setShowOnlyUserVehicles(false)
   }
 
   // Sidebar filters component
@@ -286,49 +276,6 @@ const TireProductPage = () => {
             )}
           </div>
         </div>
-
-        {/* My Vehicles Filter */}
-        {userVehicles.length > 0 && (
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">My Vehicles</h3>
-              <span className="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-orange-900 dark:text-orange-300">
-                {userVehicles.length}
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center">
-                <input
-                  id="show-my-vehicles"
-                  type="checkbox"
-                  checked={showOnlyUserVehicles}
-                  onChange={() => setShowOnlyUserVehicles(!showOnlyUserVehicles)}
-                  className="w-4 h-4 text-orange-500 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  htmlFor="show-my-vehicles"
-                  className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
-                >
-                  Show only tires for my vehicles
-                </label>
-              </div>
-
-              {showOnlyUserVehicles && (
-                <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg space-y-2">
-                  {userVehicles.map((vehicle, index) => (
-                    <div key={index} className="flex items-center gap-2 text-sm">
-                      <Car className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                      <span className="text-gray-700 dark:text-gray-300">
-                        {vehicle.year} {vehicle.make} {vehicle.model} {vehicle.trim}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
           <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Brands</h3>
@@ -388,8 +335,7 @@ const TireProductPage = () => {
       selectedYears.length > 0 ||
       selectedTrims.length > 0 ||
       selectedDrivingTypes.length > 0 ||
-      selectedModels.length > 0 ||
-      showOnlyUserVehicles
+      selectedModels.length > 0
 
     if (!hasActiveFilters) return null
 
@@ -402,19 +348,6 @@ const TireProductPage = () => {
               onClick={() => setSearchTerm("")}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
               aria-label="Remove search filter"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          </span>
-        )}
-
-        {showOnlyUserVehicles && (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
-            My Vehicles Only
-            <button
-              onClick={() => setShowOnlyUserVehicles(false)}
-              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label="Remove my vehicles filter"
             >
               <X className="h-3.5 w-3.5" />
             </button>

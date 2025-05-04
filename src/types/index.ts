@@ -208,3 +208,11 @@ export interface ITyreSize {
   updatedAt: string;
   __v: number;
 }
+
+export interface VehicleInfo {
+  year: string
+  make: string
+  model: string
+  trim: string
+  tireSize: string
+}

@@ -17,6 +17,7 @@ import WheelNotFound from "./wheel-not-found";
 import LoadingWheel from "./loading-wheel";
 import ErrorLoadingWheel from "./error-loading-wheel";
 import ProductCard from "./wheel-product-card";
+import { VehicleInfo } from "@/src/types";
 
 const WheelProductPage = () => {
   const { data: Wheels, isLoading, isError } = useGetWheels({});
@@ -35,7 +36,47 @@ const WheelProductPage = () => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [sortOption, setSortOption] = useState("featured");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+// User vehicles state
+  const [userVehicles, setUserVehicles] = useState<VehicleInfo[]>([])
 
+  // Load user vehicles from localStorage
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const savedVehicles = localStorage.getItem("userVehicles")
+        if (savedVehicles) {
+          const parsedVehicles = JSON.parse(savedVehicles)
+          setUserVehicles(Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles])
+        }
+      }
+    } catch (err) {
+      console.error("Error loading vehicles from localStorage:", err)
+    }
+  }, [])
+
+  // Listen for changes to localStorage
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try {
+        if (typeof window !== "undefined") {
+          const savedVehicles = localStorage.getItem("userVehicles")
+          if (savedVehicles) {
+            const parsedVehicles = JSON.parse(savedVehicles)
+            setUserVehicles(Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles])
+          } else {
+            setUserVehicles([])
+          }
+        }
+      } catch (err) {
+        console.error("Error loading vehicles from localStorage:", err)
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+    return () => {
+      window.removeEventListener("storage", handleStorageChange)
+    }
+  }, [])
   //  on mobile
   useEffect(() => {
     const checkIfMobile = () => {
@@ -107,6 +148,20 @@ const WheelProductPage = () => {
       const matchesYear =
         selectedYears.length === 0 || selectedYears.includes(wheel.year.year);
 
+      // User vehicles filter
+      let matchesUserVehicle = true
+      if ( userVehicles.length > 0) {
+        matchesUserVehicle = userVehicles.some((vehicle) => {
+          // const matchesVehicleMake = !vehicle.make || vehicle.make === tire.make.make
+          const matchesVehicleModel = !vehicle.model || vehicle.model === wheel.model.model
+          // const matchesVehicleYear = !vehicle.year || vehicle.year == tire.year.year
+          // const matchesVehicleTrim = !vehicle.trim || vehicle.trim === tire.trim.trim
+          // console.log({ vehicle, matchesVehicleMake, matchesVehicleModel, matchesVehicleYear, matchesVehicleTrim })
+          // return matchesVehicleMake && matchesVehicleModel && matchesVehicleYear && matchesVehicleTrim
+          return matchesVehicleModel
+        })
+      }
+
       return (
         matchesSearch &&
         matchesBrand &&
@@ -114,7 +169,8 @@ const WheelProductPage = () => {
         matchesMake &&
         matchesTrim &&
         matchesDrivingType &&
-        matchesModel
+        matchesModel &&
+        matchesUserVehicle
       );
     });
 
@@ -141,6 +197,7 @@ const WheelProductPage = () => {
     selectedTrims,
     selectedDrivingTypes,
     sortOption,
+    userVehicles,
   ]);
 
   // Extract unique brands and years for filters
