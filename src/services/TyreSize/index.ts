@@ -64,3 +64,18 @@ export const getTyreSizes = async (params: any) => {
     throw new Error(error.message);
   }
 };
+
+export const getFilteredTyreSizes = async (yearId: string, makeId: string, modelId: string, trimId: string) => {
+  if (!yearId || !makeId || !modelId || !trimId) return {}; // early return if params are missing
+
+  try {
+    const res = await axiosInstance.get(
+      `/tiresizes?year=${yearId}&make=${makeId}&model=${modelId}&trim=${trimId}`
+    );
+    return res.data;
+  } catch (error: any) {
+    throw new Error(
+      error.message || "Something went wrong while fetching tire sizes."
+    );
+  }
+};

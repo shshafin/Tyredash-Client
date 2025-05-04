@@ -1,6 +1,7 @@
 import {
   createTyreSize,
   deleteTyreSize,
+  getFilteredTyreSizes,
   getTyreSizes,
   updateTyreSize,
 } from "@/src/services/TyreSize";
@@ -44,5 +45,13 @@ export const useGetTyreSizes = (params: any) => {
   return useQuery({
     queryKey: ["GET_TYRE_SIZES"],
     queryFn: async () => await getTyreSizes(params),
+  });
+};
+
+export const useGetFilteredTyreSizes = (yearId: string, makeId: string, modelId: string, trimId: string) => {
+  return useQuery({
+    queryKey: ["GET_FILTERED_TYRE_SIZES", yearId, makeId, modelId, trimId],
+    queryFn: async () => await getFilteredTyreSizes( yearId, makeId, modelId, trimId ),
+    enabled: !!yearId && !!makeId && !!modelId && !!trimId, // Only fetch when all IDs exist
   });
 };

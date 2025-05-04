@@ -12,6 +12,7 @@
     "@bangladeshi/bangladesh-address": "^1.0.5",
     "@heroui/accordion": "^2.2.14",
     "@heroui/avatar": "^2.2.12",
+    "@heroui/badge": "^2.2.12",
     "@heroui/button": "2.2.16",
     "@heroui/card": "^2.2.15",
     "@heroui/code": "2.2.12",
