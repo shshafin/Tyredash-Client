@@ -9,11 +9,12 @@ import {
 } from "@heroui/table";
 import { Tooltip } from "@heroui/tooltip";
 import { DeleteIcon, EditIcon } from "@/src/icons";
+import Image from "next/image";
+import { envConfig } from "@/src/config/envConfig";
 
 export const columns = [
   { name: "NAME", uid: "name" },
   { name: "SLUG", uid: "slug" },
-  { name: "DESCRIPTION", uid: "description" },
   { name: "IMAGE", uid: "image" },
   { name: "ACTIONS", uid: "actions" },
 ];
@@ -32,19 +33,15 @@ export default function CategoriesTable({
         return category.name;
       case "slug":
         return category.slug;
-      case "description":
-        return (
-          <div className="max-w-[200px] truncate text-ellipsis">
-            {category.description}
-          </div>
-        );
       case "image":
         return (
           <div>
             {category.image ? (
-              <img
-                src={category.image}
+              <Image
+                src={`${envConfig.base_url}${category.image}`}
                 alt={category.name}
+                width={40}
+                height={40}
                 className="w-10 h-10 rounded-full object-cover"
               />
             ) : (

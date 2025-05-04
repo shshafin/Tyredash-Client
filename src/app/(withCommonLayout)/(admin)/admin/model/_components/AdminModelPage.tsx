@@ -19,20 +19,39 @@ import {
 
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCreateModel, useDeleteModel, useGetModels, useUpdateModel } from "@/src/hooks/model.hook";
+import {
+  useCreateModel,
+  useDeleteModel,
+  useGetModels,
+  useUpdateModel,
+} from "@/src/hooks/model.hook";
 import { YearSelect } from "@/src/components/form/YearSelect";
 import ModelsTable from "./ModelsTable";
 import { IModel } from "@/src/types";
 import { useState } from "react";
 import { useGetMakes } from "@/src/hooks/makes.hook";
 import { useGetYears } from "@/src/hooks/years.hook";
-import { DataEmpty, DataError, DataLoading } from "../../_components/DataFetchingStates";
+import {
+  DataEmpty,
+  DataError,
+  DataLoading,
+} from "../../_components/DataFetchingStates";
 
 export default function AdminModelPage() {
   const queryClient = useQueryClient();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure(); // Modal open state
-  const { isOpen: isEditOpen, onOpen: onEditOpen, onOpenChange: onEditOpenChange, onClose: onEditClose } = useDisclosure();
-  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteOpenChange, onClose: onDeleteClose } = useDisclosure();
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onOpenChange: onEditOpenChange,
+    onClose: onEditClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onOpenChange: onDeleteOpenChange,
+    onClose: onDeleteClose,
+  } = useDisclosure();
   const methods = useForm(); // Hook form methods
   const { handleSubmit } = methods;
   const [selectedModel, setSelectedModel] = useState<IModel | null>(null);
@@ -96,13 +115,14 @@ export default function AdminModelPage() {
       {isError && <DataError />}
       {models?.data?.length === 0 && <DataEmpty />}
 
-      {!isLoading && models?.data?.length > 0 && 
-        <ModelsTable 
-          models={models} 
-          setSelectedModel={setSelectedModel} 
-          onEditOpen={onEditOpen} 
-          onDeleteOpen={onDeleteOpen} 
-        />}
+      {!isLoading && models?.data?.length > 0 && (
+        <ModelsTable
+          models={models}
+          setSelectedModel={setSelectedModel}
+          onEditOpen={onEditOpen}
+          onDeleteOpen={onDeleteOpen}
+        />
+      )}
 
       {/* Modal for adding a new Model */}
       <AddModelModal
@@ -155,15 +175,15 @@ const AddModelModal = ({
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="max-w-xl mx-auto space-y-6">
-                    {/* Model */}
-                    <div className="flex flex-wrap gap-2 w-full">
-                      <div className="flex-1 min-w-[150px]">
-                        <FXInput
-                          label="Model"
-                          name="model"
-                          required={true}
-                        />
-                      </div>
+                  {/* Model */}
+                  <div className="flex flex-wrap gap-2 w-full">
+                    <div className="flex-1 min-w-[150px]">
+                      <FXInput
+                        label="Model"
+                        name="model"
+                        required={true}
+                      />
+                    </div>
                   </div>
                   <div className="flex flex-wrap gap-4 py-2">
                     {/* Model & logo Inputs */}
@@ -207,7 +227,7 @@ const EditModelModal = ({
   onSubmit,
   updateModelPending,
   defaultValues,
-} : any) => {
+}: any) => {
   if (!defaultValues) return null;
   return (
     <Modal
@@ -225,15 +245,15 @@ const EditModelModal = ({
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="max-w-xl mx-auto space-y-6">
-                    {/* Model */}
-                    <div className="flex flex-wrap gap-2 w-full">
-                      <div className="flex-1 min-w-[150px]">
-                        <FXInput
-                          label="Model"
-                          name="model"
-                          defaultValue={defaultValues?.model}
-                        />
-                      </div>
+                  {/* Model */}
+                  <div className="flex flex-wrap gap-2 w-full">
+                    <div className="flex-1 min-w-[150px]">
+                      <FXInput
+                        label="Model"
+                        name="model"
+                        defaultValue={defaultValues?.model}
+                      />
+                    </div>
                   </div>
                   <div className="flex flex-wrap gap-4 py-2">
                     {/* Model & logo Inputs */}
@@ -324,23 +344,15 @@ const MakeSelectForModel = ({ defaultValue, register }: any) => {
         {...register("make", { required: true })}
         defaultValue={defaultValue ? defaultValue?._id : ""}
         className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
-          {/* {
+        {/* {
             defaultValue && (
               <option value={defaultValue._id}>{defaultValue.make}</option>
             )
           } */}
         <option value="">Select Make</option>
-        {
-          isLoading && <option value="">Loading Makes...</option>
-        }
-        {
-          isError && <option value="">Failed to load Makes</option>
-        }
-        {
-            makes?.data?.length === 0 && (
-              <option value="">No Makes found</option>
-            )
-        }
+        {isLoading && <option value="">Loading Makes...</option>}
+        {isError && <option value="">Failed to load Makes</option>}
+        {makes?.data?.length === 0 && <option value="">No Makes found</option>}
         {makes?.data?.map((m: any) => (
           <option
             key={m?.make}
@@ -363,26 +375,17 @@ const YearSelectForModel = ({ defaultValue, register }: any) => {
         defaultValue={defaultValue ? defaultValue?._id : ""}
         className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
         <option value="">Select Year</option>
-        {
-          isLoading && <option value="">Loading Years...</option>
-        }
-        {
-          isError && <option value="">Failed to load Years</option>
-        }
-        {
-            year?.data?.length === 0 && (
-              <option value="">No Years found</option>
-            )
-        }
+        {isLoading && <option value="">Loading Years...</option>}
+        {isError && <option value="">Failed to load Years</option>}
+        {year?.data?.length === 0 && <option value="">No Years found</option>}
         {year?.data?.map((y: any) => (
           <option
-            key={y?.year?.numeric}
+            key={y?.year}
             value={y?._id}>
-            {y?.year?.numeric}
+            {y?.year}
           </option>
         ))}
       </select>
     </div>
   );
 };
-

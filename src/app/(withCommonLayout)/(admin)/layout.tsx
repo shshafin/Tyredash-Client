@@ -5,9 +5,7 @@ import { ReactNode } from "react";
 const layout = ({ children }: { children: ReactNode }) => {
   return (
     <Container>
-      <div
-        className="my-3 flex w-full gap-12 flex-col md:flex-row "
-        style={{ height: "calc(100vh - 200px)" }}>
+      <div className="my-3 flex w-full gap-12 flex-col md:flex-row min-h-screen ">
         {/* Sidebar */}
         <div className="w-full md:w-1/3">
           <Sidebar />

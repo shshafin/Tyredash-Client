@@ -18,7 +18,12 @@ export const columns = [
   { name: "ACTIONS", uid: "actions" },
 ];
 
-export default function ModelsTable({ models, setSelectedModel, onDeleteOpen, onEditOpen }: any) {
+export default function ModelsTable({
+  models,
+  setSelectedModel,
+  onDeleteOpen,
+  onEditOpen,
+}: any) {
   const renderCell = (model: any, columnKey: any) => {
     const cellValue = model[columnKey];
 
@@ -28,7 +33,7 @@ export default function ModelsTable({ models, setSelectedModel, onDeleteOpen, on
       case "make":
         return model.make.make;
       case "year":
-        return model.year.year.numeric;
+        return model.year.year;
 
       case "actions":
         return (

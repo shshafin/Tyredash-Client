@@ -12,19 +12,21 @@ import { DeleteIcon, EditIcon } from "@/src/icons";
 
 export const columns = [
   { name: "YEAR", uid: "year" },
-  { name: "DISPLAY", uid: "display" },
   { name: "ACTIONS", uid: "actions" },
 ];
 
-export default function YearsTable({ years, setSelectedYear, onDeleteOpen, onEditOpen }: any) {
+export default function YearsTable({
+  years,
+  setSelectedYear,
+  onDeleteOpen,
+  onEditOpen,
+}: any) {
   const renderCell = (year: any, columnKey: any) => {
     const cellValue = year[columnKey];
 
     switch (columnKey) {
       case "year":
-        return year.year.numeric;
-      case "display":
-        return year.year.display;
+        return Number(year.year);
 
       case "actions":
         return (

@@ -27,18 +27,36 @@ import {
 } from "@/src/hooks/makes.hook";
 import MakesTable from "./MakesTable";
 import { IMake } from "@/src/types";
-import { useState } from "react";
-import { DataEmpty, DataError, DataLoading } from "../../_components/DataFetchingStates";
+import { ChangeEvent, useState } from "react";
+import {
+  DataEmpty,
+  DataError,
+  DataLoading,
+} from "../../_components/DataFetchingStates";
 import { useGetYears } from "@/src/hooks/years.hook";
+import { UploadCloud } from "lucide-react";
+import { Divider } from "@heroui/divider";
 
 export default function AdminMakePage() {
   const queryClient = useQueryClient();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure(); // Modal open state
-  const { isOpen: isEditOpen, onOpen: onEditOpen, onOpenChange: onEditOpenChange, onClose: onEditClose } = useDisclosure();
-  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteOpenChange, onClose: onDeleteClose } = useDisclosure();
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onOpenChange: onEditOpenChange,
+    onClose: onEditClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onOpenChange: onDeleteOpenChange,
+    onClose: onDeleteClose,
+  } = useDisclosure();
   const methods = useForm(); // Hook form methods
   const { handleSubmit } = methods;
   const [selectedMake, setSelectedMake] = useState<IMake | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[] | []>([]); // Track selected images
+  const [imagePreviews, setImagePreviews] = useState<string[] | []>([]); // Track image previews
 
   const { mutate: handleCreateMake, isPending: createMakePending } =
     useCreateMake({
@@ -74,21 +92,47 @@ export default function AdminMakePage() {
 
   // Handle form submission
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const makeData: any = {
-      make: data.make,
-      logo: data.logo,
-      year: data.year,
-    };
+    const formData = new FormData();
 
-    handleCreateMake(makeData); // Send make data
+    // Append textual data
+    formData.append("make", data.make);
+
+    // Append images to FormData
+    imageFiles.forEach((image) => {
+      formData.append("file", image);
+    });
+
+    handleCreateMake(formData); // Send make data
   };
   const onEditSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const makeData: any = {
-      make: data.make,
-      logo: data.logo,
-      year: data.year,
-    };
-    handleUpdateMake(makeData); // update make data
+    const formData = new FormData();
+
+    // Append textual data
+    formData.append("make", data.make);
+
+    // Append images to FormData
+    imageFiles.forEach((image) => {
+      formData.append("file", image);
+    });
+    handleUpdateMake(formData); // update make data
+  };
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    // Convert FileList to an array and update state with new image files
+    const newImageFiles = Array.from(files);
+    setImageFiles((prev) => [...prev, ...newImageFiles]);
+
+    // Generate previews for each image file
+    newImageFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   return (
@@ -109,13 +153,14 @@ export default function AdminMakePage() {
       {isError && <DataError />}
       {makes?.data?.length === 0 && <DataEmpty />}
 
-      {!isLoading && makes?.data?.length > 0 && 
-        <MakesTable 
-          makes={makes} 
-          onDeleteOpen={onDeleteOpen} 
+      {!isLoading && makes?.data?.length > 0 && (
+        <MakesTable
+          makes={makes}
+          onDeleteOpen={onDeleteOpen}
           onEditOpen={onEditOpen}
-          setSelectedMake={setSelectedMake} 
-        />}
+          setSelectedMake={setSelectedMake}
+        />
+      )}
 
       {/* Modal for adding a new make */}
       <AddMakeModal
@@ -125,6 +170,8 @@ export default function AdminMakePage() {
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
         createMakePending={createMakePending}
+        imagePreviews={imagePreviews}
+        handleImageChange={handleImageChange}
       />
       {/* Modal for editing a make */}
       <EditMakeModal
@@ -135,6 +182,8 @@ export default function AdminMakePage() {
         onSubmit={onEditSubmit}
         updateMakePending={updateMakePending}
         defaultValues={selectedMake}
+        imagePreviews={imagePreviews}
+        handleImageChange={handleImageChange}
       />
       {/* Modal for deleting a make */}
       <DeleteMakeModal
@@ -154,6 +203,8 @@ const AddMakeModal = ({
   handleSubmit,
   onSubmit,
   createMakePending,
+  imagePreviews,
+  handleImageChange,
 }: any) => {
   return (
     <Modal
@@ -177,22 +228,44 @@ const AddMakeModal = ({
                           name="make"
                         />
                       </div>
-                      <div className="flex-1 min-w-[150px]">
-                        <FXInput
-                          label="Logo"
-                          name="logo"
+                      <div className="w-full">
+                        <label
+                          htmlFor="image"
+                          className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-default-200 bg-default-50 text-default-500 shadow-sm transition hover:border-default-400 hover:bg-default-100">
+                          <span className="text-md font-medium">
+                            Upload Images
+                          </span>
+                          <UploadCloud className="size-6" />
+                        </label>
+                        <input
+                          multiple
+                          className="hidden"
+                          id="image"
+                          type="file"
+                          onChange={handleImageChange}
                         />
                       </div>
                     </div>
-                    {/* Year Input */}
-                    <div className="flex flex-wrap gap-2 w-full">
-                      <div className="flex-1 min-w-[150px]">
-                        <YearSelectForMake
-                          defaultValue=""
-                          register={methods.register}
-                        />
+                    {/* Image previews */}
+                    {imagePreviews.length > 0 && (
+                      <div className="flex gap-5 my-5 flex-wrap">
+                        {imagePreviews.map(
+                          (imageDataUrl: string, index: number) => (
+                            <div
+                              key={index}
+                              className="relative size-32 rounded-xl border-2 border-dashed border-default-300 p-2">
+                              <img
+                                alt={`Preview ${index}`}
+                                className="h-full w-full object-cover rounded-md"
+                                src={imageDataUrl}
+                              />
+                            </div>
+                          )
+                        )}
                       </div>
-                    </div>
+                    )}
+
+                    <Divider className="my-6" />
                   </div>
                   <Button
                     color="primary"
@@ -219,6 +292,8 @@ const EditMakeModal = ({
   onSubmit,
   updateMakePending,
   defaultValues,
+  imagePreviews,
+  handleImageChange,
 }: any) => {
   if (!defaultValues) return null;
   return (
@@ -231,9 +306,7 @@ const EditMakeModal = ({
       <ModalContent>
         {() => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
-              Edit Make
-            </ModalHeader>
+            <ModalHeader className="flex flex-col gap-1">Edit Make</ModalHeader>
             <ModalBody className="mb-5">
               <FormProvider {...methods}>
                 <form
@@ -249,24 +322,46 @@ const EditMakeModal = ({
                           defaultValue={defaultValues.make}
                         />
                       </div>
-                      <div className="flex-1 min-w-[150px]">
-                        <FXInput
-                          label="Logo"
-                          name="logo"
-                          defaultValue={defaultValues.logo}
+                      <div className="w-full">
+                        <label
+                          htmlFor="image"
+                          className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-default-200 bg-default-50 text-default-500 shadow-sm transition hover:border-default-400 hover:bg-default-100">
+                          <span className="text-md font-medium">
+                            Upload Images
+                          </span>
+                          <UploadCloud className="size-6" />
+                        </label>
+                        <input
+                          multiple
+                          className="hidden"
+                          id="image"
+                          type="file"
+                          onChange={handleImageChange}
                         />
                       </div>
                     </div>
-                    {/* Year Input */}
-                    <div className="flex flex-wrap gap-2 w-full">
-                      <div className="flex-1 min-w-[150px]">
-                        <YearSelectForMake
-                          defaultValue={defaultValues.year}
-                          register={methods.register}
-                        />
+                    {/* Image previews */}
+                    {imagePreviews.length > 0 && (
+                      <div className="flex gap-5 my-5 flex-wrap">
+                        {imagePreviews.map(
+                          (imageDataUrl: string, index: number) => (
+                            <div
+                              key={index}
+                              className="relative size-32 rounded-xl border-2 border-dashed border-default-300 p-2">
+                              <img
+                                alt={`Preview ${index}`}
+                                className="h-full w-full object-cover rounded-md"
+                                src={imageDataUrl}
+                              />
+                            </div>
+                          )
+                        )}
                       </div>
-                    </div>
+                    )}
+
+                    <Divider className="my-6" />
                   </div>
+
                   <Button
                     color="primary"
                     type="submit"
@@ -303,8 +398,8 @@ const DeleteMakeModal = ({
 
             <ModalBody>
               <p className="text-sm text-red-500">
-                ⚠️ Are you sure you want to delete this make? This action
-                cannot be undone.
+                ⚠️ Are you sure you want to delete this make? This action cannot
+                be undone.
               </p>
             </ModalBody>
 
@@ -330,36 +425,28 @@ const DeleteMakeModal = ({
   );
 };
 
-const YearSelectForMake = ({ defaultValue, register }: any) => {
-  const { data: year, isLoading, isError } = useGetYears({});
+// const YearSelectForMake = ({ defaultValue, register }: any) => {
+//   const { data: year, isLoading, isError } = useGetYears({});
+//   console.log("year", year?.data);
 
-  return (
-    <div className="flex-1 min-w-[150px]">
-      <select
-        {...register("year", { required: true })}
-        defaultValue={defaultValue ? defaultValue?._id : ""}
-        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
-        <option value="">Select Year</option>
-        {
-          isLoading && <option value="">Loading Years...</option>
-        }
-        {
-          isError && <option value="">Failed to load Years</option>
-        }
-        {
-            year?.data?.length === 0 && (
-              <option value="">No Years found</option>
-            )
-        }
-        {year?.data?.map((y: any) => (
-          <option
-            key={y?.year?.numeric}
-            value={y?._id}>
-            {y?.year?.numeric}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
-
+//   return (
+//     <div className="flex-1 min-w-[150px]">
+//       <select
+//         {...register("year", { required: true })}
+//         defaultValue={defaultValue ? defaultValue?._id : ""}
+//         className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
+//         <option value="">Select Year</option>
+//         {isLoading && <option value="">Loading Years...</option>}
+//         {isError && <option value="">Failed to load Years</option>}
+//         {year?.data?.length === 0 && <option value="">No Years found</option>}
+//         {year?.data?.map((y: any) => (
+//           <option
+//             key={y?.year}
+//             value={y?._id}>
+//             {y?.year}
+//           </option>
+//         ))}
+//       </select>
+//     </div>
+//   );
+// };

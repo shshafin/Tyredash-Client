@@ -6,7 +6,7 @@ export const createMake = async (makeData: any): Promise<any> => {
   try {
     const { data } = await axiosInstance.post("/makes/create", makeData, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
 
@@ -21,7 +21,7 @@ export const updateMake = async (id: string, makeData: any): Promise<any> => {
   try {
     const { data } = await axiosInstance.patch(`/makes/${id}`, makeData, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
 

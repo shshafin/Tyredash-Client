@@ -1,6 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createMake, deleteMake, getMakes, updateMake } from "../services/Makes";
+import {
+  createMake,
+  deleteMake,
+  getMakes,
+  updateMake,
+} from "../services/Makes";
 
 export const useCreateMake = ({ onSuccess }: any) => {
   return useMutation<any, Error, FormData>({

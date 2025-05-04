@@ -2,7 +2,6 @@ import {
   UserIcon,
   SettingsIcon,
   HomeIcon,
-  FileIcon,
   TruckIcon,
   Settings2,
   Blend,
@@ -11,6 +10,10 @@ import {
   Grid2X2Plus,
   LoaderPinwheel,
   User,
+  Signature,
+  List,
+  Edit,
+  PlusCircle,
 } from "lucide-react"; // Import necessary icons
 import React from "react";
 
@@ -95,6 +98,41 @@ export const adminLinks = [
         href: "/admin/tyre-size",
         label: "Tyre Size",
         icon: React.createElement(LoaderPinwheel, { className: "w-5 h-5" }),
+      },
+      {
+        href: "/admin/brand",
+        label: "Brand",
+        icon: React.createElement(Signature, { className: "w-5 h-5" }), // File icon for vehicle
+      },
+    ],
+  },
+  {
+    label: "Tire Management",
+    links: [
+      {
+        href: "/admin/tire/create",
+        label: "Create Tire",
+        icon: React.createElement(PlusCircle, { className: "w-5 h-5" }), // PlusCircle for Create
+      },
+      {
+        href: "/admin/tire",
+        label: "All Tires",
+        icon: React.createElement(List, { className: "w-5 h-5" }), // List for All Tires
+      },
+    ],
+  },
+  {
+    label: "Wheel Management",
+    links: [
+      {
+        href: "/admin/wheel/create",
+        label: "Create Wheel",
+        icon: React.createElement(PlusCircle, { className: "w-5 h-5" }), // PlusCircle for Create
+      },
+      {
+        href: "/admin/wheel",
+        label: "All Wheels",
+        icon: React.createElement(List, { className: "w-5 h-5" }), // List for All Tires
       },
     ],
   },

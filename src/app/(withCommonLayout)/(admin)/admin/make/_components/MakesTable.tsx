@@ -10,10 +10,12 @@ import {
 import { Tooltip } from "@heroui/tooltip";
 import { DeleteIcon, EditIcon } from "@/src/icons";
 import { IMake } from "@/src/types";
+import Image from "next/image";
+import { envConfig } from "@/src/config/envConfig";
 
 export const columns = [
   { name: "MAKE", uid: "make" },
-  { name: "YEAR", uid: "year" },
+  // { name: "YEAR", uid: "year" },
   { name: "LOGO", uid: "logo" },
   { name: "ACTIONS", uid: "actions" },
 ];
@@ -30,10 +32,25 @@ export default function MakesTable({
     switch (columnKey) {
       case "make":
         return make?.make;
-      case "year":
-        return make?.year?.year?.numeric;
+      // case "year":
+      //   console.log(make?.year?.year);
+      //   return make?.year?.year;
       case "logo":
-        return make?.logo;
+        return (
+          <div>
+            {make.logo ? (
+              <Image
+                src={`${envConfig.base_url}${make.logo}`}
+                alt={make.make}
+                width={40}
+                height={40}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-sm text-gray-400">No Image</span>
+            )}
+          </div>
+        );
 
       case "actions":
         return (

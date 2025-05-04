@@ -121,7 +121,7 @@ export default function AdminDrivingTypePage() {
     };
     handleUpdateDrivingType(drivingTypeData); // Send DrivingType data
   };
-  console.log(options, 'options')
+  console.log(options, "options");
 
   return (
     <div className="p-6">
@@ -338,36 +338,37 @@ const EditDrivingTypeModal = ({
                   {/* Options */}
                   <div className="space-y-4 border p-4 rounded-xl bg-muted/30">
                     {options.length ? (
-                      options?.map(
-                        (field: any, index: number) => (
-                          <div
-                            key={index}
-                            className="flex gap-2 items-center">
-                            <Input
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                const newOptions = options.map((opt: string, i: number) =>
+                      options?.map((field: any, index: number) => (
+                        <div
+                          key={index}
+                          className="flex gap-2 items-center">
+                          <Input
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              const newOptions = options.map(
+                                (opt: string, i: number) =>
                                   i === index ? val : opt
-                                );
-                                console.log({val: e.target.value })
-                                setOptions(newOptions);
-                              }}
-                              label="Option"
-                              // value={field}
-                              defaultValue={field}
-                            />
-                            <Button
-                              isIconOnly
-                              className="h-14 w-16"
-                              onPress={() => {
-                                const newOptions = options.filter((_: any, i: number) => i !== index);
-                                setOptions(newOptions);
-                              }}>
-                              <Trash2 />
-                            </Button>
-                          </div>
-                        )
-                      )
+                              );
+                              console.log({ val: e.target.value });
+                              setOptions(newOptions);
+                            }}
+                            label="Option"
+                            // value={field}
+                            defaultValue={field}
+                          />
+                          <Button
+                            isIconOnly
+                            className="h-14 w-16"
+                            onPress={() => {
+                              const newOptions = options.filter(
+                                (_: any, i: number) => i !== index
+                              );
+                              setOptions(newOptions);
+                            }}>
+                            <Trash2 />
+                          </Button>
+                        </div>
+                      ))
                     ) : (
                       <p className="text-sm text-muted-foreground">
                         No options added yet.

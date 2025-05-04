@@ -1,18 +1,22 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link"; // Importing Link component
 
 const categories = [
   {
     name: "Tires",
     image: "/t.webp",
+    link: "/tire", // Add the route for the tires page
   },
   {
     name: "Wheels",
     image: "/w.webp",
+    link: "/wheel", // Add the route for the wheels page
   },
   {
     name: "Deals",
     image: "/d.webp",
+    link: "#", // Deals page or some other page
   },
 ];
 
@@ -38,22 +42,25 @@ const ShopCategory = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
           {categories.map((category, index) => (
-            <div
+            <Link
+              href={category.link}
               key={index}
-              className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 flex flex-col items-center shadow-lg hover:shadow-2xl transition-shadow duration-300">
-              <div className="w-40 h-40 mb-4 overflow-hidden rounded-full ">
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  width={160}
-                  height={160}
-                  className="object-contain w-full h-full transition-transform duration-300 group-hover:scale-105"
-                />
+              passHref>
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 flex flex-col items-center shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
+                <div className="w-40 h-40 mb-4 overflow-hidden rounded-full ">
+                  <Image
+                    src={category.image}
+                    alt={category.name}
+                    width={160}
+                    height={160}
+                    className="object-contain w-full h-full transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <h3 className="text-xl font-semibold text-center">
+                  {category.name}
+                </h3>
               </div>
-              <h3 className="text-xl font-semibold  text-center">
-                {category.name}
-              </h3>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

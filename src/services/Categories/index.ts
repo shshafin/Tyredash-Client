@@ -9,7 +9,7 @@ export const createCategory = async (categoryData: any): Promise<any> => {
       categoryData,
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       }
     );
@@ -31,7 +31,7 @@ export const updateCategory = async (
       categoryData,
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       }
     );

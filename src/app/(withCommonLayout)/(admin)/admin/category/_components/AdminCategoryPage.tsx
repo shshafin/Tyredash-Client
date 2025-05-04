@@ -27,7 +27,7 @@ import {
 import FXTextArea from "@/src/components/form/FXTextArea";
 import { toBase64 } from "@/src/helper/toBase64";
 import CategoriesTable from "./CategoriesTable";
-import { UploadCloud } from "lucide-react";
+import { Images, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { ICategory } from "@/src/types";
@@ -95,49 +95,47 @@ export default function AdminCategoryPage() {
   const { data: categories, isLoading, isError } = useGetCategories(); // Get existing categories
 
   // Handle form submission
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const categoryData: any = {
-      name: data.name,
-      slug: data.slug,
-      description: data.description,
-      images: [], // base64 strings for images
-    };
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    const formData = new FormData();
 
-    // Convert selected images to base64
-    for (const file of imageFiles) {
-      const base64 = await toBase64(file);
-      categoryData.images.push(base64);
-    }
-    handleCreateCategory(categoryData); // Send category data
+    // Append textual data
+    formData.append("name", data.name);
+    formData.append("slug", data.slug);
+
+    // Append images to FormData
+    imageFiles.forEach((image) => {
+      formData.append("file", image);
+    });
+
+    // Call the function to handle category creation
+    handleCreateCategory(formData);
   };
 
   // Handle form submission
   const onEditSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log({ data });
-    const categoryData: any = {
-      name: data.name,
-      slug: data.slug,
-      description: data.description,
-      images: [], // base64 strings for images
-    };
+    const formData = new FormData();
 
-    // Convert selected images to base64
-    for (const file of imageFiles) {
-      const base64 = await toBase64(file);
-      categoryData.images.push(base64);
-    }
-    handleUpdateCategory(categoryData); // Send category data
+    // Append textual data
+    formData.append("name", data.name);
+    formData.append("slug", data.slug);
+
+    // Append images to FormData
+    imageFiles.forEach((image) => {
+      formData.append("file", image);
+    });
+    handleUpdateCategory(formData); // Send category data
   };
 
-  // Handle image file selection
+  // handle image
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
+    // Convert FileList to an array and update state with new image files
     const newImageFiles = Array.from(files);
     setImageFiles((prev) => [...prev, ...newImageFiles]);
 
-    // Generate image previews
+    // Generate previews for each image file
     newImageFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -146,6 +144,7 @@ export default function AdminCategoryPage() {
       reader.readAsDataURL(file);
     });
   };
+
   return (
     <div className="p-6">
       {/* Header section with title and button */}
@@ -252,16 +251,6 @@ const AddCategoryModal = ({
                         <FXInput
                           label="Slug"
                           name="slug"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Description TextArea */}
-                    <div className="flex w-full">
-                      <div className="flex-1 min-w-[150px]">
-                        <FXTextArea
-                          label="Description"
-                          name="description"
                         />
                       </div>
                     </div>
@@ -375,7 +364,7 @@ const EditCategoryModal = ({
                     </div>
 
                     {/* Description TextArea */}
-                    <div className="flex w-full">
+                    {/* <div className="flex w-full">
                       <div className="flex-1 min-w-[150px]">
                         <FXTextArea
                           label="Description"
@@ -383,7 +372,7 @@ const EditCategoryModal = ({
                           defaultValue={defaultValues.description}
                         />
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* Image Upload */}
                     <div className="w-full">

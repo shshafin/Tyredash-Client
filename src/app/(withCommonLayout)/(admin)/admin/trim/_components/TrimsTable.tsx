@@ -19,7 +19,12 @@ export const columns = [
   { name: "ACTIONS", uid: "actions" },
 ];
 
-export default function TrimsTable({ trims, setSelectedTrim, onDeleteOpen, onEditOpen }: any) {
+export default function TrimsTable({
+  trims,
+  setSelectedTrim,
+  onDeleteOpen,
+  onEditOpen,
+}: any) {
   const renderCell = (trim: any, columnKey: any) => {
     const cellValue = trim[columnKey];
 
@@ -31,7 +36,7 @@ export default function TrimsTable({ trims, setSelectedTrim, onDeleteOpen, onEdi
       case "model":
         return trim.model.model;
       case "year":
-        return trim.year.year.numeric;
+        return trim.year.year;
 
       case "actions":
         return (

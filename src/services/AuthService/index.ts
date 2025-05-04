@@ -67,6 +67,8 @@ export const logoutUser = async () => {
     path: "/",
     expires: new Date(0),
   });
+
+  window.location.href = "/login"; // Redirect to login page
 };
 
 // ! Get Current User

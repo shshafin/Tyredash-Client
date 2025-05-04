@@ -21,7 +21,10 @@ export const createDrivingType = async (drivingTypeData: any): Promise<any> => {
   }
 };
 
-export const updateDrivingType = async (id: string, drivingTypeData: any): Promise<any> => {
+export const updateDrivingType = async (
+  id: string,
+  drivingTypeData: any
+): Promise<any> => {
   try {
     const { data } = await axiosInstance.patch(
       `/driving-type/${id}`,

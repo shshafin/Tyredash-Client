@@ -94,6 +94,7 @@ export default function AdminTyreSizePage() {
 
   // Handle form submission
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    console.log("testing", data);
     handleCreateTyreSize(data as any);
   };
 
@@ -413,9 +414,9 @@ const YearSelectForTyreSize = ({ defaultValue, register }: any) => {
         {year?.data?.length === 0 && <option value="">No Years found</option>}
         {year?.data?.map((y: any) => (
           <option
-            key={y?.year?.numeric}
+            key={y?.year}
             value={y?._id}>
-            {y?.year?.numeric}
+            {y?.year}
           </option>
         ))}
       </select>

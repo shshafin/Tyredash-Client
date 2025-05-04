@@ -39,6 +39,7 @@ import { useGetModels } from "@/src/hooks/model.hook";
 
 export default function AdminTrimPage() {
   const queryClient = useQueryClient();
+
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure(); // Modal open state
   const {
     isOpen: isEditOpen,
@@ -392,9 +393,9 @@ const YearSelectForTrim = ({ defaultValue, register }: any) => {
         {year?.data?.length === 0 && <option value="">No Years found</option>}
         {year?.data?.map((y: any) => (
           <option
-            key={y?.year?.numeric}
+            key={y?.year}
             value={y?._id}>
-            {y?.year?.numeric}
+            {y?.year}
           </option>
         ))}
       </select>

@@ -1,5 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createCategory, deleteCategory, getCategories, updateCategory } from "../services/Categories";
+import {
+  createCategory,
+  deleteCategory,
+  getCategories,
+  updateCategory,
+} from "../services/Categories";
 import { toast } from "sonner";
 
 export const useCreateCategory = ({ onSuccess = () => {} }: any) => {

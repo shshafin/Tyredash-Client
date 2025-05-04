@@ -19,18 +19,37 @@ import {
 
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCreateYear, useDeleteYear, useGetYears, useUpdateYear } from "@/src/hooks/years.hook";
+import {
+  useCreateYear,
+  useDeleteYear,
+  useGetYears,
+  useUpdateYear,
+} from "@/src/hooks/years.hook";
 import { YearSelect } from "@/src/components/form/YearSelect";
 import YearsTable from "./YearsTable";
 import { IYear } from "@/src/types";
 import { useState } from "react";
-import { DataEmpty, DataError, DataLoading } from "../../_components/DataFetchingStates";
+import {
+  DataEmpty,
+  DataError,
+  DataLoading,
+} from "../../_components/DataFetchingStates";
 
 export default function AdminYearPage() {
   const queryClient = useQueryClient();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure(); // Modal open state
-  const { isOpen: isEditOpen, onOpen: onEditOpen, onOpenChange: onEditOpenChange, onClose: onEditClose } = useDisclosure();
-  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteOpenChange, onClose: onDeleteClose } = useDisclosure();
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onOpenChange: onEditOpenChange,
+    onClose: onEditClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onOpenChange: onDeleteOpenChange,
+    onClose: onDeleteClose,
+  } = useDisclosure();
   const methods = useForm(); // Hook form methods
   const { handleSubmit } = methods;
   const [selectedYear, setSelectedYear] = useState<IYear | null>(null);
@@ -70,13 +89,10 @@ export default function AdminYearPage() {
   // Handle form submission
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     const YearData = {
-      year: {
-        numeric: Number(data.year?.numeric),
-        display: data.display,
-      },
+      year: Number(data.year?.numeric),
     };
 
-    if (!YearData.year.numeric || isNaN(YearData.year.numeric)) {
+    if (!YearData.year || isNaN(YearData.year)) {
       toast.error("Please select a valid year.");
       return;
     }
@@ -86,13 +102,10 @@ export default function AdminYearPage() {
 
   const onEditSubmit: SubmitHandler<FieldValues> = async (data) => {
     const YearData = {
-      year: {
-        numeric: Number(data.year?.numeric),
-        display: data.display,
-      },
+      year: Number(data.year?.numeric),
     };
 
-    if (!YearData.year.numeric || isNaN(YearData.year.numeric)) {
+    if (!YearData.year || isNaN(YearData.year)) {
       toast.error("Please select a valid year.");
       return;
     }
@@ -118,7 +131,14 @@ export default function AdminYearPage() {
       {isError && <DataError />}
       {years?.data?.length === 0 && <DataEmpty />}
 
-      {!isLoading && years?.data?.length > 0 && <YearsTable years={years} setSelectedYear={setSelectedYear} onEditOpen={onEditOpen} onDeleteOpen={onDeleteOpen} />}
+      {!isLoading && years?.data?.length > 0 && (
+        <YearsTable
+          years={years}
+          setSelectedYear={setSelectedYear}
+          onEditOpen={onEditOpen}
+          onDeleteOpen={onDeleteOpen}
+        />
+      )}
 
       {/* Modal for adding a new Year */}
       <AddYearModal
@@ -171,20 +191,11 @@ const AddYearModal = ({
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="max-w-xl mx-auto space-y-6">
-                  <div className="flex flex-wrap gap-4 py-2">
-                    {/* Year & logo Inputs */}
-                    <div className="flex flex-wrap gap-2 w-full">
-                      <div className="flex-1 min-w-[150px]">
-                        <YearSelect />
-                      </div>
-                      <div className="flex-1 min-w-[150px]">
-                        <FXInput
-                          label="Display"
-                          name="display"
-                        />
-                      </div>
-                    </div>
+                  {/* Year & logo Inputs */}
+                  <div className=" w-full py-2">
+                    <YearSelect />
                   </div>
+
                   <Button
                     color="primary"
                     type="submit"
@@ -210,7 +221,7 @@ const EditYearModal = ({
   onSubmit,
   updateYearPending,
   defaultValues,
-} : any) => {
+}: any) => {
   if (!defaultValues) return null;
   return (
     <Modal
@@ -233,13 +244,6 @@ const EditYearModal = ({
                     <div className="flex flex-wrap gap-2 w-full">
                       <div className="flex-1 min-w-[150px]">
                         <YearSelect defaultValue={defaultValues.year.numeric} />
-                      </div>
-                      <div className="flex-1 min-w-[150px]">
-                        <FXInput
-                          label="Display"
-                          name="display"
-                          defaultValue={defaultValues.year.display}
-                        />
                       </div>
                     </div>
                   </div>
@@ -279,8 +283,8 @@ const DeleteYearModal = ({
 
             <ModalBody>
               <p className="text-sm text-red-500">
-                ⚠️ Are you sure you want to delete this year? This action
-                cannot be undone.
+                ⚠️ Are you sure you want to delete this year? This action cannot
+                be undone.
               </p>
             </ModalBody>
 
