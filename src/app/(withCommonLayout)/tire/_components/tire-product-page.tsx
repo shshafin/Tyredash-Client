@@ -14,12 +14,16 @@ import TireNotFound from "./tire-not-found";
 import TirePagination from "./tire-pagination";
 import { Search, X } from "lucide-react";
 import { MakeDropdown } from "./MakeDropdown";
+import { ModelDropdown } from "./ModelDropdown";
+import { TrimDropdown } from "./TrimDropdown";
 
 const TireProductPage = () => {
   const { data: Tires, isLoading, isError } = useGetTires({});
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedMakes, setSelectedMakes] = useState<string[]>([]);
+  const [selectedModels, setSelectedModels] = useState<string[]>([]);
+  const [selectedTrims, setSelectedTrims] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [filteredTires, setFilteredTires] = useState<any[]>([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -80,11 +84,27 @@ const TireProductPage = () => {
       const matchesMake =
         selectedMakes.length === 0 || selectedMakes.includes(tire.make.make);
 
+      // Trim filter
+      const matchesTrim =
+        selectedTrims.length === 0 || selectedTrims.includes(tire.trim.trim);
+
+      // Model filter
+      const matchesModel =
+        selectedModels.length === 0 ||
+        selectedModels.includes(tire.model.model);
+
       // Year filter
       const matchesYear =
         selectedYears.length === 0 || selectedYears.includes(tire.year.year);
 
-      return matchesSearch && matchesBrand && matchesYear && matchesMake;
+      return (
+        matchesSearch &&
+        matchesBrand &&
+        matchesYear &&
+        matchesMake &&
+        matchesTrim &&
+        matchesModel
+      );
     });
 
     // Sort the filtered tires
@@ -106,6 +126,8 @@ const TireProductPage = () => {
     selectedBrands,
     selectedYears,
     selectedMakes,
+    selectedModels,
+    selectedTrims,
     sortOption,
   ]);
 
@@ -119,6 +141,18 @@ const TireProductPage = () => {
   const makes: any = Tires?.data
     ? [
         ...(new Set(Tires.data.map((tire: any) => tire.make.make)) as any),
+      ].sort()
+    : [];
+
+  const models: any = Tires?.data
+    ? [
+        ...(new Set(Tires.data.map((tire: any) => tire.model.model)) as any),
+      ].sort()
+    : [];
+
+  const trims: any = Tires?.data
+    ? [
+        ...(new Set(Tires.data.map((tire: any) => tire.trim.trim)) as any),
       ].sort()
     : [];
 
@@ -142,6 +176,20 @@ const TireProductPage = () => {
     );
   };
 
+  // Toggle trim selection
+  const toggleTrim = (trim: string) => {
+    setSelectedTrims((prev) =>
+      prev.includes(trim) ? prev.filter((b) => b !== trim) : [...prev, trim]
+    );
+  };
+
+  // Toggle model selection
+  const toggleModel = (model: string) => {
+    setSelectedModels((prev) =>
+      prev.includes(model) ? prev.filter((b) => b !== model) : [...prev, model]
+    );
+  };
+
   // Toggle year selection
   const toggleYear = (year: string) => {
     setSelectedYears((prev) =>
@@ -154,7 +202,9 @@ const TireProductPage = () => {
     setSearchTerm("");
     setSelectedBrands([]);
     setSelectedMakes([]);
+    setSelectedModels([]);
     setSelectedYears([]);
+    setSelectedTrims([]);
   };
 
   // Sidebar filters component
@@ -205,6 +255,28 @@ const TireProductPage = () => {
             makes={makes}
             selectedMakes={selectedMakes}
             setSelectedMakes={setSelectedMakes}
+          />
+        </div>
+
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Models
+          </h3>
+          <ModelDropdown
+            models={models}
+            selectedModels={selectedModels}
+            setSelectedModels={setSelectedModels}
+          />
+        </div>
+
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Trims
+          </h3>
+          <TrimDropdown
+            trims={trims}
+            selectedTrims={selectedTrims}
+            setSelectedTrims={setSelectedTrims}
           />
         </div>
 
@@ -431,7 +503,10 @@ const TireProductPage = () => {
       searchTerm ||
       selectedBrands.length > 0 ||
       selectedYears.length > 0 ||
-      selectedMakes.length > 0;
+      selectedMakes.length > 0 ||
+      selectedYears.length > 0 ||
+      selectedTrims.length > 0 ||
+      selectedModels.length > 0;
 
     if (!hasActiveFilters) return null;
 
@@ -472,6 +547,34 @@ const TireProductPage = () => {
               onClick={() => toggleMake(make)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
               aria-label={`Remove ${make} filter`}>
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        ))}
+
+        {selectedModels.map((model) => (
+          <span
+            key={model}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            {model}
+            <button
+              onClick={() => toggleModel(model)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${model} filter`}>
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        ))}
+
+        {selectedTrims.map((trim) => (
+          <span
+            key={trim}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            {trim}
+            <button
+              onClick={() => toggleTrim(trim)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${trim} filter`}>
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
