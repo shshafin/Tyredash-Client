@@ -6,15 +6,22 @@ import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { BrandDropdown } from "./_components/BrandDropdown";
 import YearDropdown from "./_components/YearDropdown";
+import { MakeDropdown } from "./_components/MakeDropdown";
+import { DrivingTypeDropdown } from "./_components/DrivingTypeDropdown";
 
 const TireProductPage = () => {
   const { data: Tires, isLoading, isError } = useGetTires({});
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [priceRange, setPriceRange] = useState<[number, number]>([
-    0, 100000000,
-  ]);
+  // const [priceRange, setPriceRange] = useState<[number, number]>([
+  //   0, 100000000,
+  // ]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
+  const [selectedMakes, setSelectedMakes] = useState<string[]>([]);
+  const [selectedDrivingTypes, setSelectedDrivingTypes] = useState<string[]>(
+    []
+  );
   const [filteredTires, setFilteredTires] = useState<any[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
@@ -70,15 +77,30 @@ const TireProductPage = () => {
       const matchesBrand =
         selectedBrands.length === 0 || selectedBrands.includes(tire.brand.name);
 
+      // Make filter
+      const matchesMake =
+        selectedMakes.length === 0 || selectedMakes.includes(tire.make.make);
+
+      // Driving Type filter
+      const matchesDrivingType =
+        selectedDrivingTypes.length === 0 ||
+        selectedDrivingTypes.includes(tire.drivingType.title);
+
       // Year filter
       const matchesYear =
         selectedYears.length === 0 || selectedYears.includes(tire.year.year);
 
       // Price filter
-      const matchesPrice =
-        tire.price >= priceRange[0] && tire.price <= priceRange[1];
+      // const matchesPrice =
+      //   tire.price >= priceRange[0] && tire.price <= priceRange[1];
 
-      return matchesSearch && matchesBrand && matchesYear && matchesPrice;
+      return (
+        matchesSearch &&
+        matchesBrand &&
+        matchesYear &&
+        matchesMake &&
+        matchesDrivingType
+      );
     });
 
     // Sort the filtered tires
@@ -98,8 +120,10 @@ const TireProductPage = () => {
     Tires,
     searchTerm,
     selectedBrands,
+    selectedMakes,
+    selectedDrivingTypes,
     selectedYears,
-    priceRange,
+    // priceRange,
     sortOption,
   ]);
 
@@ -110,6 +134,20 @@ const TireProductPage = () => {
       ].sort()
     : [];
 
+  const makes: any = Tires?.data
+    ? [
+        ...(new Set(Tires.data.map((tire: any) => tire.make.make)) as any),
+      ].sort()
+    : [];
+
+  const drivingTypes: any = Tires?.data
+    ? [
+        ...(new Set(
+          Tires.data.map((tire: any) => tire.drivingType.title)
+        ) as any),
+      ].sort()
+    : [];
+
   const years: any = Tires?.data
     ? [...(new Set(Tires.data.map((tire: any) => tire.year.year)) as any)].sort(
         (a, b) => Number.parseInt(b) - Number.parseInt(a)
@@ -117,23 +155,39 @@ const TireProductPage = () => {
     : [];
 
   // Find min and max price
-  const minPrice = Tires?.data
-    ? Math.min(...Tires.data.map((tire: any) => tire.price))
-    : 0;
-  const maxPrice = Tires?.data
-    ? Math.max(...Tires.data.map((tire: any) => tire.price))
-    : 1000;
+  // const minPrice = Tires?.data
+  //   ? Math.min(...Tires.data.map((tire: any) => tire.price))
+  //   : 0;
+  // const maxPrice = Tires?.data
+  //   ? Math.max(...Tires.data.map((tire: any) => tire.price))
+  //   : 1000;
 
-  useEffect(() => {
-    if (minPrice !== undefined && maxPrice !== undefined) {
-      setPriceRange([minPrice, maxPrice]);
-    }
-  }, [minPrice, maxPrice]);
+  // useEffect(() => {
+  //   if (minPrice !== undefined && maxPrice !== undefined) {
+  //     setPriceRange([minPrice, maxPrice]);
+  //   }
+  // }, [minPrice, maxPrice]);
 
   // Toggle brand selection
   const toggleBrand = (brand: string) => {
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
+    );
+  };
+
+  // Toggle Make selection
+  const toggleMake = (make: string) => {
+    setSelectedMakes((prev) =>
+      prev.includes(make) ? prev.filter((b) => b !== make) : [...prev, make]
+    );
+  };
+
+  // Toggle Driving Type selection
+  const toggleDrivingType = (drivingType: string) => {
+    setSelectedDrivingTypes((prev) =>
+      prev.includes(drivingType)
+        ? prev.filter((b) => b !== drivingType)
+        : [...prev, drivingType]
     );
   };
 
@@ -147,8 +201,10 @@ const TireProductPage = () => {
   // Clear all filters
   const clearFilters = () => {
     setSearchTerm("");
-    setPriceRange([minPrice, maxPrice]);
+    // setPriceRange([minPrice, maxPrice]);
     setSelectedBrands([]);
+    setSelectedMakes([]);
+    setSelectedDrivingTypes([]);
     setSelectedYears([]);
   };
 
@@ -204,7 +260,7 @@ const TireProductPage = () => {
             )}
           </div>
         </div>
-
+        {/* 
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
           <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
             Price Range
@@ -273,9 +329,9 @@ const TireProductPage = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-2 ">
           <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
             Brands
           </h3>
@@ -285,8 +341,29 @@ const TireProductPage = () => {
             setSelectedBrands={setSelectedBrands}
           />
         </div>
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-2">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Makes
+          </h3>
+          <MakeDropdown
+            makes={makes}
+            selectedMakes={selectedMakes}
+            setSelectedMakes={setSelectedMakes}
+          />
+        </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-2">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Driving Types
+          </h3>
+          <DrivingTypeDropdown
+            drivingTypes={drivingTypes}
+            selectedDrivingTypes={selectedDrivingTypes}
+            setSelectedDrivingTypes={setSelectedDrivingTypes}
+          />
+        </div>
+
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-2">
           <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
             Years
           </h3>
@@ -443,7 +520,7 @@ const TireProductPage = () => {
                   key={star}
                   xmlns="http://www.w3.org/2000/svg"
                   className={`h-3.5 w-3.5 ${
-                    star <= 4
+                    star <= 5
                       ? "text-yellow-400 fill-yellow-400"
                       : "text-gray-300 dark:text-gray-600 fill-gray-300 dark:fill-gray-600"
                   }`}
@@ -453,7 +530,7 @@ const TireProductPage = () => {
                 </svg>
               ))}
               <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
-                4.0
+                5.0
               </span>
             </div>
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
@@ -636,7 +713,7 @@ const TireProductPage = () => {
                   key={star}
                   xmlns="http://www.w3.org/2000/svg"
                   className={`h-3.5 w-3.5 ${
-                    star <= 4
+                    star <= 5
                       ? "text-yellow-400 fill-yellow-400"
                       : "text-gray-300 dark:text-gray-600 fill-gray-300 dark:fill-gray-600"
                   }`}
@@ -646,14 +723,17 @@ const TireProductPage = () => {
                 </svg>
               ))}
               <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
-                4.0
+                5.0
               </span>
             </div>
             <div className="flex gap-2">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+              <span className="inline-flex items-center px-2.5  rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                 {tire.year.year}
               </span>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-blue-200">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                {tire.make.make}
+              </span>
+              <span className="inline-flex items-center px-2.5  rounded-full text-xs font-medium bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-blue-200">
                 {tire.brand.name}
               </span>
             </div>
@@ -722,8 +802,10 @@ const TireProductPage = () => {
       searchTerm ||
       selectedBrands.length > 0 ||
       selectedYears.length > 0 ||
-      priceRange[0] !== minPrice ||
-      priceRange[1] !== maxPrice;
+      selectedMakes.length > 0 ||
+      selectedDrivingTypes.length > 0;
+    // priceRange[0] !== minPrice ||
+    // priceRange[1] !== maxPrice;
 
     if (!hasActiveFilters) return null;
 
@@ -778,6 +860,57 @@ const TireProductPage = () => {
             </button>
           </span>
         ))}
+        {selectedMakes.map((make) => (
+          <span
+            key={make}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            {make}
+            <button
+              onClick={() => toggleMake(make)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${make} filter`}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3.5 w-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </span>
+        ))}
+
+        {selectedDrivingTypes.map((drivingType) => (
+          <span
+            key={drivingType}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            {drivingType}
+            <button
+              onClick={() => toggleDrivingType(drivingType)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${drivingType} filter`}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3.5 w-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </span>
+        ))}
 
         {selectedYears.map((year) => (
           <span
@@ -805,7 +938,7 @@ const TireProductPage = () => {
           </span>
         ))}
 
-        {(priceRange[0] !== minPrice || priceRange[1] !== maxPrice) && (
+        {/* {(priceRange[0] !== minPrice || priceRange[1] !== maxPrice) && (
           <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
             ${priceRange[0]} - ${priceRange[1]}
             <button
@@ -827,7 +960,7 @@ const TireProductPage = () => {
               </svg>
             </button>
           </span>
-        )}
+        )} */}
 
         {hasActiveFilters && (
           <button
