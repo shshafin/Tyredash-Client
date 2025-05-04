@@ -36,7 +36,6 @@ export default function UpdateTirePage({ params }: { params: { id: string } }) {
   const [imageFiles, setImageFiles] = useState<File[] | []>([]); // Track selected images
   const [imagePreviews, setImagePreviews] = useState<string[] | []>([]); // Track image previews
   const id = params.id;
-  console.log(id);
 
   const { mutate: handleUpdateTire, isPending: updateTirePending } =
     useUpdateTire({
@@ -133,8 +132,6 @@ export default function UpdateTirePage({ params }: { params: { id: string } }) {
       reader.readAsDataURL(file);
     });
   };
-
-  console.log("selectedTire", selectedTire);
 
   return (
     <div className="p-6">
@@ -504,7 +501,6 @@ const MakeSelectForTyre = ({ defaultValue, register }: any) => {
 };
 const CategorySelectForTyre = ({ defaultValue, register }: any) => {
   const { data: category, isLoading, isError } = useGetCategories();
-  console.log(category, "category");
   return (
     <div className="flex-1 min-w-[150px]">
       <select

@@ -121,7 +121,6 @@ export default function AdminDrivingTypePage() {
     };
     handleUpdateDrivingType(drivingTypeData); // Send DrivingType data
   };
-  console.log(options, "options");
 
   return (
     <div className="p-6">
@@ -196,7 +195,6 @@ const AddDrivingTypeModal = ({
   append,
   remove,
 }: any) => {
-  console.log({ fields });
   return (
     <Modal
       isOpen={isOpen}
@@ -349,7 +347,6 @@ const EditDrivingTypeModal = ({
                                 (opt: string, i: number) =>
                                   i === index ? val : opt
                               );
-                              console.log({ val: e.target.value });
                               setOptions(newOptions);
                             }}
                             label="Option"

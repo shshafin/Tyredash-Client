@@ -102,8 +102,6 @@ export default function AdminWheelPage() {
 
     formData.append("data", JSON.stringify(wheelData)); // Append tire data to formData
 
-    console.log(wheelData, "wheelData");
-
     // Append images separately
     imageFiles.forEach((image) => {
       formData.append("images", image);
@@ -554,7 +552,6 @@ const MakeSelectForWheel = ({ defaultValue, register }: any) => {
 };
 const DrivingTypeSelectForTyre = ({ defaultValue, register }: any) => {
   const { data: drivingType, isLoading, isError } = useGetDrivingTypes();
-  console.log(drivingType, "drivingType");
   return (
     <div className="flex-1 min-w-[150px]">
       <select
@@ -580,7 +577,6 @@ const DrivingTypeSelectForTyre = ({ defaultValue, register }: any) => {
 };
 const CategorySelectForWheel = ({ defaultValue, register }: any) => {
   const { data: category, isLoading, isError } = useGetCategories();
-  console.log(category, "category");
   return (
     <div className="flex-1 min-w-[150px]">
       <select

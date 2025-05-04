@@ -38,7 +38,6 @@ export default function TyreSizesTable({
       case "year":
         return tyreSize.year.year;
       case "trim":
-        console.log(tyreSize.trim);
         return tyreSize?.trim?.trim;
 
       case "actions":

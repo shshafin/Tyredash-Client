@@ -325,7 +325,6 @@ const EditCategoryModal = ({
   updateCategoryPending,
 }: any) => {
   if (!defaultValues) return null;
-  console.log({ defaultValues });
   return (
     <Modal
       isOpen={isOpen}

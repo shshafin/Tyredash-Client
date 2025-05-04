@@ -90,18 +90,15 @@ export default function AdminTyreSizePage() {
       id: selectedTyreSize?._id,
     }); // TyreSize deletion handler
   const { data: tyreSizes, isLoading, isError } = useGetTyreSizes({}); // Get existing TyreSizes
-  console.log(tyreSizes);
 
   // Handle form submission
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log("testing", data);
     handleCreateTyreSize(data as any);
   };
 
   const onEditSubmit: SubmitHandler<FieldValues> = async (data) => {
     handleUpdateTyreSize(data as any);
   };
-  console.log({ tyreSizes });
 
   return (
     <div className="p-6">
