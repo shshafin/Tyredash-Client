@@ -30,9 +30,7 @@ const ProductsAndServices = () => {
           setVehicle={setVehicle}
         />
       )}
-      {step === 3 && (
-        <ShoppingForStep vehicle={vehicle} />
-      )}
+      {step === 3 && <ShoppingForStep vehicle={vehicle} />}
     </>
   );
 };
@@ -107,30 +105,29 @@ const ShoppingForStep = ({ vehicle }: any) => {
           </div>
         </CardBody>
         {step === 1 && (
-          <CardFooter className="flex flex-col items-center justify-center gap-5 bg-gray-50 rounded-lg p-5 mb-4">
-            <div className="text-3xl font-semibold mb-4">
+          <CardFooter className="flex flex-col items-center justify-center gap-6 bg-gray-50 rounded-2xl p-8 mb-6">
+            <h2 className="text-3xl font-bold text-gray-800 text-center">
               What are you shopping for?
-            </div>
+            </h2>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 justify-center">
               {categories.map((category, index) => (
                 <div
+                  key={index}
                   onClick={() => {
                     setProductType(category.name);
                     setStep(2);
                   }}
-                  key={index}
-                >
-                  <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 flex flex-col items-center shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
-                    <div className="w-40 h-40 mb-4 overflow-hidden rounded-full ">
-                      <Image
-                        src={category.image}
-                        alt={category.name}
-                        width={160}
-                        height={160}
-                        className="object-contain w-full h-full transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
-                    <h3 className="text-xl font-semibold text-center">
+                  className="transition-transform duration-300 hover:-translate-y-1 cursor-pointer border-1 rounded-3xl border-red-500">
+                  <div className="bg-white/20  backdrop-blur-lg border border-white/30 rounded-3xl p-6 flex flex-col items-center shadow-md hover:shadow-2xl transition-shadow">
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      width={160}
+                      height={160}
+                      className="object-contain w-full h-full z-10"
+                    />
+                    <h3 className="text-xl font-semibold text-gray-700 text-center">
                       {category.name}
                     </h3>
                   </div>
@@ -155,54 +152,59 @@ function TireWheelGuide({ type }: { type: string }) {
   const productType = isTire ? "tire" : "wheel";
 
   return (
-    <div className="border border-gray-200 rounded-md p-6 max-w-2xl mx-auto bg-white">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="bg-red-600 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">
+    <div className="border border-gray-200 rounded-2xl p-4 sm:p-6 lg:p-8 max-w-full sm:max-w-2xl mx-auto bg-white shadow-md hover:shadow-lg transition duration-300">
+      {/* Header */}
+      <div className="flex items-center justify-center gap-3 mb-5">
+        <div className="bg-red-600 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold text-base shadow-sm">
           {isTire ? "T" : "W"}
         </div>
-        <h2 className="text-xl font-bold">
-          <span className="text-black">Tiredash</span>{" "}
-          <span className="text-gray-500">{productType} guide</span>
+        <h2 className="text-lg sm:text-xl font-bold text-gray-800 leading-snug">
+          Tiresdash{" "}
+          <span className="text-gray-500 font-medium">{productType} guide</span>
         </h2>
       </div>
 
-      <p className="text-gray-700 mb-4">
-        Discount {isTire ? "Tire" : "Wheel"} uses data from safety checks,
-        weather records, and test track performance to quickly find the right{" "}
-        {productType} for you.
+      {/* Description */}
+      <p className="text-gray-600 text-sm sm:text-base mb-4 leading-relaxed">
+        TiresDash {isTire ? "Tire" : "Wheel"} uses data from safety checks,
+        weather records, and test track performance to help find the right{" "}
+        {productType} for your needs.
       </p>
 
-      <p className="mb-4">
+      <p className="text-gray-800 text-sm sm:text-base mb-6 leading-relaxed">
         <span className="font-medium">
           Our personalized {productType} guide finds{" "}
         </span>
-        <span className="font-bold">the best match</span>
+        <span className="font-bold text-black">the best match </span>
         <span className="font-medium">
-          {" "}
-          for your vehicle in two easy steps!
+          for your vehicle in just two easy steps.
         </span>
       </p>
 
-      <div className="space-y-4 mb-6">
+      {/* Steps */}
+      {/* <div className="space-y-4 mb-6">
         <div className="flex items-start gap-3">
-          <div className="bg-red-600 rounded-full w-7 h-7 flex items-center justify-center text-white font-bold text-sm mt-0.5">
+          <div className="bg-red-600 w-9 h-5 md:w-7 md:h-7 rounded-full flex items-center justify-center text-white font-semibold text-sm mt-1 shadow">
             1
           </div>
-          <p>Confirm the location you drive in the most.</p>
+          <p className="text-sm sm:text-base text-gray-700">
+            Confirm the location where you drive most often.
+          </p>
         </div>
 
         <div className="flex items-start gap-3">
-          <div className="bg-red-600 rounded-full w-7 h-7 flex items-center justify-center text-white font-bold text-sm mt-0.5">
+          <div className="bg-red-600 w-10 h-5 md:w-7 md:h-7 rounded-full flex items-center justify-center text-white font-semibold text-sm mt-1 shadow">
             2
           </div>
-          <p>
-            Select your driving habits or customize them for a more personalized
-            match.
+          <p className="text-sm sm:text-base text-gray-700">
+            Select or customize your driving habits for the best match.
           </p>
         </div>
-      </div>
+      </div> */}
+
+      {/* CTA Button */}
       <Link href={`/${productType}`}>
-        <button className="w-full bg-red-600 text-white py-3 font-bold rounded hover:bg-red-700 transition-colors">
+        <button className="w-full bg-red-600 text-white py-3 text-sm sm:text-base font-bold rounded-lg hover:bg-red-700 transition duration-300">
           FIND YOUR MATCH
         </button>
       </Link>
