@@ -151,29 +151,29 @@ const ProductCard = ({ tire }: { tire: any }) => {
             </span>
           </div>
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-            {tire.year.year}
+            {tire.year?.year}
           </span>
         </div>
 
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 w-fit mb-2">
-          {tire.brand.name}
+          {tire.brand?.name}
         </span>
 
         <h3 className="font-medium text-base line-clamp-2 mb-2 mt-1.5 text-gray-900 dark:text-gray-100">
-          {tire.name}
+          {tire?.name}
         </h3>
 
         <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-4 flex-grow">
-          {tire.description}
+          {tire?.description}
         </p>
 
         <div className="flex items-center justify-between mt-auto pt-2">
           <div className="flex flex-col">
             <span className="text-xs text-gray-500 dark:text-gray-400 line-through">
-              ${(tire.price * 1.2).toFixed(2)}
+              ${(tire?.price).toFixed(2)}
             </span>
             <span className="text-lg font-bold text-gray-900 dark:text-white">
-              ${tire.price.toFixed(2)}
+              ${tire?.discountPrice?.toFixed(2)}
             </span>
           </div>
           <div className="flex gap-2">

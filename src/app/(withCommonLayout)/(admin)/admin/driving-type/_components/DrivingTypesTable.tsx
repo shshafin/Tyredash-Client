@@ -34,9 +34,9 @@ export default function DrivingTypesTable({
 
     switch (columnKey) {
       case "title":
-        return drivingType.title;
+        return drivingType?.title;
       case "subTitle":
-        return drivingType.subTitle;
+        return drivingType?.subTitle;
       case "options":
         return drivingType.options?.length
           ? drivingType.options.join(", ")

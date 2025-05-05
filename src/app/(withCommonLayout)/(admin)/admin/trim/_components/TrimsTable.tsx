@@ -30,13 +30,13 @@ export default function TrimsTable({
 
     switch (columnKey) {
       case "trim":
-        return trim.trim;
+        return trim?.trim;
       case "make":
-        return trim.make.make;
+        return trim.make?.make;
       case "model":
-        return trim.model.model;
+        return trim.model?.model;
       case "year":
-        return trim.year.year;
+        return trim.year?.year;
 
       case "actions":
         return (

@@ -30,13 +30,13 @@ export default function TyreSizesTable({
 
     switch (columnKey) {
       case "tireSize":
-        return tyreSize.tireSize;
+        return tyreSize?.tireSize;
       case "make":
-        return tyreSize.make.make;
+        return tyreSize.make?.make;
       case "model":
-        return tyreSize.model.model;
+        return tyreSize.model?.model;
       case "year":
-        return tyreSize.year.year;
+        return tyreSize.year?.year;
       case "trim":
         return tyreSize?.trim?.trim;
 

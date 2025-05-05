@@ -19,6 +19,7 @@ import ErrorLoadingWheel from "./error-loading-wheel";
 import ProductCard from "./wheel-product-card";
 import { VehicleInfo } from "@/src/types";
 import WheelProductListView from "./wheel-product-list-view";
+import { CategoryDropdown } from "./dropdowns/CategoryDropdown";
 
 const WheelProductPage = () => {
   const { data: Wheels, isLoading, isError } = useGetWheels({});
@@ -31,53 +32,58 @@ const WheelProductPage = () => {
     []
   );
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [filteredWheels, setFilteredWheels] = useState<any[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [sortOption, setSortOption] = useState("featured");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-// User vehicles state
-  const [userVehicles, setUserVehicles] = useState<VehicleInfo[]>([])
+  // User vehicles state
+  const [userVehicles, setUserVehicles] = useState<VehicleInfo[]>([]);
 
   // Load user vehicles from localStorage
   useEffect(() => {
     try {
       if (typeof window !== "undefined") {
-        const savedVehicles = localStorage.getItem("userVehicles")
+        const savedVehicles = localStorage.getItem("userVehicles");
         if (savedVehicles) {
-          const parsedVehicles = JSON.parse(savedVehicles)
-          setUserVehicles(Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles])
+          const parsedVehicles = JSON.parse(savedVehicles);
+          setUserVehicles(
+            Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles]
+          );
         }
       }
     } catch (err) {
-      console.error("Error loading vehicles from localStorage:", err)
+      console.error("Error loading vehicles from localStorage:", err);
     }
-  }, [])
+  }, []);
 
   // Listen for changes to localStorage
   useEffect(() => {
     const handleStorageChange = () => {
       try {
         if (typeof window !== "undefined") {
-          const savedVehicles = localStorage.getItem("userVehicles")
+          const savedVehicles = localStorage.getItem("userVehicles");
           if (savedVehicles) {
-            const parsedVehicles = JSON.parse(savedVehicles)
-            setUserVehicles(Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles])
+            const parsedVehicles = JSON.parse(savedVehicles);
+            setUserVehicles(
+              Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles]
+            );
           } else {
-            setUserVehicles([])
+            setUserVehicles([]);
           }
         }
       } catch (err) {
-        console.error("Error loading vehicles from localStorage:", err)
+        console.error("Error loading vehicles from localStorage:", err);
       }
-    }
+    };
 
-    window.addEventListener("storage", handleStorageChange)
+    window.addEventListener("storage", handleStorageChange);
     return () => {
-      window.removeEventListener("storage", handleStorageChange)
-    }
-  }, [])
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
   //  on mobile
   useEffect(() => {
     const checkIfMobile = () => {
@@ -131,6 +137,11 @@ const WheelProductPage = () => {
       const matchesMake =
         selectedMakes.length === 0 || selectedMakes.includes(wheel.make.make);
 
+      // Category filter
+      const matchesCategory =
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(wheel.category?.name);
+
       // Driving Type filter
       const matchesDrivingType =
         selectedDrivingTypes.length === 0 ||
@@ -150,17 +161,18 @@ const WheelProductPage = () => {
         selectedYears.length === 0 || selectedYears.includes(wheel.year.year);
 
       // User vehicles filter
-      let matchesUserVehicle = true
-      if ( userVehicles.length > 0) {
+      let matchesUserVehicle = true;
+      if (userVehicles.length > 0) {
         matchesUserVehicle = userVehicles.some((vehicle) => {
           // const matchesVehicleMake = !vehicle.make || vehicle.make === tire.make.make
-          const matchesVehicleModel = !vehicle.model || vehicle.model === wheel.model.model
+          const matchesVehicleModel =
+            !vehicle.model || vehicle.model === wheel.model.model;
           // const matchesVehicleYear = !vehicle.year || vehicle.year == tire.year.year
           // const matchesVehicleTrim = !vehicle.trim || vehicle.trim === tire.trim.trim
           // console.log({ vehicle, matchesVehicleMake, matchesVehicleModel, matchesVehicleYear, matchesVehicleTrim })
           // return matchesVehicleMake && matchesVehicleModel && matchesVehicleYear && matchesVehicleTrim
-          return matchesVehicleModel
-        })
+          return matchesVehicleModel;
+        });
       }
 
       return (
@@ -171,6 +183,7 @@ const WheelProductPage = () => {
         matchesTrim &&
         matchesDrivingType &&
         matchesModel &&
+        matchesCategory &&
         matchesUserVehicle
       );
     });
@@ -197,6 +210,7 @@ const WheelProductPage = () => {
     selectedModels,
     selectedTrims,
     selectedDrivingTypes,
+    selectedCategories,
     sortOption,
     userVehicles,
   ]);
@@ -204,19 +218,29 @@ const WheelProductPage = () => {
   // Extract unique brands and years for filters
   const brands: any = Wheels?.data
     ? [
-        ...(new Set(Wheels.data.map((wheel: any) => wheel.brand.name)) as any),
+        ...(new Set(Wheels.data.map((wheel: any) => wheel.brand?.name)) as any),
       ].sort()
     : [];
 
   const makes: any = Wheels?.data
     ? [
-        ...(new Set(Wheels.data.map((wheel: any) => wheel.make.make)) as any),
+        ...(new Set(Wheels.data.map((wheel: any) => wheel.make?.make)) as any),
       ].sort()
     : [];
 
   const models: any = Wheels?.data
     ? [
-        ...(new Set(Wheels.data.map((wheel: any) => wheel.model.model)) as any),
+        ...(new Set(
+          Wheels.data.map((wheel: any) => wheel.model?.model)
+        ) as any),
+      ].sort()
+    : [];
+
+  const categories: any = Wheels?.data
+    ? [
+        ...(new Set(
+          Wheels.data.map((wheel: any) => wheel.category?.name)
+        ) as any),
       ].sort()
     : [];
 
@@ -251,6 +275,15 @@ const WheelProductPage = () => {
   const toggleMake = (make: string) => {
     setSelectedMakes((prev) =>
       prev.includes(make) ? prev.filter((b) => b !== make) : [...prev, make]
+    );
+  };
+
+  // Toggle category selection
+  const toggleCategory = (category: string) => {
+    setSelectedMakes((prev) =>
+      prev.includes(category)
+        ? prev.filter((b) => b !== category)
+        : [...prev, category]
     );
   };
 
@@ -292,6 +325,7 @@ const WheelProductPage = () => {
     setSelectedModels([]);
     setSelectedYears([]);
     setSelectedDrivingTypes([]);
+    setSelectedCategories([]);
     setSelectedTrims([]);
   };
 
@@ -379,7 +413,7 @@ const WheelProductPage = () => {
             setSelectedYears={setSelectedYears}
           />
         </div>
-
+        {/* 
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
           <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
             Driving Types
@@ -389,6 +423,18 @@ const WheelProductPage = () => {
             drivingTypes={drivingTypes}
             selectedDrivingTypes={selectedDrivingTypes}
             setSelectedDrivingTypes={setSelectedDrivingTypes}
+          />
+        </div> */}
+
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Seasons
+          </h3>
+
+          <CategoryDropdown
+            categories={categories}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
           />
         </div>
 
@@ -412,6 +458,7 @@ const WheelProductPage = () => {
       selectedMakes.length > 0 ||
       selectedYears.length > 0 ||
       selectedTrims.length > 0 ||
+      selectedCategories.length > 0 ||
       selectedDrivingTypes.length > 0 ||
       selectedModels.length > 0;
 
@@ -482,6 +529,20 @@ const WheelProductPage = () => {
               onClick={() => toggleModel(model)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
               aria-label={`Remove ${model} filter`}>
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        ))}
+
+        {selectedCategories.map((category) => (
+          <span
+            key={category}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            {category}
+            <button
+              onClick={() => toggleCategory(category)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${category} filter`}>
               <X className="h-3.5 w-3.5" />
             </button>
           </span>

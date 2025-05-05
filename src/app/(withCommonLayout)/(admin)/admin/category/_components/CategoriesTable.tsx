@@ -30,9 +30,9 @@ export default function CategoriesTable({
 
     switch (columnKey) {
       case "name":
-        return category.name;
+        return category?.name;
       case "slug":
-        return category.slug;
+        return category?.slug;
       case "image":
         return (
           <div>

@@ -29,11 +29,11 @@ export default function ModelsTable({
 
     switch (columnKey) {
       case "model":
-        return model.model;
+        return model?.model;
       case "make":
-        return model.make.make;
+        return model.make?.make;
       case "year":
-        return model.year.year;
+        return model.year?.year;
 
       case "actions":
         return (
