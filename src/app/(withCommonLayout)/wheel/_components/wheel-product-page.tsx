@@ -29,7 +29,7 @@ const WheelProductPage = () => {
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
   const [selectedTrims, setSelectedTrims] = useState<string[]>([]);
   const [selectedDrivingTypes, setSelectedDrivingTypes] = useState<string[]>(
-    []
+    [],
   );
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -50,7 +50,7 @@ const WheelProductPage = () => {
         if (savedVehicles) {
           const parsedVehicles = JSON.parse(savedVehicles);
           setUserVehicles(
-            Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles]
+            Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles],
           );
         }
       }
@@ -68,7 +68,7 @@ const WheelProductPage = () => {
           if (savedVehicles) {
             const parsedVehicles = JSON.parse(savedVehicles);
             setUserVehicles(
-              Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles]
+              Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles],
             );
           } else {
             setUserVehicles([]);
@@ -196,7 +196,7 @@ const WheelProductPage = () => {
     } else if (sortOption === "newest") {
       filtered = filtered.sort(
         (a: any, b: any) =>
-          Number.parseInt(b.year.year) - Number.parseInt(a.year.year)
+          Number.parseInt(b.year.year) - Number.parseInt(a.year.year),
       );
     }
 
@@ -231,7 +231,7 @@ const WheelProductPage = () => {
   const models: any = Wheels?.data
     ? [
         ...(new Set(
-          Wheels.data.map((wheel: any) => wheel.model?.model)
+          Wheels.data.map((wheel: any) => wheel.model?.model),
         ) as any),
       ].sort()
     : [];
@@ -239,7 +239,7 @@ const WheelProductPage = () => {
   const categories: any = Wheels?.data
     ? [
         ...(new Set(
-          Wheels.data.map((wheel: any) => wheel.category?.name)
+          Wheels.data.map((wheel: any) => wheel.category?.name),
         ) as any),
       ].sort()
     : [];
@@ -247,7 +247,7 @@ const WheelProductPage = () => {
   const drivingTypes: any = Wheels?.data
     ? [
         ...(new Set(
-          Wheels.data.map((wheel: any) => wheel.drivingType.title)
+          Wheels.data.map((wheel: any) => wheel.drivingType.title),
         ) as any),
       ].sort()
     : [];
@@ -267,14 +267,14 @@ const WheelProductPage = () => {
   // Toggle brand selection
   const toggleBrand = (brand: string) => {
     setSelectedBrands((prev) =>
-      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
+      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand],
     );
   };
 
   // Toggle make selection
   const toggleMake = (make: string) => {
     setSelectedMakes((prev) =>
-      prev.includes(make) ? prev.filter((b) => b !== make) : [...prev, make]
+      prev.includes(make) ? prev.filter((b) => b !== make) : [...prev, make],
     );
   };
 
@@ -283,7 +283,7 @@ const WheelProductPage = () => {
     setSelectedMakes((prev) =>
       prev.includes(category)
         ? prev.filter((b) => b !== category)
-        : [...prev, category]
+        : [...prev, category],
     );
   };
 
@@ -292,28 +292,28 @@ const WheelProductPage = () => {
     setSelectedDrivingTypes((prev) =>
       prev.includes(drivingType)
         ? prev.filter((b) => b !== drivingType)
-        : [...prev, drivingType]
+        : [...prev, drivingType],
     );
   };
 
   // Toggle trim selection
   const toggleTrim = (trim: string) => {
     setSelectedTrims((prev) =>
-      prev.includes(trim) ? prev.filter((b) => b !== trim) : [...prev, trim]
+      prev.includes(trim) ? prev.filter((b) => b !== trim) : [...prev, trim],
     );
   };
 
   // Toggle model selection
   const toggleModel = (model: string) => {
     setSelectedModels((prev) =>
-      prev.includes(model) ? prev.filter((b) => b !== model) : [...prev, model]
+      prev.includes(model) ? prev.filter((b) => b !== model) : [...prev, model],
     );
   };
 
   // Toggle year selection
   const toggleYear = (year: string) => {
     setSelectedYears((prev) =>
-      prev.includes(year) ? prev.filter((y) => y !== year) : [...prev, year]
+      prev.includes(year) ? prev.filter((y) => y !== year) : [...prev, year],
     );
   };
 
@@ -351,7 +351,8 @@ const WheelProductPage = () => {
               <button
                 type="button"
                 onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
                 <X className="h-4 w-4" />
               </button>
             )}
@@ -441,7 +442,8 @@ const WheelProductPage = () => {
         <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
           <button
             onClick={clearFilters}
-            className="w-full py-2.5 px-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+            className="w-full py-2.5 px-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+          >
             Reset Filters
           </button>
         </div>
@@ -472,7 +474,8 @@ const WheelProductPage = () => {
             <button
               onClick={() => setSearchTerm("")}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label="Remove search filter">
+              aria-label="Remove search filter"
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -481,12 +484,14 @@ const WheelProductPage = () => {
         {selectedBrands.map((brand) => (
           <span
             key={brand}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {brand}
             <button
               onClick={() => toggleBrand(brand)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${brand} filter`}>
+              aria-label={`Remove ${brand} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -495,12 +500,14 @@ const WheelProductPage = () => {
         {selectedMakes.map((make) => (
           <span
             key={make}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {make}
             <button
               onClick={() => toggleMake(make)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${make} filter`}>
+              aria-label={`Remove ${make} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -509,12 +516,14 @@ const WheelProductPage = () => {
         {selectedDrivingTypes.map((drivingType) => (
           <span
             key={drivingType}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {drivingType}
             <button
               onClick={() => toggleDrivingType(drivingType)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${drivingType} filter`}>
+              aria-label={`Remove ${drivingType} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -523,12 +532,14 @@ const WheelProductPage = () => {
         {selectedModels.map((model) => (
           <span
             key={model}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {model}
             <button
               onClick={() => toggleModel(model)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${model} filter`}>
+              aria-label={`Remove ${model} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -537,12 +548,14 @@ const WheelProductPage = () => {
         {selectedCategories.map((category) => (
           <span
             key={category}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {category}
             <button
               onClick={() => toggleCategory(category)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${category} filter`}>
+              aria-label={`Remove ${category} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -551,12 +564,14 @@ const WheelProductPage = () => {
         {selectedTrims.map((trim) => (
           <span
             key={trim}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {trim}
             <button
               onClick={() => toggleTrim(trim)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${trim} filter`}>
+              aria-label={`Remove ${trim} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -565,12 +580,14 @@ const WheelProductPage = () => {
         {selectedYears.map((year) => (
           <span
             key={year}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm">
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
             {year}
             <button
               onClick={() => toggleYear(year)}
               className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
-              aria-label={`Remove ${year} filter`}>
+              aria-label={`Remove ${year} filter`}
+            >
               <X className="h-3.5 w-3.5" />
             </button>
           </span>
@@ -579,7 +596,8 @@ const WheelProductPage = () => {
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className="text-xs text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 font-medium hover:underline">
+            className="text-xs text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 font-medium hover:underline"
+          >
             Clear All
           </button>
         )}
@@ -615,7 +633,8 @@ const WheelProductPage = () => {
                     ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white"
                     : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
                 }`}
-                aria-label="Grid view">
+                aria-label="Grid view"
+              >
                 <GridViewIcon />
               </button>
               <button
@@ -625,7 +644,8 @@ const WheelProductPage = () => {
                     ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white"
                     : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
                 }`}
-                aria-label="List view">
+                aria-label="List view"
+              >
                 <ListViewIcon />
               </button>
             </div>
@@ -638,7 +658,8 @@ const WheelProductPage = () => {
             className={`fixed inset-y-0 left-0 z-40 w-full max-w-xs bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-lg transform ${
               mobileFilterOpen ? "translate-x-0" : "-translate-x-full"
             } transition-transform duration-300 ease-in-out lg:relative lg:inset-auto lg:shadow-none lg:transform-none lg:block`}
-            ref={sidebarRef}>
+            ref={sidebarRef}
+          >
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 lg:hidden">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 Filters
@@ -646,13 +667,15 @@ const WheelProductPage = () => {
               <button
                 onClick={() => setMobileFilterOpen(false)}
                 className="lg:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
-                aria-label="Close filters">
+                aria-label="Close filters"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 text-gray-500 dark:text-gray-400"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor">
+                  stroke="currentColor"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -670,7 +693,8 @@ const WheelProductPage = () => {
             <div
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
               onClick={() => setMobileFilterOpen(false)}
-              aria-hidden="true"></div>
+              aria-hidden="true"
+            ></div>
           )}
 
           {/* Main content */}
@@ -689,13 +713,15 @@ const WheelProductPage = () => {
                   {/* Mobile filter button */}
                   <button
                     onClick={() => setMobileFilterOpen(true)}
-                    className="lg:hidden py-2 px-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 flex items-center">
+                    className="lg:hidden py-2 px-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 flex items-center"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-4 w-4 mr-2"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke="currentColor">
+                      stroke="currentColor"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -720,7 +746,8 @@ const WheelProductPage = () => {
                       sortOption === "featured"
                         ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white shadow-sm"
                         : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}>
+                    }`}
+                  >
                     Featured
                   </button>
                   <button
@@ -729,7 +756,8 @@ const WheelProductPage = () => {
                       sortOption === "price-low"
                         ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white shadow-sm"
                         : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}>
+                    }`}
+                  >
                     Price: Low to High
                   </button>
                   <button
@@ -738,7 +766,8 @@ const WheelProductPage = () => {
                       sortOption === "price-high"
                         ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white shadow-sm"
                         : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}>
+                    }`}
+                  >
                     Price: High to Low
                   </button>
                   <button
@@ -747,7 +776,8 @@ const WheelProductPage = () => {
                       sortOption === "newest"
                         ? "bg-gradient-to-r from-orange-600 to-orange-400 text-white shadow-sm"
                         : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}>
+                    }`}
+                  >
                     Newest
                   </button>
                 </div>
@@ -760,19 +790,13 @@ const WheelProductPage = () => {
               viewMode === "grid" ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                   {filteredWheels.map((wheel: any) => (
-                    <ProductCard
-                      key={wheel._id}
-                      wheel={wheel}
-                    />
+                    <ProductCard key={wheel._id} wheel={wheel} />
                   ))}
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
                   {filteredWheels.map((wheel: any) => (
-                    <WheelProductListView
-                      key={wheel._id}
-                      wheel={wheel}
-                    />
+                    <WheelProductListView key={wheel._id} wheel={wheel} />
                   ))}
                 </div>
               )

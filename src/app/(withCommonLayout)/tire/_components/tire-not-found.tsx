@@ -7,7 +7,8 @@ const TireNotFound = ({ clearFilters }: any) => {
           className="h-8 w-8 text-gray-400 dark:text-gray-500"
           fill="none"
           viewBox="0 0 24 24"
-          stroke="currentColor">
+          stroke="currentColor"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -25,7 +26,8 @@ const TireNotFound = ({ clearFilters }: any) => {
       </p>
       <button
         onClick={clearFilters}
-        className="py-2 px-4 bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+        className="py-2 px-4 bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+      >
         Clear All Filters
       </button>
     </div>

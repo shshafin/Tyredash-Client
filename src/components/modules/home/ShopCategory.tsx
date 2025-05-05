@@ -42,10 +42,7 @@ const ShopCategory = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
           {categories.map((category, index) => (
-            <Link
-              href={category.link}
-              key={index}
-              passHref>
+            <Link href={category.link} key={index} passHref>
               <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 flex flex-col items-center shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
                 <div className="w-40 h-40 mb-4 overflow-hidden rounded-full ">
                   <Image

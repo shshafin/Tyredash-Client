@@ -46,7 +46,8 @@ const Sidebar = () => {
           {/* Email */}
           <a
             href={`mailto:${user?.email}`}
-            className="text-sm text-zinc-500 hover:text-purple-600 transition break-words">
+            className="text-sm text-zinc-500 hover:text-purple-600 transition break-words"
+          >
             {user?.email}
           </a>
 

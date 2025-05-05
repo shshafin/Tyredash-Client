@@ -122,7 +122,8 @@ export default function AdminYearPage() {
         <Button
           color="primary"
           className="px-6 py-2 rounded-full text-sm font-medium transition-all transform bg-gradient-to-r from-purple-500 to-indigo-600 hover:scale-105 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
-          onPress={onOpen}>
+          onPress={onOpen}
+        >
           + Add Year
         </Button>
       </div>
@@ -179,9 +180,7 @@ const AddYearModal = ({
   createYearPending,
 }: any) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         {() => (
           <>
@@ -190,7 +189,8 @@ const AddYearModal = ({
               <FormProvider {...methods}>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="max-w-xl mx-auto space-y-6">
+                  className="max-w-xl mx-auto space-y-6"
+                >
                   {/* Year & logo Inputs */}
                   <div className=" w-full py-2">
                     <YearSelect />
@@ -200,7 +200,8 @@ const AddYearModal = ({
                     color="primary"
                     type="submit"
                     className="w-full rounded"
-                    disabled={createYearPending}>
+                    disabled={createYearPending}
+                  >
                     {createYearPending ? "Creating..." : "Create Year"}
                   </Button>
                 </form>
@@ -229,7 +230,8 @@ const EditYearModal = ({
       onOpenChange={() => {
         onOpenChange();
         methods.reset();
-      }}>
+      }}
+    >
       <ModalContent>
         {() => (
           <>
@@ -238,7 +240,8 @@ const EditYearModal = ({
               <FormProvider {...methods}>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="max-w-xl mx-auto space-y-6">
+                  className="max-w-xl mx-auto space-y-6"
+                >
                   <div className="flex flex-wrap gap-4 py-2">
                     {/* Year & logo Inputs */}
                     <div className="flex flex-wrap gap-2 w-full">
@@ -251,7 +254,8 @@ const EditYearModal = ({
                     color="primary"
                     type="submit"
                     className="w-full rounded"
-                    disabled={updateYearPending}>
+                    disabled={updateYearPending}
+                  >
                     {updateYearPending ? "Updating..." : "Update Year"}
                   </Button>
                 </form>
@@ -271,9 +275,7 @@ const DeleteYearModal = ({
   deleteYearPending,
 }: any) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         {() => (
           <>
@@ -292,14 +294,16 @@ const DeleteYearModal = ({
               <Button
                 variant="bordered"
                 className="rounded"
-                onPress={onOpenChange}>
+                onPress={onOpenChange}
+              >
                 Cancel
               </Button>
               <Button
                 color="danger"
                 onPress={handleDeleteYear}
                 disabled={deleteYearPending}
-                className="rounded">
+                className="rounded"
+              >
                 {deleteYearPending ? "Deleting..." : "Delete"}
               </Button>
             </ModalFooter>

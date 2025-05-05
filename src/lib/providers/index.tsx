@@ -32,11 +32,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <QueryClientProvider client={queryClient}>
       <UserProvider>
         <HeroUIProvider navigate={router.push}>
-          <Toaster
-            richColors
-            position="top-center"
-            closeButton
-          />
+          <Toaster richColors position="top-center" closeButton />
           <NextThemesProvider {...themeProps}>
             {/* Wrap children with a fragment */}
             <>{children}</>

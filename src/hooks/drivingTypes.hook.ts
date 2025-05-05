@@ -1,6 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createDrivingType, deleteDrivingType, getDrivingTypes, updateDrivingType } from "../services/DrivingTypes";
+import {
+  createDrivingType,
+  deleteDrivingType,
+  getDrivingTypes,
+  updateDrivingType,
+} from "../services/DrivingTypes";
 
 export const useCreateDrivingType = ({ onSuccess }: any) => {
   return useMutation<any, Error, FormData>({

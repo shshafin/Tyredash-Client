@@ -24,12 +24,7 @@ const MenuDropdown = ({ menuItems, userName, onLogout }: any) => {
   return (
     <Dropdown>
       <DropdownTrigger>
-        {userName && (
-          <Avatar
-            className="cursor-pointer"
-            name={userName}
-          />
-        )}
+        {userName && <Avatar className="cursor-pointer" name={userName} />}
       </DropdownTrigger>
       <DropdownMenu aria-label="Dynamic Actions">
         {menuItems.map(({ key, label, path, isDanger }: any) => (

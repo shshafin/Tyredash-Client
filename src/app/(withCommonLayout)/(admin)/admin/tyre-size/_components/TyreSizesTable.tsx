@@ -49,19 +49,19 @@ export default function TyreSizesTable({
                   setSelectedTyreSize(tyreSize);
                   onEditOpen();
                 }}
-                className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              >
                 <EditIcon />
               </span>
             </Tooltip>
-            <Tooltip
-              content="Delete"
-              className="bg-rose-600">
+            <Tooltip content="Delete" className="bg-rose-600">
               <span
                 onClick={() => {
                   setSelectedTyreSize(tyreSize);
                   onDeleteOpen();
                 }}
-                className="text-lg text-danger cursor-pointer active:opacity-50">
+                className="text-lg text-danger cursor-pointer active:opacity-50"
+              >
                 <DeleteIcon />
               </span>
             </Tooltip>
@@ -79,7 +79,8 @@ export default function TyreSizesTable({
           {(column: any) => (
             <TableColumn
               key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}>
+              align={column.uid === "actions" ? "center" : "start"}
+            >
               {column.name}
             </TableColumn>
           )}

@@ -140,7 +140,8 @@ export default function UpdateTirePage({ params }: { params: { id: string } }) {
           <FormProvider {...methods}>
             <form
               onSubmit={handleSubmit(onEditSubmit)}
-              className="max-w-7xl mx-auto space-y-10 p-4">
+              className="max-w-7xl mx-auto space-y-10 p-4"
+            >
               {/* General Info Section */}
               <div className="space-y-6">
                 <h2 className="text-2xl font-semibold text-default-900">
@@ -148,19 +149,13 @@ export default function UpdateTirePage({ params }: { params: { id: string } }) {
                 </h2>
                 <Divider />
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <FXInput
-                    label="Name"
-                    name="name"
-                  />
+                  <FXInput label="Name" name="name" />
                   <FXInput
                     label="Description"
                     name="description"
                     defaultValue={selectedTire?.description}
                   />
-                  <FXInput
-                    label="Product Line"
-                    name="productLine"
-                  />
+                  <FXInput label="Product Line" name="productLine" />
                   <FXInput
                     label="Unit Name"
                     name="unitName"
@@ -426,7 +421,8 @@ export default function UpdateTirePage({ params }: { params: { id: string } }) {
                 <div className="space-y-4">
                   <label
                     htmlFor="images"
-                    className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-gray-50 text-gray-600 shadow-sm transition hover:border-gray-400 hover:bg-gray-100">
+                    className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-gray-300 bg-gray-50 text-gray-600 shadow-sm transition hover:border-gray-400 hover:bg-gray-100"
+                  >
                     <span className="text-md font-medium">Upload Images</span>
                     <UploadCloud className="size-6" />
                   </label>
@@ -444,14 +440,15 @@ export default function UpdateTirePage({ params }: { params: { id: string } }) {
                         (imageDataUrl: string, index: number) => (
                           <div
                             key={index}
-                            className="relative size-32 rounded-xl border-2 border-dashed border-gray-300 p-2">
+                            className="relative size-32 rounded-xl border-2 border-dashed border-gray-300 p-2"
+                          >
                             <img
                               alt={`Preview ${index}`}
                               className="h-full w-full object-cover rounded-md"
                               src={imageDataUrl}
                             />
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   )}
@@ -463,7 +460,8 @@ export default function UpdateTirePage({ params }: { params: { id: string } }) {
                 <Button
                   type="submit"
                   className="w-full rounded bg-rose-600"
-                  disabled={updateTirePending}>
+                  disabled={updateTirePending}
+                >
                   {updateTirePending ? "Updating..." : "Update Tire"}
                 </Button>
               </div>
@@ -483,15 +481,14 @@ const MakeSelectForTyre = ({ defaultValue, register }: any) => {
       <select
         {...register("make", { required: true })}
         defaultValue={defaultValue ? defaultValue?._id : ""}
-        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
+        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5"
+      >
         <option value="">Select Make</option>
         {isLoading && <option value="">Loading Makes...</option>}
         {isError && <option value="">Failed to load Makes</option>}
         {makes?.data?.length === 0 && <option value="">No Makes found</option>}
         {makes?.data?.map((m: any) => (
-          <option
-            key={m?.make}
-            value={m?._id}>
+          <option key={m?.make} value={m?._id}>
             {m?.make}
           </option>
         ))}
@@ -506,7 +503,8 @@ const CategorySelectForTyre = ({ defaultValue, register }: any) => {
       <select
         {...register("category", { required: true })}
         defaultValue={defaultValue ? defaultValue?._id : ""}
-        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
+        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5"
+      >
         <option value="">Select Category</option>
         {isLoading && <option value="">Loading Categories...</option>}
         {isError && <option value="">Failed to load Categories</option>}
@@ -514,9 +512,7 @@ const CategorySelectForTyre = ({ defaultValue, register }: any) => {
           <option value="">No Categories found</option>
         )}
         {category?.data?.map((m: any) => (
-          <option
-            key={m?.name}
-            value={m?._id}>
+          <option key={m?.name} value={m?._id}>
             {m?.name}
           </option>
         ))}
@@ -533,15 +529,14 @@ const YearSelectForTyre = ({ defaultValue, register }: any) => {
       <select
         {...register("year", { required: true })}
         defaultValue={defaultValue ? defaultValue?._id : ""}
-        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
+        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5"
+      >
         <option value="">Select Year</option>
         {isLoading && <option value="">Loading Years...</option>}
         {isError && <option value="">Failed to load Years</option>}
         {year?.data?.length === 0 && <option value="">No Years found</option>}
         {year?.data?.map((y: any) => (
-          <option
-            key={y?.year}
-            value={y?._id}>
+          <option key={y?.year} value={y?._id}>
             {y?.year}
           </option>
         ))}
@@ -558,15 +553,14 @@ const BrandSelectForTire = ({ defaultValue, register }: any) => {
       <select
         {...register("brand", { required: true })}
         defaultValue={defaultValue ? defaultValue?._id : ""}
-        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
+        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5"
+      >
         <option value="">Select Brand</option>
         {isLoading && <option value="">Loading Brands...</option>}
         {isError && <option value="">Failed to load Brands</option>}
         {brand?.data?.length === 0 && <option value="">No Brands found</option>}
         {brand?.data?.map((m: any) => (
-          <option
-            key={m?._id}
-            value={m?._id}>
+          <option key={m?._id} value={m?._id}>
             {m?.name}
           </option>
         ))}
@@ -582,15 +576,14 @@ const ModelSelectForTire = ({ defaultValue, register }: any) => {
       <select
         {...register("model", { required: true })}
         defaultValue={defaultValue ? defaultValue?._id : ""}
-        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
+        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5"
+      >
         <option value="">Select Model</option>
         {isLoading && <option value="">Loading Models...</option>}
         {isError && <option value="">Failed to load Models</option>}
         {model?.data?.length === 0 && <option value="">No Models found</option>}
         {model?.data?.map((m: any) => (
-          <option
-            key={m?.model}
-            value={m?._id}>
+          <option key={m?.model} value={m?._id}>
             {m?.model}
           </option>
         ))}
@@ -607,7 +600,8 @@ const TyreSizeSelectForTire = ({ defaultValue, register }: any) => {
       <select
         {...register("tyreSize", { required: true })}
         defaultValue={defaultValue ? defaultValue?._id : ""}
-        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
+        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5"
+      >
         <option value="">Select Tyre Size</option>
         {isLoading && <option value="">Loading Tyre Sizes...</option>}
         {isError && <option value="">Failed to load Tyre Sizes</option>}
@@ -615,9 +609,7 @@ const TyreSizeSelectForTire = ({ defaultValue, register }: any) => {
           <option value="">No Tyre Sizes found</option>
         )}
         {tireSize?.data?.map((m: any) => (
-          <option
-            key={m?.tireSize}
-            value={m?._id}>
+          <option key={m?.tireSize} value={m?._id}>
             {m?.tireSize}
           </option>
         ))}
@@ -634,15 +626,14 @@ const TrimSelectForTyre = ({ defaultValue, register }: any) => {
       <select
         {...register("trim", { required: true })}
         defaultValue={defaultValue ? defaultValue?._id : ""}
-        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
+        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5"
+      >
         <option value="">Select Trim</option>
         {isLoading && <option value="">Loading Trims...</option>}
         {isError && <option value="">Failed to load Trims</option>}
         {trim?.data?.length === 0 && <option value="">No Trims found</option>}
         {trim?.data?.map((m: any) => (
-          <option
-            key={m?.trim}
-            value={m?._id}>
+          <option key={m?.trim} value={m?._id}>
             {m?.trim}
           </option>
         ))}

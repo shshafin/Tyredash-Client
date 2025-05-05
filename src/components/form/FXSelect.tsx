@@ -28,7 +28,8 @@ const FXSelect = ({
       className="min-w-full sm:min-w-[225px]"
       variant={variant}
       label={label}
-      isDisabled={disabled}>
+      isDisabled={disabled}
+    >
       {options.map((option) => (
         <SelectItem key={option.key}>{option.label}</SelectItem>
       ))}

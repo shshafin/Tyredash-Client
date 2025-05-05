@@ -1,4 +1,9 @@
-import { createTrim, deleteTrim, getTrims, updateTrim } from "@/src/services/Trims";
+import {
+  createTrim,
+  deleteTrim,
+  getTrims,
+  updateTrim,
+} from "@/src/services/Trims";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 

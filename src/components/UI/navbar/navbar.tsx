@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -9,97 +9,99 @@ import {
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
-} from "@heroui/navbar"
+} from "@heroui/navbar";
 
-import { Link } from "@heroui/link"
-import { link as linkStyles } from "@heroui/theme"
-import NextLink from "next/link"
-import clsx from "clsx"
+import { Link } from "@heroui/link";
+import { link as linkStyles } from "@heroui/theme";
+import NextLink from "next/link";
+import clsx from "clsx";
 
-import { siteConfig } from "@/src/config/site"
-import { ThemeSwitch } from "@/src/components/UI/theme-switch"
-import { Logo } from "@/src/components/icons"
-import { NavbarLogin, NavbarLoginMobile } from "./NavbarLogin"
-import { Car, Phone, Search, ShoppingCart } from "lucide-react"
-import Image from "next/image"
-import { VehicleModal } from "./my-vehicles-modal"
+import { siteConfig } from "@/src/config/site";
+import { ThemeSwitch } from "@/src/components/UI/theme-switch";
+import { Logo } from "@/src/components/icons";
+import { NavbarLogin, NavbarLoginMobile } from "./NavbarLogin";
+import { Car, Phone, Search, ShoppingCart } from "lucide-react";
+import Image from "next/image";
+import { VehicleModal } from "./my-vehicles-modal";
 
 export const Navbar = () => {
-  const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false)
-  const [vehicleCount, setVehicleCount] = useState(0)
+  const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
+  const [vehicleCount, setVehicleCount] = useState(0);
 
   // Add a state to track user vehicles and the latest model
-  const [userVehicles, setUserVehicles] = useState<any[]>([])
-  const [latestModel, setLatestModel] = useState<string>("")
+  const [userVehicles, setUserVehicles] = useState<any[]>([]);
+  const [latestModel, setLatestModel] = useState<string>("");
 
   const handleOpenVehicleModal = () => {
-    setIsVehicleModalOpen(true)
-  }
+    setIsVehicleModalOpen(true);
+  };
 
   const handleCloseVehicleModal = () => {
-    setIsVehicleModalOpen(false)
+    setIsVehicleModalOpen(false);
     // Update vehicle data when modal closes
-    loadVehicles()
-  }
+    loadVehicles();
+  };
 
   // Function to load vehicles and update state
   const loadVehicles = () => {
     try {
       if (typeof window !== "undefined") {
-        const savedVehicles = localStorage.getItem("userVehicles")
+        const savedVehicles = localStorage.getItem("userVehicles");
 
         if (savedVehicles) {
-          const parsedVehicles = JSON.parse(savedVehicles)
-          const vehicles = Array.isArray(parsedVehicles) ? parsedVehicles : [parsedVehicles]
+          const parsedVehicles = JSON.parse(savedVehicles);
+          const vehicles = Array.isArray(parsedVehicles)
+            ? parsedVehicles
+            : [parsedVehicles];
 
-          setUserVehicles(vehicles)
-          setVehicleCount(vehicles.length)
+          setUserVehicles(vehicles);
+          setVehicleCount(vehicles.length);
 
           // Get the latest vehicle's model (last item in the array)
           if (vehicles.length > 0) {
-            const latestVehicle = vehicles[vehicles.length - 1]
+            const latestVehicle = vehicles[vehicles.length - 1];
             if (latestVehicle.model) {
-              setLatestModel(latestVehicle.model)
+              setLatestModel(latestVehicle.model);
             } else {
-              setLatestModel("")
+              setLatestModel("");
             }
           } else {
-            setLatestModel("")
+            setLatestModel("");
           }
         } else {
           // Reset all states if no vehicles in localStorage
-          setUserVehicles([])
-          setVehicleCount(0)
-          setLatestModel("")
+          setUserVehicles([]);
+          setVehicleCount(0);
+          setLatestModel("");
         }
       }
     } catch (err) {
-      console.error("Error loading vehicles:", err)
-      setUserVehicles([])
-      setVehicleCount(0)
-      setLatestModel("")
+      console.error("Error loading vehicles:", err);
+      setUserVehicles([]);
+      setVehicleCount(0);
+      setLatestModel("");
     }
-  }
+  };
 
   // Load vehicles on initial render and set up event listeners
   useEffect(() => {
     // Initial load
-    loadVehicles()
+    loadVehicles();
 
     // Set up event listeners for changes
     const handleStorageChange = () => {
-      loadVehicles()
-    }
+      loadVehicles();
+    };
 
     // Listen for both storage events and our custom vehiclesUpdated event
-    window.addEventListener("storage", handleStorageChange)
-    window.addEventListener("vehiclesUpdated", handleStorageChange)
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("vehiclesUpdated", handleStorageChange);
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange)
-      window.removeEventListener("vehiclesUpdated", handleStorageChange)
-    }
-  }, [])
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("vehiclesUpdated", handleStorageChange);
+    };
+  }, []);
 
   return (
     <>
@@ -157,7 +159,9 @@ export const Navbar = () => {
                 onClick={handleOpenVehicleModal}
               >
                 <Car size={16} />
-                <span className="text-sm md:text-xs md:hidden lg:flex">{latestModel || "My Vehicles"}</span>
+                <span className="text-sm md:text-xs md:hidden lg:flex">
+                  {latestModel || "My Vehicles"}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <ShoppingCart size={16} />
@@ -167,7 +171,9 @@ export const Navbar = () => {
             <div className="border-t border-gray-500 w-full" />
 
             <div className="flex items-center gap-3 md:gap-2">
-              <span className="text-sm md:text-xs md:hidden lg:flex">What can we help you find?</span>
+              <span className="text-sm md:text-xs md:hidden lg:flex">
+                What can we help you find?
+              </span>
               <Search size={16} />
             </div>
           </div>
@@ -205,7 +211,11 @@ export const Navbar = () => {
               <NavbarMenuItem key={`${item.label}-${index}`}>
                 <Link
                   color={
-                    index === 2 ? "primary" : index === siteConfig.navMenuItems.length - 1 ? "danger" : "foreground"
+                    index === 2
+                      ? "primary"
+                      : index === siteConfig.navMenuItems.length - 1
+                        ? "danger"
+                        : "foreground"
                   }
                   href={item.href}
                   size="lg"
@@ -240,7 +250,10 @@ export const Navbar = () => {
       </HeroUINavbar>
 
       {/* Vehicle Modal */}
-      <VehicleModal isOpen={isVehicleModalOpen} onClose={handleCloseVehicleModal} />
+      <VehicleModal
+        isOpen={isVehicleModalOpen}
+        onClose={handleCloseVehicleModal}
+      />
     </>
-  )
-}
+  );
+};

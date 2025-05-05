@@ -91,9 +91,7 @@ const DeleteWheelModal = ({
   deleteWheelPending,
 }: any) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         {() => (
           <>
@@ -112,14 +110,16 @@ const DeleteWheelModal = ({
               <Button
                 variant="bordered"
                 className="rounded"
-                onPress={onOpenChange}>
+                onPress={onOpenChange}
+              >
                 Cancel
               </Button>
               <Button
                 color="danger"
                 onPress={handleDeleteWheel}
                 disabled={deleteWheelPending}
-                className="rounded">
+                className="rounded"
+              >
                 {deleteWheelPending ? "Deleting..." : "Delete"}
               </Button>
             </ModalFooter>

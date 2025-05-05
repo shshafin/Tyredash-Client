@@ -60,19 +60,19 @@ export default function BrandsTable({
                   setSelectedBrand(Brand);
                   onEditOpen();
                 }}
-                className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              >
                 <EditIcon />
               </span>
             </Tooltip>
-            <Tooltip
-              content="Delete"
-              className="bg-rose-600">
+            <Tooltip content="Delete" className="bg-rose-600">
               <span
                 onClick={() => {
                   setSelectedBrand(Brand);
                   onDeleteOpen();
                 }}
-                className="text-lg text-danger cursor-pointer active:opacity-50">
+                className="text-lg text-danger cursor-pointer active:opacity-50"
+              >
                 <DeleteIcon />
               </span>
             </Tooltip>
@@ -90,7 +90,8 @@ export default function BrandsTable({
           {(column: any) => (
             <TableColumn
               key={column.uid}
-              align={column.uid === "actions" ? "center" : "start"}>
+              align={column.uid === "actions" ? "center" : "start"}
+            >
               {column.name}
             </TableColumn>
           )}

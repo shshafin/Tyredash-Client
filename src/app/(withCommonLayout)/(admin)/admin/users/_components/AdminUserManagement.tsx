@@ -93,9 +93,7 @@ const DeleteUserModal = ({
   deleteUserPending,
 }: any) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         {() => (
           <>
@@ -114,14 +112,16 @@ const DeleteUserModal = ({
               <Button
                 variant="bordered"
                 className="rounded"
-                onPress={onOpenChange}>
+                onPress={onOpenChange}
+              >
                 Cancel
               </Button>
               <Button
                 color="danger"
                 onPress={handleDeleteUser}
                 disabled={deleteUserPending}
-                className="rounded">
+                className="rounded"
+              >
                 {deleteUserPending ? "Deleting..." : "Delete"}
               </Button>
             </ModalFooter>

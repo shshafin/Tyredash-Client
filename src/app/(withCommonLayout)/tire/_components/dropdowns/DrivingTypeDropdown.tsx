@@ -12,7 +12,7 @@ export const DrivingTypeDropdown = ({
     if (selectedDrivingTypes.includes(drivingType)) {
       // Remove make if it's already selected
       setSelectedDrivingTypes(
-        selectedDrivingTypes.filter((b: string) => b !== drivingType)
+        selectedDrivingTypes.filter((b: string) => b !== drivingType),
       );
     } else {
       // Add make to selected list
@@ -32,13 +32,12 @@ export const DrivingTypeDropdown = ({
   }, []);
 
   return (
-    <div
-      className="relative w-full"
-      ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       {/* Label with 'Select' */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex justify-between items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white dark:bg-gray-800 dark:text-white">
+        className="w-full flex justify-between items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white dark:bg-gray-800 dark:text-white"
+      >
         <span>
           {selectedDrivingTypes.length > 0
             ? `${selectedDrivingTypes.length} selected`
@@ -48,7 +47,8 @@ export const DrivingTypeDropdown = ({
           className={`w-4 h-4 transform transition-transform ${isOpen ? "rotate-180" : ""}`}
           fill="none"
           stroke="currentColor"
-          viewBox="0 0 24 24">
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -66,13 +66,15 @@ export const DrivingTypeDropdown = ({
               <div
                 key={drivingType}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
-                onClick={() => toggleDrivingType(drivingType)}>
+                onClick={() => toggleDrivingType(drivingType)}
+              >
                 <span
                   className={`mr-2 w-4 h-4 rounded-full border-2 ${
                     selectedDrivingTypes.includes(drivingType)
                       ? "bg-blue-500 border-blue-500"
                       : "bg-transparent border-gray-300"
-                  }`}></span>
+                  }`}
+                ></span>
                 {drivingType}
               </div>
             ))}

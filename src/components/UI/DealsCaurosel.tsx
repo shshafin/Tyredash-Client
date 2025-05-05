@@ -52,17 +52,14 @@ const DealsCarousel = ({ data }: { data: Deal[] }) => {
     <div className="relative max-w-7xl mx-auto px-4 py-10 overflow-hidden">
       <button
         onClick={() => instanceRef.current?.prev()}
-        className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 p-2 bg-white/30 backdrop-blur-sm border rounded-full shadow-md">
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 p-2 bg-white/30 backdrop-blur-sm border rounded-full shadow-md"
+      >
         <ChevronLeft />
       </button>
 
-      <div
-        ref={sliderRef}
-        className="keen-slider">
+      <div ref={sliderRef} className="keen-slider">
         {data.map((deal) => (
-          <div
-            key={deal.id}
-            className="keen-slider__slide px-1">
+          <div key={deal.id} className="keen-slider__slide px-1">
             <div className="relative h-full bg-white/10 border border-white/30 backdrop-blur-md rounded-2xl shadow-lg p-0 overflow-hidden flex flex-col transition-transform duration-300 hover:scale-[1.02] hover:shadow-2xl">
               {/* Full Image on top */}
               <div className="relative w-full h-[160px]">
@@ -97,7 +94,8 @@ const DealsCarousel = ({ data }: { data: Deal[] }) => {
 
       <button
         onClick={() => instanceRef.current?.next()}
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 p-2 bg-white/30 backdrop-blur-sm border rounded-full shadow-md">
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 p-2 bg-white/30 backdrop-blur-sm border rounded-full shadow-md"
+      >
         <ChevronRight />
       </button>
 

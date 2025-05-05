@@ -11,7 +11,7 @@ export const createDrivingType = async (drivingTypeData: any): Promise<any> => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     return data;
@@ -23,7 +23,7 @@ export const createDrivingType = async (drivingTypeData: any): Promise<any> => {
 
 export const updateDrivingType = async (
   id: string,
-  drivingTypeData: any
+  drivingTypeData: any,
 ): Promise<any> => {
   try {
     const { data } = await axiosInstance.patch(
@@ -33,7 +33,7 @@ export const updateDrivingType = async (
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     return data;

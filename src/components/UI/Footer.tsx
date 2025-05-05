@@ -34,28 +34,32 @@ const Footer = () => {
             <li>
               <a
                 href="#"
-                className="hover:text-blue-400 transition duration-200">
+                className="hover:text-blue-400 transition duration-200"
+              >
                 Home
               </a>
             </li>
             <li>
               <a
                 href="#"
-                className="hover:text-blue-400 transition duration-200">
+                className="hover:text-blue-400 transition duration-200"
+              >
                 Financing Options
               </a>
             </li>
             <li>
               <a
                 href="#"
-                className="hover:text-blue-400 transition duration-200">
+                className="hover:text-blue-400 transition duration-200"
+              >
                 FAQs
               </a>
             </li>
             <li>
               <a
                 href="#"
-                className="hover:text-blue-400 transition duration-200">
+                className="hover:text-blue-400 transition duration-200"
+              >
                 Contact Us
               </a>
             </li>
@@ -72,7 +76,8 @@ const Footer = () => {
               <span className="font-semibold">Email:</span>{" "}
               <a
                 href="mailto:info@company.com"
-                className="hover:text-blue-400 transition duration-200">
+                className="hover:text-blue-400 transition duration-200"
+              >
                 info@company.com
               </a>
             </li>
@@ -80,7 +85,8 @@ const Footer = () => {
               <span className="font-semibold">Phone:</span>{" "}
               <a
                 href="tel:+18001234567"
-                className="hover:text-blue-400 transition duration-200">
+                className="hover:text-blue-400 transition duration-200"
+              >
                 +1 (800) 123-4567
               </a>
             </li>
@@ -94,15 +100,11 @@ const Footer = () => {
       <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm">
         <p>© 2025 Tires Dash. All rights reserved.</p>
         <p>
-          <a
-            href="#"
-            className="hover:text-blue-400 transition duration-200">
+          <a href="#" className="hover:text-blue-400 transition duration-200">
             Privacy Policy
           </a>{" "}
           |{" "}
-          <a
-            href="#"
-            className="hover:text-blue-400 transition duration-200">
+          <a href="#" className="hover:text-blue-400 transition duration-200">
             Terms of Service
           </a>
         </p>

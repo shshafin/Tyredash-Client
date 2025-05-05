@@ -42,7 +42,7 @@ export const loginUser = async (userData: FieldValues) => {
   } catch (error: any) {
     console.error("Login error: ", error);
     throw new Error(
-      error?.response?.data?.message || "An error occurred during login."
+      error?.response?.data?.message || "An error occurred during login.",
     );
   }
 };

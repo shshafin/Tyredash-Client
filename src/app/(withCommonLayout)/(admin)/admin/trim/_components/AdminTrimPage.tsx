@@ -107,7 +107,8 @@ export default function AdminTrimPage() {
         <Button
           color="primary"
           className="px-6 py-2 rounded-full text-sm font-medium transition-all transform bg-gradient-to-r from-purple-500 to-indigo-600 hover:scale-105 focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
-          onPress={onOpen}>
+          onPress={onOpen}
+        >
           + Add Trim
         </Button>
       </div>
@@ -164,9 +165,7 @@ const AddTrimModal = ({
   createTrimPending,
 }: any) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         {() => (
           <>
@@ -175,15 +174,12 @@ const AddTrimModal = ({
               <FormProvider {...methods}>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="max-w-xl mx-auto space-y-6">
+                  className="max-w-xl mx-auto space-y-6"
+                >
                   {/* Trim */}
                   <div className="flex flex-wrap gap-2 w-full">
                     <div className="flex-1 min-w-[150px]">
-                      <FXInput
-                        label="Trim"
-                        name="trim"
-                        required={true}
-                      />
+                      <FXInput label="Trim" name="trim" required={true} />
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-4 py-2">
@@ -213,7 +209,8 @@ const AddTrimModal = ({
                     color="primary"
                     type="submit"
                     className="w-full rounded"
-                    disabled={createTrimPending}>
+                    disabled={createTrimPending}
+                  >
                     {createTrimPending ? "Creating..." : "Create Trim"}
                   </Button>
                 </form>
@@ -242,7 +239,8 @@ const EditTrimModal = ({
       onOpenChange={() => {
         onOpenChange();
         methods.reset();
-      }}>
+      }}
+    >
       <ModalContent>
         {() => (
           <>
@@ -251,7 +249,8 @@ const EditTrimModal = ({
               <FormProvider {...methods}>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  className="max-w-xl mx-auto space-y-6">
+                  className="max-w-xl mx-auto space-y-6"
+                >
                   {/* Trim */}
                   <div className="flex flex-wrap gap-2 w-full">
                     <div className="flex-1 min-w-[150px]">
@@ -289,7 +288,8 @@ const EditTrimModal = ({
                     color="primary"
                     type="submit"
                     className="w-full rounded"
-                    disabled={updateTrimPending}>
+                    disabled={updateTrimPending}
+                  >
                     {updateTrimPending ? "Updating..." : "Update Trim"}
                   </Button>
                 </form>
@@ -309,9 +309,7 @@ const DeleteTrimModal = ({
   deleteTrimPending,
 }: any) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         {() => (
           <>
@@ -330,14 +328,16 @@ const DeleteTrimModal = ({
               <Button
                 variant="bordered"
                 className="rounded"
-                onPress={onOpenChange}>
+                onPress={onOpenChange}
+              >
                 Cancel
               </Button>
               <Button
                 color="danger"
                 onPress={handleDeleteTrim}
                 disabled={deleteTrimPending}
-                className="rounded">
+                className="rounded"
+              >
                 {deleteTrimPending ? "Deleting..." : "Delete"}
               </Button>
             </ModalFooter>
@@ -356,7 +356,8 @@ const MakeSelectForTrim = ({ defaultValue, register }: any) => {
       <select
         {...register("make", { required: true })}
         defaultValue={defaultValue ? defaultValue?._id : ""}
-        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
+        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5"
+      >
         {/* {
             defaultValue && (
               <option value={defaultValue._id}>{defaultValue.make}</option>
@@ -367,9 +368,7 @@ const MakeSelectForTrim = ({ defaultValue, register }: any) => {
         {isError && <option value="">Failed to load Makes</option>}
         {makes?.data?.length === 0 && <option value="">No Makes found</option>}
         {makes?.data?.map((m: any) => (
-          <option
-            key={m?.make}
-            value={m?._id}>
+          <option key={m?.make} value={m?._id}>
             {m?.make}
           </option>
         ))}
@@ -386,15 +385,14 @@ const YearSelectForTrim = ({ defaultValue, register }: any) => {
       <select
         {...register("year", { required: true })}
         defaultValue={defaultValue ? defaultValue?._id : ""}
-        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
+        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5"
+      >
         <option value="">Select Year</option>
         {isLoading && <option value="">Loading Years...</option>}
         {isError && <option value="">Failed to load Years</option>}
         {year?.data?.length === 0 && <option value="">No Years found</option>}
         {year?.data?.map((y: any) => (
-          <option
-            key={y?.year}
-            value={y?._id}>
+          <option key={y?.year} value={y?._id}>
             {y?.year}
           </option>
         ))}
@@ -411,15 +409,14 @@ const ModelSelectForTrim = ({ defaultValue, register }: any) => {
       <select
         {...register("model", { required: true })}
         defaultValue={defaultValue ? defaultValue?._id : ""}
-        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5">
+        className="w-full border-2 border-[#71717ab3] bg-default-50 rounded-lg px-2 py-3.5"
+      >
         <option value="">Select Model</option>
         {isLoading && <option value="">Loading Models...</option>}
         {isError && <option value="">Failed to load Models</option>}
         {model?.data?.length === 0 && <option value="">No Models found</option>}
         {model?.data?.map((m: any) => (
-          <option
-            key={m?.model}
-            value={m?._id}>
+          <option key={m?.model} value={m?._id}>
             {m?.model}
           </option>
         ))}

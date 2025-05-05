@@ -15,12 +15,7 @@ const TreadWellSection = () => {
             className="mb-6"
           />
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
-            <Image
-              src="/tread.webp"
-              alt="Tires"
-              width={350}
-              height={350}
-            />
+            <Image src="/tread.webp" alt="Tires" width={350} height={350} />
           </div>
         </div>
 

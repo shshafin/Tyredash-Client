@@ -126,7 +126,8 @@ const Page = async () => {
                   .map((item: any, index: number) => (
                     <div
                       key={`product-${index}`}
-                      className="p-4 border border-white/20 bg-white/10 backdrop-blur-md rounded-xl shadow-lg text-white">
+                      className="p-4 border border-white/20 bg-white/10 backdrop-blur-md rounded-xl shadow-lg text-white"
+                    >
                       <div className="flex items-start justify-between  shadow-sm ">
                         {/* Left section */}
                         <div className="flex flex-col space-y-1 text-left">

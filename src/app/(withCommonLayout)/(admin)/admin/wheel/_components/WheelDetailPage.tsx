@@ -76,7 +76,8 @@ export default function WheelDetailPage({
           images.map((img: any, index: number) => (
             <div
               key={index}
-              className="bg-white/10 backdrop-blur-md p-2 rounded-xl shadow-lg border border-white/20">
+              className="bg-white/10 backdrop-blur-md p-2 rounded-xl shadow-lg border border-white/20"
+            >
               <Image
                 src={`${envConfig.base_url}${img}`}
                 alt={`${name} - image ${index + 1}`}
@@ -191,9 +192,7 @@ function GlassCard({
       <h2 className="text-xl font-semibold text-foreground">{title}</h2>
       <hr className="border-white/20" />
       {fields.map((field, index) => (
-        <p
-          key={index}
-          className="text-sm text-foreground">
+        <p key={index} className="text-sm text-foreground">
           <strong>{field.label}:</strong> {field.value ?? "N/A"}
         </p>
       ))}
@@ -214,11 +213,7 @@ function SpecsSection({
       <hr className="border-white/20" />
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {specs.map((spec, idx) => (
-          <Spec
-            key={idx}
-            label={spec.label}
-            value={spec.value}
-          />
+          <Spec key={idx} label={spec.label} value={spec.value} />
         ))}
       </div>
     </div>

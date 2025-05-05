@@ -11,7 +11,7 @@ export const createTyreSize = async (tyreSizeData: any): Promise<any> => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     return data;
@@ -23,7 +23,7 @@ export const createTyreSize = async (tyreSizeData: any): Promise<any> => {
 
 export const updateTyreSize = async (
   id: string,
-  tyreSizeData: any
+  tyreSizeData: any,
 ): Promise<any> => {
   try {
     const { data } = await axiosInstance.patch(
@@ -33,7 +33,7 @@ export const updateTyreSize = async (
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     return data;
@@ -65,17 +65,22 @@ export const getTyreSizes = async (params: any) => {
   }
 };
 
-export const getFilteredTyreSizes = async (yearId: string, makeId: string, modelId: string, trimId: string) => {
+export const getFilteredTyreSizes = async (
+  yearId: string,
+  makeId: string,
+  modelId: string,
+  trimId: string,
+) => {
   if (!yearId || !makeId || !modelId || !trimId) return {}; // early return if params are missing
 
   try {
     const res = await axiosInstance.get(
-      `/tiresizes?year=${yearId}&make=${makeId}&model=${modelId}&trim=${trimId}`
+      `/tiresizes?year=${yearId}&make=${makeId}&model=${modelId}&trim=${trimId}`,
     );
     return res.data;
   } catch (error: any) {
     throw new Error(
-      error.message || "Something went wrong while fetching tire sizes."
+      error.message || "Something went wrong while fetching tire sizes.",
     );
   }
 };

@@ -8,7 +8,8 @@ const ErrorLoadingWheel = () => {
             className="h-8 w-8 text-red-500"
             fill="none"
             viewBox="0 0 24 24"
-            stroke="currentColor">
+            stroke="currentColor"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -25,7 +26,8 @@ const ErrorLoadingWheel = () => {
         </p>
         <button
           onClick={() => window.location.reload()}
-          className="py-2 px-4 bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 w-full">
+          className="py-2 px-4 bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 w-full"
+        >
           Refresh Page
         </button>
       </div>

@@ -92,9 +92,7 @@ const DeleteTireModal = ({
   deleteTirePending,
 }: any) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         {() => (
           <>
@@ -113,14 +111,16 @@ const DeleteTireModal = ({
               <Button
                 variant="bordered"
                 className="rounded"
-                onPress={onOpenChange}>
+                onPress={onOpenChange}
+              >
                 Cancel
               </Button>
               <Button
                 color="danger"
                 onPress={handleDeleteTire}
                 disabled={deleteTirePending}
-                className="rounded">
+                className="rounded"
+              >
                 {deleteTirePending ? "Deleting..." : "Delete"}
               </Button>
             </ModalFooter>

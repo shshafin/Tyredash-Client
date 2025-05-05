@@ -24,7 +24,8 @@ const FinancingSection = () => {
           </p>
           <a
             href="#"
-            className="text-red-500 font-bold underline text-sm inline-block mb-5 hover:text-blue-700 transition">
+            className="text-red-500 font-bold underline text-sm inline-block mb-5 hover:text-blue-700 transition"
+          >
             Get Details and Apply
           </a>
           <div className="flex justify-center mb-5">
@@ -57,7 +58,8 @@ const FinancingSection = () => {
           </p>
           <a
             href="#"
-            className="text-[#4D48F4] font-bold  underline text-sm inline-block mb-5 hover:text-blue-700 transition">
+            className="text-[#4D48F4] font-bold  underline text-sm inline-block mb-5 hover:text-blue-700 transition"
+          >
             Learn More
           </a>
           <div className="flex justify-center">

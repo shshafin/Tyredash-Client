@@ -33,7 +33,8 @@ const ShopByBrandSection = () => {
             brand.logo ? (
               <div
                 key={brand.id}
-                className="cursor-pointer transition-transform hover:scale-105 p-2">
+                className="cursor-pointer transition-transform hover:scale-105 p-2"
+              >
                 <Image
                   src={`${envConfig.base_url}${brand.logo}`}
                   alt={brand.name}
@@ -43,12 +44,10 @@ const ShopByBrandSection = () => {
                 />
               </div>
             ) : (
-              <span
-                key={brand.id}
-                className="text-sm text-gray-400">
+              <span key={brand.id} className="text-sm text-gray-400">
                 No Image
               </span>
-            )
+            ),
           )}
         </div>
       </div>

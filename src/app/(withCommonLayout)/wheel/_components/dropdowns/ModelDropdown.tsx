@@ -30,13 +30,12 @@ export const ModelDropdown = ({
   }, []);
 
   return (
-    <div
-      className="relative w-full"
-      ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       {/* Label with 'Select' */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex justify-between items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white dark:bg-gray-800 dark:text-white">
+        className="w-full flex justify-between items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white dark:bg-gray-800 dark:text-white"
+      >
         <span>
           {selectedModels.length > 0
             ? `${selectedModels.length} selected`
@@ -46,7 +45,8 @@ export const ModelDropdown = ({
           className={`w-4 h-4 transform transition-transform ${isOpen ? "rotate-180" : ""}`}
           fill="none"
           stroke="currentColor"
-          viewBox="0 0 24 24">
+          viewBox="0 0 24 24"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -64,13 +64,15 @@ export const ModelDropdown = ({
               <div
                 key={model}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
-                onClick={() => toggleModel(model)}>
+                onClick={() => toggleModel(model)}
+              >
                 <span
                   className={`mr-2 w-4 h-4 rounded-full border-2 ${
                     selectedModels.includes(model)
                       ? "bg-blue-500 border-blue-500"
                       : "bg-transparent border-gray-300"
-                  }`}></span>
+                  }`}
+                ></span>
                 {model}
               </div>
             ))}

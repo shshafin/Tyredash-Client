@@ -48,10 +48,16 @@ export const useGetTyreSizes = (params: any) => {
   });
 };
 
-export const useGetFilteredTyreSizes = (yearId: string, makeId: string, modelId: string, trimId: string) => {
+export const useGetFilteredTyreSizes = (
+  yearId: string,
+  makeId: string,
+  modelId: string,
+  trimId: string,
+) => {
   return useQuery({
     queryKey: ["GET_FILTERED_TYRE_SIZES", yearId, makeId, modelId, trimId],
-    queryFn: async () => await getFilteredTyreSizes( yearId, makeId, modelId, trimId ),
+    queryFn: async () =>
+      await getFilteredTyreSizes(yearId, makeId, modelId, trimId),
     enabled: !!yearId && !!makeId && !!modelId && !!trimId, // Only fetch when all IDs exist
   });
 };

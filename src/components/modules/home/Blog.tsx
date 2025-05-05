@@ -37,7 +37,8 @@ const BlogSection = () => {
         {blogData.map((post) => (
           <div
             key={post.id}
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
+          >
             <div className="relative group">
               <Image
                 src={post.image}
@@ -53,7 +54,8 @@ const BlogSection = () => {
               <p className="text-sm text-gray-600">{post.description}</p>
               <a
                 href={post.link}
-                className="text-red-500 font-semibold hover:text-red-600 transition self-end">
+                className="text-red-500 font-semibold hover:text-red-600 transition self-end"
+              >
                 Read More →
               </a>
             </div>
