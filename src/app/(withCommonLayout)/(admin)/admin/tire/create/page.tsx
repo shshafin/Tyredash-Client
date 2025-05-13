@@ -340,8 +340,8 @@ const MakeSelectForTyre = ({ defaultValue, register }: any) => {
         {isLoading && <option value="">Loading Makes...</option>}
         {isError && <option value="">Failed to load Makes</option>}
         {makes?.data?.length === 0 && <option value="">No Makes found</option>}
-        {makes?.data?.map((m: any) => (
-          <option key={m?.make} value={m?._id}>
+        {makes?.data?.map((m: any, index: number) => (
+          <option key={index} value={m?._id}>
             {m?.make}
           </option>
         ))}
@@ -364,8 +364,8 @@ const CategorySelectForTyre = ({ defaultValue, register }: any) => {
         {category?.data?.length === 0 && (
           <option value="">No Categories found</option>
         )}
-        {category?.data?.map((m: any) => (
-          <option key={m?.name} value={m?._id}>
+        {category?.data?.map((m: any, index: number) => (
+          <option key={index} value={m?._id}>
             {m?.name}
           </option>
         ))}
@@ -388,8 +388,8 @@ const DrivingTypeSelectForTyre = ({ defaultValue, register }: any) => {
         {drivingType?.data?.length === 0 && (
           <option value="">No driving types found</option>
         )}
-        {drivingType?.data?.map((m: any) => (
-          <option key={m?.title} value={m?._id}>
+        {drivingType?.data?.map((m: any, index: number) => (
+          <option key={index} value={m?._id}>
             {m?.title}
           </option>
         ))}
@@ -412,8 +412,8 @@ const YearSelectForTyre = ({ defaultValue, register }: any) => {
         {isLoading && <option value="">Loading Years...</option>}
         {isError && <option value="">Failed to load Years</option>}
         {year?.data?.length === 0 && <option value="">No Years found</option>}
-        {year?.data?.map((y: any) => (
-          <option key={y?.year} value={y?._id}>
+        {year?.data?.map((y: any, index: number) => (
+          <option key={index} value={y?._id}>
             {y?.year}
           </option>
         ))}
@@ -436,8 +436,8 @@ const BrandSelectForTire = ({ defaultValue, register }: any) => {
         {isLoading && <option value="">Loading Brands...</option>}
         {isError && <option value="">Failed to load Brands</option>}
         {brand?.data?.length === 0 && <option value="">No Brands found</option>}
-        {brand?.data?.map((m: any) => (
-          <option key={m?._id} value={m?._id}>
+        {brand?.data?.map((m: any, index: number) => (
+          <option key={index} value={m?._id}>
             {m?.name}
           </option>
         ))}
@@ -459,8 +459,8 @@ const ModelSelectForTire = ({ defaultValue, register }: any) => {
         {isLoading && <option value="">Loading Models...</option>}
         {isError && <option value="">Failed to load Models</option>}
         {model?.data?.length === 0 && <option value="">No Models found</option>}
-        {model?.data?.map((m: any) => (
-          <option key={m?.model} value={m?._id}>
+        {model?.data?.map((m: any, index: number) => (
+          <option key={index} value={m?._id}>
             {m?.model}
           </option>
         ))}
@@ -485,8 +485,8 @@ const TyreSizeSelectForTire = ({ defaultValue, register }: any) => {
         {tireSize?.data?.length === 0 && (
           <option value="">No Tyre Sizes found</option>
         )}
-        {tireSize?.data?.map((m: any) => (
-          <option key={m?.tireSize} value={m?._id}>
+        {tireSize?.data?.map((m: any, index: number) => (
+          <option key={index} value={m?._id}>
             {m?.tireSize}
           </option>
         ))}
@@ -509,8 +509,8 @@ const TrimSelectForTyre = ({ defaultValue, register }: any) => {
         {isLoading && <option value="">Loading Trims...</option>}
         {isError && <option value="">Failed to load Trims</option>}
         {trim?.data?.length === 0 && <option value="">No Trims found</option>}
-        {trim?.data?.map((m: any) => (
-          <option key={m?.trim} value={m?._id}>
+        {trim?.data?.map((m: any, index: number) => (
+          <option key={index} value={m?._id}>
             {m?.trim}
           </option>
         ))}

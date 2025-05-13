@@ -77,7 +77,7 @@ export default function WheelsTable({
               </span>
             </Tooltip>
 
-            {/* <Tooltip content="Edit">
+            <Tooltip content="Edit">
               <span
                 onClick={() => {
                   router.push(`/admin/wheel/update/${wheel._id}`); // navigate to dynamic update page
@@ -85,7 +85,7 @@ export default function WheelsTable({
                 className="text-lg text-default-400 cursor-pointer active:opacity-50">
                 <EditIcon />
               </span>
-            </Tooltip> */}
+            </Tooltip>
 
             <Tooltip content="Delete" className="bg-rose-600">
               <span
