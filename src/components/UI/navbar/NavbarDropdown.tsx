@@ -77,11 +77,12 @@ import { menuConfig } from "./menuConfig";
 import MenuDropdown from "./menuDropdown";
 
 const NavbarDropdown: React.FC = () => {
-  const { setIsLoading: userLoading, user } = useUser();
+  const { setIsLoading: userLoading, user, setUser } = useUser();
 
-  const handleLogout = () => {
-    logoutUser();
+  const handleLogout = async() => {
     userLoading(true);
+    setUser(null);
+    await logoutUser();
     // Redirect to home or perform other actions as needed
   };
 

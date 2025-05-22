@@ -104,6 +104,9 @@ export interface ITire {
   price: number;
   discountPrice: number;
   stockQuantity: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 export interface ICategory {

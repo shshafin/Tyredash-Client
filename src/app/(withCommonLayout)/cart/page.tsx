@@ -1,11 +1,12 @@
 import { Metadata } from "next";
-import TireProductPage from "./_components/tire-product-page";
+import CartPage from "./_components/cart-page";
+
 export const metadata: Metadata = {
-  title: "Tires",
+  title: "Cart",
 };
 
 const page = () => {
-  return <TireProductPage />;
+  return <CartPage />;
 };
 
 export default page;

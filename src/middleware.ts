@@ -7,11 +7,10 @@ const AuthRoutes = ["/login", "/register"];
 type Role = keyof typeof roleBasedRoutes;
 
 const roleBasedRoutes = {
-  user: [/^\/profile/],
-  admin: [/^\/admin/],
+  user: [/^\/profile/, /^\/cart/], // user can access /profile and /cart
+  admin: [/^\/admin/, /^\/cart/],             // admin can access /admin
 };
 
-// This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -38,7 +37,13 @@ export async function middleware(request: NextRequest) {
   return NextResponse.redirect(new URL("/", request.url));
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/profile", "/profile/:page*", "/admin", "/admin/:page*"],
+  matcher: [
+    "/profile",
+    "/profile/:page*",
+    "/admin",
+    "/admin/:page*",
+    "/cart",
+    "/cart/:page*", // in case you have nested cart routes
+  ],
 };

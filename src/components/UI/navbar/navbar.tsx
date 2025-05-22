@@ -20,7 +20,7 @@ import { siteConfig } from "@/src/config/site";
 import { ThemeSwitch } from "@/src/components/UI/theme-switch";
 import { Logo } from "@/src/components/icons";
 import { NavbarLogin, NavbarLoginMobile } from "./NavbarLogin";
-import { Car, Phone, Search, ShoppingCart } from "lucide-react";
+import { Car, Heart, Phone, Search, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { VehicleModal } from "./my-vehicles-modal";
 
@@ -163,8 +163,15 @@ export const Navbar = () => {
                   {latestModel || "My Vehicles"}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <ShoppingCart size={16} />
+              <div title="Wishlist" className="flex items-center gap-2 border-r pr-2 border-gray-500">
+                <Link href="/wishlist">
+                  <Heart size={16} className="text-orange-600" />
+                </Link>
+              </div>
+              <div title="Cart" className="flex items-center gap-2">
+                <Link href="/cart">
+                  <ShoppingCart size={16} className="text-orange-600" />
+                </Link>
               </div>
             </div>
 
@@ -234,9 +241,18 @@ export const Navbar = () => {
               <span className="text-sm">{latestModel || "My Vehicles"}</span>
             </div>
 
+            {/* Wishlist */}
+            <div className="flex items-center gap-2 px-2">
+              <Link href="/cart">
+                <Heart size={16} />
+              </Link>
+              <span className="text-sm">Wishlist</span>
+            </div>
             {/* Cart */}
             <div className="flex items-center gap-2 px-2">
-              <ShoppingCart size={16} />
+              <Link href="/cart">
+                <ShoppingCart size={16} />
+              </Link>
               <span className="text-sm">Cart</span>
             </div>
 

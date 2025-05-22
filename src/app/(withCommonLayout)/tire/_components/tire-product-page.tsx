@@ -19,9 +19,12 @@ import { DrivingTypeDropdown } from "./dropdowns/DrivingTypeDropdown";
 import ProductCardList from "./product-list-view";
 import { VehicleInfo } from "@/src/types";
 import { CategoryDropdown } from "./dropdowns/CategoryDropdown";
+import { useSearchParams } from "next/navigation";
 
 const TireProductPage = () => {
-  const { data: Tires, isLoading, isError } = useGetTires({});
+    const searchParams = useSearchParams();
+    const brand = searchParams.get('brand');
+  const { data: Tires, isLoading, isError } = useGetTires({brand: brand ?? undefined,});
   console.log(Tires, "Tires");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);

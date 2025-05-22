@@ -304,7 +304,7 @@ const VehicleSelector = ({ setMainStep, vehicle, setVehicle }: any) => {
               </p>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-5 mb-4">
+            <div className="rounded-lg p-5 mb-4">
               <div className="flex items-center justify-center mb-4">
                 <Car className="h-6 w-6 text-gray-700 mr-2" />
                 <h4 className="text-lg text-default-500 font-semibold">
@@ -313,27 +313,27 @@ const VehicleSelector = ({ setMainStep, vehicle, setVehicle }: any) => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                <div className="bg-white p-3 rounded-md shadow-sm">
-                  <p className="font-medium text-gray-600">Year</p>
-                  <p className="font-bold text-gray-800">{vehicle.year}</p>
+                <div className="border p-3 rounded-md shadow-sm">
+                  <p className="font-medium">Year</p>
+                  <p className="font-bold">{vehicle.year}</p>
                 </div>
-                <div className="bg-white p-3 rounded-md shadow-sm">
-                  <p className="font-medium text-gray-600">Make</p>
-                  <p className="font-bold text-gray-800">{vehicle.make}</p>
+                <div className="border p-3 rounded-md shadow-sm">
+                  <p className="font-medium">Make</p>
+                  <p className="font-bold">{vehicle.make}</p>
                 </div>
-                <div className="bg-white p-3 rounded-md shadow-sm">
-                  <p className="font-medium text-gray-600">Model</p>
-                  <p className="font-bold text-gray-800">{vehicle.model}</p>
+                <div className="border p-3 rounded-md shadow-sm">
+                  <p className="font-medium">Model</p>
+                  <p className="font-bold">{vehicle.model}</p>
                 </div>
-                <div className="bg-white p-3 rounded-md shadow-sm">
-                  <p className="font-medium text-gray-600">Trim</p>
-                  <p className="font-bold text-gray-800">
+                <div className="border p-3 rounded-md shadow-sm">
+                  <p className="font-medium">Trim</p>
+                  <p className="font-bold">
                     {vehicle.trim || "N/A"}
                   </p>
                 </div>
-                <div className="bg-white p-3 rounded-md shadow-sm col-span-1 sm:col-span-2">
-                  <p className="font-medium text-gray-600">Tire Size</p>
-                  <p className="font-bold text-gray-800">{vehicle.tireSize}</p>
+                <div className="border p-3 rounded-md shadow-sm col-span-1 sm:col-span-2">
+                  <p className="font-medium">Tire Size</p>
+                  <p className="font-bold">{vehicle.tireSize}</p>
                 </div>
               </div>
             </div>

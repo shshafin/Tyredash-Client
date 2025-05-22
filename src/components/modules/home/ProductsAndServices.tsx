@@ -70,7 +70,7 @@ const ShoppingForStep = ({ vehicle }: any) => {
             </p>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-5 mb-4">
+          <div className="rounded-lg p-5 mb-4">
             <div className="flex items-center justify-center mb-4">
               <Car className="h-6 w-6 text-gray-700 mr-2" />
               <h4 className="text-lg text-default-500 font-semibold">
@@ -79,34 +79,34 @@ const ShoppingForStep = ({ vehicle }: any) => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-              <div className="bg-white p-3 rounded-md shadow-sm">
-                <p className="font-medium text-gray-600">Year</p>
-                <p className="font-bold text-gray-800">{vehicle.year}</p>
+              <div className="border p-3 rounded-md shadow-sm">
+                <p className="font-medium">Year</p>
+                <p className="font-bold">{vehicle.year}</p>
               </div>
-              <div className="bg-white p-3 rounded-md shadow-sm">
-                <p className="font-medium text-gray-600">Make</p>
-                <p className="font-bold text-gray-800">{vehicle.make}</p>
+              <div className="border p-3 rounded-md shadow-sm">
+                <p className="font-medium">Make</p>
+                <p className="font-bold">{vehicle.make}</p>
               </div>
-              <div className="bg-white p-3 rounded-md shadow-sm">
-                <p className="font-medium text-gray-600">Model</p>
-                <p className="font-bold text-gray-800">{vehicle.model}</p>
+              <div className="border p-3 rounded-md shadow-sm">
+                <p className="font-medium">Model</p>
+                <p className="font-bold">{vehicle.model}</p>
               </div>
-              <div className="bg-white p-3 rounded-md shadow-sm">
-                <p className="font-medium text-gray-600">Trim</p>
-                <p className="font-bold text-gray-800">
+              <div className="border p-3 rounded-md shadow-sm">
+                <p className="font-medium">Trim</p>
+                <p className="font-bold">
                   {vehicle.trim || "N/A"}
                 </p>
               </div>
-              <div className="bg-white p-3 rounded-md shadow-sm col-span-1 sm:col-span-2">
-                <p className="font-medium text-gray-600">Tire Size</p>
-                <p className="font-bold text-gray-800">{vehicle.tireSize}</p>
+              <div className="border p-3 rounded-md shadow-sm col-span-1 sm:col-span-2">
+                <p className="font-medium">Tire Size</p>
+                <p className="font-bold">{vehicle.tireSize}</p>
               </div>
             </div>
           </div>
         </CardBody>
         {step === 1 && (
-          <CardFooter className="flex flex-col items-center justify-center gap-6 bg-gray-50 rounded-2xl p-8 mb-6">
-            <h2 className="text-3xl font-bold text-gray-800 text-center">
+          <CardFooter className="flex flex-col items-center justify-center gap-6 rounded-2xl p-8 mb-6">
+            <h2 className="text-3xl font-bold text-center">
               What are you shopping for?
             </h2>
 
@@ -127,7 +127,7 @@ const ShoppingForStep = ({ vehicle }: any) => {
                       height={160}
                       className="object-contain w-full h-full z-10"
                     />
-                    <h3 className="text-xl font-semibold text-gray-700 text-center">
+                    <h3 className="text-xl font-semibold text-center">
                       {category.name}
                     </h3>
                   </div>
