@@ -2,9 +2,11 @@
 
 import { useUser } from "@/src/context/user.provider";
 import { useAddItemToCart } from "@/src/hooks/cart.hook";
+import { useAddItemToWishlist } from "@/src/hooks/wishlist.hook";
 import { useQueryClient } from "@tanstack/react-query";
 import { useKeenSlider } from "keen-slider/react";
 import { ChevronLeft, ChevronRight, ExternalLink, Heart, ShoppingCart, Star } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -26,6 +28,13 @@ const ProductCard = ({ tire }: { tire: any }) => {
           toast.success("Cart updated successfully");
         },
         userId: user?._id,
+      });
+      const { mutate: handleAddItemToWishlist } =
+      useAddItemToWishlist({
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["GET_CART"] });
+          toast.success("Item added to wishlist successfully");
+        },
       });
 
   return (
@@ -98,10 +107,16 @@ const ProductCard = ({ tire }: { tire: any }) => {
 
         <div className="absolute top-2 right-2 flex gap-1.5">
           <button
+            onClick={()=>{
+              handleAddItemToWishlist({
+                product: tire?._id, 
+                productType: 'tire'
+              })
+            }}
             className="h-8 w-8 rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-gray-700 shadow-md"
             aria-label="Add to wishlist"
           >
-            <Heart className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+            <Heart className="h-4 w-4 text-gray-700 dark:text-gray-300 hover:text-pink-500" />
           </button>
         </div>
 
@@ -167,10 +182,12 @@ const ProductCard = ({ tire }: { tire: any }) => {
               <ShoppingCart className="h-4 w-4 mr-1.5" />
               {isPending ? "Adding" : "Add"}
             </button>
-            <button className="py-2 px-3 bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 flex items-center">
-              Details
-              <ExternalLink className="h-4 w-4 mr-1.5" />
-            </button>
+            <Link href={`/tire/${tire?._id}`}>
+              <button className="py-2 px-3 bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 flex items-center">
+                Details
+                <ExternalLink className="h-4 w-4 mr-1.5" />
+              </button>
+            </Link>
           </div>
         </div>
       </div>

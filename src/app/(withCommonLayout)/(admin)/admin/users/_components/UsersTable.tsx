@@ -17,7 +17,7 @@ export const columns = [
   { name: "PHONE", uid: "phone" },
   { name: "ADDRESS LINE1", uid: "addressLine1" },
   { name: "ADDRESS LINE2", uid: "addressLine2" },
-  // { name: "ACTIONS", uid: "actions" },
+  { name: "ACTIONS", uid: "actions" },
 ];
 
 export default function UsersTable({
@@ -43,28 +43,33 @@ export default function UsersTable({
       case "addressLine2":
         return user.addressLine2;
 
-      // case "actions":
-      //   return (
-      //     <div className="flex justify-center items-center gap-2">
-      //       {/* <Tooltip content="Edit">
-      //         <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-      //           <EditIcon />
-      //         </span>
-      //       </Tooltip> */}
-      //       <Tooltip
-      //         content="Delete"
-      //         className="bg-rose-600">
-      //         <span
-      //           onClick={() => {
-      //             setSelectedUser(user);
-      //             onDeleteOpen();
-      //           }}
-      //           className="text-lg text-danger cursor-pointer active:opacity-50">
-      //           <DeleteIcon />
-      //         </span>
-      //       </Tooltip>
-      //     </div>
-      //   );
+      case "actions":
+        return (
+          <div className="flex justify-center items-center gap-2">
+            <Tooltip content="Edit">
+              <span
+              onClick={() => {
+                  setSelectedUser(user);
+                  onEditOpen();
+                }}
+              className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                <EditIcon />
+              </span>
+            </Tooltip>
+            <Tooltip
+              content="Delete"
+              className="bg-rose-600">
+              <span
+                onClick={() => {
+                  setSelectedUser(user);
+                  onDeleteOpen();
+                }}
+                className="text-lg text-danger cursor-pointer active:opacity-50">
+                <DeleteIcon />
+              </span>
+            </Tooltip>
+          </div>
+        );
       default:
         return cellValue;
     }

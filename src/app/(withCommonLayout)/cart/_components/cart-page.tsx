@@ -29,8 +29,7 @@ const CartPage = () => {
   
   // const cartItems = data?.data?.items;
   const {items: cartItems = [], totalItems=0, totalPrice=0} = data?.data || {};
-  console.log({user, data, cartItems}, 'data data');
-    const { mutate: handleRemoveItemFromCart, isPending: removeFromCartPending } =
+  const { mutate: handleRemoveItemFromCart, isPending: removeFromCartPending } =
       useRemoveItemFromCart({
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["GET_CART"] });
@@ -42,14 +41,14 @@ const CartPage = () => {
       useUpdateCartItem({
         userId: user?._id,
       });
-      const { mutate: handleClearCart, isPending: clearCartPending } =
+  const { mutate: handleClearCart, isPending: clearCartPending } =
       useClearCart({
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["GET_CART"] });
           toast.success("Cart cleared successfully");
         },
         userId: user?._id,
-      });
+      });   
 
   // Calculate cart totals
 //   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -219,9 +218,11 @@ const CartPage = () => {
               )} */}
             </CardBody>
             <CardFooter>
-              <Button className="w-full" size="lg">
-                Proceed to Checkout
-              </Button>
+              <Link href="/checkout">
+                <Button className="w-full" size="lg">
+                  Proceed to Checkout
+                </Button>
+              </Link>
             </CardFooter>
           </Card>
 

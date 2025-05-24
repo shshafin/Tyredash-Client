@@ -5,7 +5,7 @@ export const menuConfig: any = {
   ],
   user: [
     { key: "profile", label: "Profile", path: "/profile" },
-    { key: "createPost", label: "Create Post", path: "/profile/create-post" },
+    // { key: "createPost", label: "Create Post", path: "/profile/create-post" },
     { key: "settings", label: "Settings", path: "/profile/settings" },
   ],
   common: [{ key: "logout", label: "Logout", path: null, isDanger: true }],

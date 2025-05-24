@@ -50,7 +50,7 @@ export const useGetTires = (params: any) => {
 export const useGetSingleTire = (id: string) => {
   return useQuery({
     queryKey: ["GET_SINGLE_TIRE", id],
-    queryFn: () => getSingleTire(id),
+    queryFn: async () => await getSingleTire(id),
     enabled: !!id, // Only run query when id exists
   });
 };

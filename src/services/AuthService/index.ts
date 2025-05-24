@@ -68,7 +68,7 @@ export const logoutUser = async () => {
     expires: new Date(0),
   });
 
-  window.location.href = "/login"; // Redirect to login page
+  // window.location.href = "/login"; // Redirect to login page
 };
 
 // ! Get Current User
@@ -88,11 +88,26 @@ export const getCurrentUser = async () => {
   }
 
   // Fetch the user data from API
-  const { data } = await axiosInstance.get(`/users/${decodedToken.userEmail}`);
+  const { data } = await axiosInstance.get(`/users/${decodedToken.userEmail}`) || {};
 
   if (data?.data) {
     cachedUser = data.data; // Cache the user data
   }
 
   return data?.data;
+};
+
+export const changePassword = async ( passwordData: any): Promise<any> => {
+  try {
+    const { data } = await axiosInstance.post(`/auth/change-password`, {...passwordData}, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to change password!");
+  }
 };

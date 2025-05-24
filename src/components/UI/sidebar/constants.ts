@@ -14,6 +14,8 @@ import {
   List,
   Edit,
   PlusCircle,
+  ShoppingBag,
+  Lock,
 } from "lucide-react"; // Import necessary icons
 import React from "react";
 
@@ -31,6 +33,16 @@ export const userLinks = [
         label: "Settings",
         icon: React.createElement(SettingsIcon, { className: "w-5 h-5" }), // Settings icon
       },
+      {
+        href: "/profile/order",
+        label: "Orders",
+        icon: React.createElement(ShoppingBag, { className: "w-5 h-5" }), // Settings icon
+      },
+      {
+        href: "/profile/change-password",
+        label: "Change Password",
+        icon: React.createElement(Lock, { className: "w-5 h-5" }), // Lock icon
+      },
     ],
   },
 ];
@@ -43,6 +55,26 @@ export const adminLinks = [
         href: "/admin",
         label: "Admin Home",
         icon: React.createElement(HomeIcon, { className: "w-5 h-5" }), // Home icon for dashboard
+      },
+    ],
+  },
+  {
+    label: "Profile",
+    links: [
+      // {
+      //   href: "/admin/profile",
+      //   label: "Profile",
+      //   icon: React.createElement(UserIcon, { className: "w-5 h-5" }), // User icon for profile
+      // },
+      // {
+      //   href: "/admin/profile/settings",
+      //   label: "Settings",
+      //   icon: React.createElement(SettingsIcon, { className: "w-5 h-5" }), // Settings icon
+      // },
+      {
+        href: "/admin/profile/change-password",
+        label: "Change Password",
+        icon: React.createElement(Lock, { className: "w-5 h-5" }), // Lock icon
       },
     ],
   },
@@ -133,6 +165,16 @@ export const adminLinks = [
         href: "/admin/wheel",
         label: "All Wheels",
         icon: React.createElement(List, { className: "w-5 h-5" }), // List for All Tires
+      },
+    ],
+  },
+  {
+    label: "Order Management",
+    links: [
+      {
+        href: "/admin/order",
+        label: "All Orders",
+        icon: React.createElement(ShoppingBag, { className: "w-5 h-5" }),
       },
     ],
   },
