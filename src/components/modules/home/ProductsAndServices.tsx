@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import CTA from "./CTA";
-import VehicleSelector from "./VehicleSelector";
+import VehicleSelector from "./tabs/vehicle-selector";
 import { toast } from "sonner";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter } from "@heroui/card";
-import { CheckCircle, Car, ArrowLeft, ArrowRight } from "lucide-react";
+import { CheckCircle, Car, ArrowLeft, ArrowRight, Ruler, Building2, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import SizeSelector from "./tabs/size-selector";
+import BrandSelector from "./tabs/brand-selector";
 
 const ProductsAndServices = () => {
   const [step, setStep] = useState(1);
@@ -24,7 +26,7 @@ const ProductsAndServices = () => {
     <>
       {step === 1 && <CTA setStep={setStep} />}
       {step === 2 && (
-        <VehicleSelector
+        <Tabs
           setMainStep={setStep}
           vehicle={vehicle}
           setVehicle={setVehicle}
@@ -37,6 +39,119 @@ const ProductsAndServices = () => {
 
 export default ProductsAndServices;
 
+interface TabsProps {
+  setMainStep: (step: any) => void
+  vehicle: any
+  setVehicle: (vehicle: any) => void
+}
+const Tabs = ({ setMainStep, vehicle, setVehicle }: TabsProps) => {
+  const [activeTab, setActiveTab] = useState("vehicle")
+  const [selectedSize, setSelectedSize] = useState(null)
+  const [selectedBrand, setSelectedBrand] = useState(null)
+
+  const tabs = [
+    {
+      id: "vehicle",
+      label: "Shop by Vehicle",
+      icon: Car,
+      description: "Find products by your car's make, model, and year",
+    },
+    {
+      id: "size",
+      label: "Shop by Size",
+      icon: Ruler,
+      description: "Search by tire size or wheel dimensions",
+    },
+    {
+      id: "brand",
+      label: "Shop by Brand",
+      icon: Building2,
+      description: "Browse products from your favorite brands",
+    },
+  ]
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId)
+    // Reset selections when switching tabs
+    if (tabId !== "vehicle") setVehicle({
+      year: "",
+      make: "",
+      model: "",
+      trim: "",
+      tireSize: "",
+    })
+    if (tabId !== "size") setSelectedSize(null)
+    if (tabId !== "brand") setSelectedBrand(null)
+  }
+
+  const handleClose = () => {
+    // Handle modal/component close
+    setMainStep(1)
+  }
+
+  return (
+    <div className="w-full max-w-6xl mx-auto bg-white rounded-lg shadow-lg">
+      {/* Tab Headers */}
+      <div className="flex border-b border-gray-200 relative">
+        {tabs.map((tab, index) => {
+          const Icon = tab.icon
+          return (
+            <button
+              key={tab.id}
+              onClick={() => handleTabChange(tab.id)}
+              className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 text-sm font-medium transition-colors relative ${
+                activeTab === tab.id
+                  ? "text-red-600 border-b-2 border-red-600 bg-red-50"
+                  : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+              }`}
+            >
+              <Icon className="h-4 w-4" />
+              {tab.label}
+              {activeTab === tab.id && index === 1 && (
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">2</span>
+                </div>
+              )}
+              {activeTab === tab.id && index === 2 && (
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">3</span>
+                </div>
+              )}
+            </button>
+          )
+        })}
+
+        {/* Close Button */}
+        <button
+          onClick={handleClose}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Tab Description */}
+      <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
+        <p className="text-sm text-gray-600 text-center">{tabs.find((tab) => tab.id === activeTab)?.description}</p>
+      </div>
+
+      {/* Tab Content */}
+      <div className="min-h-[500px]">
+        {activeTab === "vehicle" && (
+          <VehicleSelector setMainStep={setMainStep} vehicle={vehicle} setVehicle={setVehicle} />
+        )}
+
+        {activeTab === "size" && (
+          <SizeSelector setMainStep={setMainStep} selectedSize={selectedSize} setSelectedSize={setSelectedSize} />
+        )}
+
+        {activeTab === "brand" && (
+          <BrandSelector setMainStep={setMainStep} selectedBrand={selectedBrand} setSelectedBrand={setSelectedBrand} />
+        )}
+      </div>
+    </div>
+  )
+}
 const ShoppingForStep = ({ vehicle }: any) => {
   const [productType, setProductType] = useState("");
   const [step, setStep] = useState(1);
@@ -146,7 +261,7 @@ const ShoppingForStep = ({ vehicle }: any) => {
   );
 };
 
-function TireWheelGuide({ type }: { type: string }) {
+const TireWheelGuide = ({ type }: { type: string }) => {
   console.log(type);
   const isTire = type === "tires";
   const productType = isTire ? "tire" : "wheel";

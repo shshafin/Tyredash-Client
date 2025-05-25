@@ -5,6 +5,7 @@ import {
   deleteWheel,
   getSingleWheel,
   getWheels,
+  importCSVWheels,
   updateWheel,
 } from "../services/wheels";
 
@@ -12,6 +13,17 @@ export const useCreateWheel = ({ onSuccess }: any) => {
   return useMutation<any, Error, FormData>({
     mutationKey: ["CREATE_WHEEL"],
     mutationFn: async (WheelData) => await createWheel(WheelData),
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess,
+  });
+};
+
+export const useImportCSVWheels = ({ onSuccess }: any) => {
+  return useMutation<any, Error, FormData>({
+    mutationKey: ["IMPORT_CSV_WHEELS"],
+    mutationFn: async (wheelData) => await importCSVWheels(wheelData),
     onError: (error) => {
       toast.error(error.message);
     },

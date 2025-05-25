@@ -23,6 +23,8 @@ import { NavbarLogin, NavbarLoginMobile } from "./NavbarLogin";
 import { Car, Heart, Phone, Search, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { VehicleModal } from "./my-vehicles-modal";
+import DesktopNavItems from "./desktop-nav-items";
+import MobileNavItems from "./mobile-nav-items";
 
 export const Navbar = () => {
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
@@ -131,23 +133,7 @@ export const Navbar = () => {
 
             <div className="border-t border-gray-500 my-2 w-3/4 mx-auto" />
 
-            <div className="mx-auto">
-              <ul className="flex gap-3 md:gap-2">
-                {siteConfig.navItems.map((item) => (
-                  <NavbarItem key={item.href}>
-                    <NextLink
-                      href={item.href}
-                      className={clsx(
-                        linkStyles({ color: "foreground" }),
-                        "data-[active=true]:text-primary data-[active=true]:font-medium text-sm md:text-xs bg-default-100 md:px-1 lg:px-2 py-2 rounded-md",
-                      )}
-                    >
-                      {item.label}
-                    </NextLink>
-                  </NavbarItem>
-                ))}
-              </ul>
-            </div>
+            <DesktopNavItems />
           </div>
 
           {/* Right: Login, My Vehicles, Cart, and Search */}
@@ -214,23 +200,7 @@ export const Navbar = () => {
             {/* Divider */}
             <div className="border-t border-gray-500 my-2" />
 
-            {siteConfig.navMenuItems.map((item, index) => (
-              <NavbarMenuItem key={`${item.label}-${index}`}>
-                <Link
-                  color={
-                    index === 2
-                      ? "primary"
-                      : index === siteConfig.navMenuItems.length - 1
-                        ? "danger"
-                        : "foreground"
-                  }
-                  href={item.href}
-                  size="lg"
-                >
-                  {item.label}
-                </Link>
-              </NavbarMenuItem>
-            ))}
+            <MobileNavItems />
 
             {/* My Vehicles */}
             <div
@@ -273,3 +243,26 @@ export const Navbar = () => {
     </>
   );
 };
+
+// const DeskTopNavItems = () => {
+//   return (
+//    <div className="mx-auto">
+//               <ul className="flex gap-3 md:gap-2">
+//                 {siteConfig.navItems.map((item) => (
+//                   <NavbarItem key={item.href}>
+//                     <NextLink
+//                       href={item.href}
+//                       className={clsx(
+//                         linkStyles({ color: "foreground" }),
+//                         "data-[active=true]:text-primary data-[active=true]:font-medium text-sm md:text-xs bg-default-100 md:px-1 lg:px-2 py-2 rounded-md",
+//                       )}
+//                     >
+//                       {item.label}
+//                     </NextLink>
+//                   </NavbarItem>
+//                 ))}
+//               </ul>
+//             </div> 
+    
+//   )
+// }

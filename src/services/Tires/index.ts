@@ -17,6 +17,21 @@ export const createTire = async (TireData: any): Promise<any> => {
   }
 };
 
+export const importCSVTires = async (TireData: any): Promise<any> => {
+  try {
+    const { data } = await axiosInstance.post("/tire/import-csv", TireData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to import csv Tire");
+  }
+};
+
 export const updateTire = async (id: string, TireData: any): Promise<any> => {
   try {
     const { data } = await axiosInstance.patch(`/tire/${id}`, TireData, {

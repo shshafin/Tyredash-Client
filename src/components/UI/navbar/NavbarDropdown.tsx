@@ -79,13 +79,11 @@ import { useRouter } from "next/navigation";
 
 const NavbarDropdown: React.FC = () => {
   const { setIsLoading: userLoading, user, setUser } = useUser();
-  const router = useRouter();
 
   const handleLogout = async() => {
     userLoading(true);
     setUser(null);
     await logoutUser();
-    router.push('/login');
   };
 
   // Use "any" for menu items if strict typing is not required

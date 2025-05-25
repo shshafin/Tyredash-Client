@@ -5,6 +5,7 @@ import {
   deleteTire,
   getSingleTire,
   getTires,
+  importCSVTires,
   updateTire,
 } from "../services/Tires";
 
@@ -12,6 +13,17 @@ export const useCreateTire = ({ onSuccess }: any) => {
   return useMutation<any, Error, FormData>({
     mutationKey: ["CREATE_TIRE"],
     mutationFn: async (TireData) => await createTire(TireData),
+    onError: (error) => {
+      toast.error(error.message);
+    },
+    onSuccess,
+  });
+};
+
+export const useImportCSVTires = ({ onSuccess }: any) => {
+  return useMutation<any, Error, FormData>({
+    mutationKey: ["IMPORT_CSV_TIRES"],
+    mutationFn: async (TireData) => await importCSVTires(TireData),
     onError: (error) => {
       toast.error(error.message);
     },

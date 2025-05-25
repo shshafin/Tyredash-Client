@@ -135,7 +135,7 @@ const VehicleSelector = ({ setMainStep, vehicle, setVehicle }: any) => {
   };
 
   return (
-    <div className="mx-auto mt-10 p-5 border rounded-lg shadow-lg max-w-4xl w-full">
+    <div className="w-full max-w-6xl mx-auto p-6">
       {!vehicleSaved ? (
         <>
           <div className="flex flex-wrap justify-center items-center gap-3 mb-5">
