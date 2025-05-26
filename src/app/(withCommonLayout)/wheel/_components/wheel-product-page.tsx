@@ -20,9 +20,20 @@ import ProductCard from "./wheel-product-card";
 import { VehicleInfo } from "@/src/types";
 import WheelProductListView from "./wheel-product-list-view";
 import { CategoryDropdown } from "./dropdowns/CategoryDropdown";
+import { useSearchParams } from "next/navigation";
 
 const WheelProductPage = () => {
-  const { data: Wheels, isLoading, isError } = useGetWheels({});
+  const searchParams = useSearchParams();
+  const brand = searchParams.get('brand');
+  const category = searchParams.get('category');
+  const tireSize = searchParams.get('tireSize');
+  const make = searchParams.get('make');  
+  const { data: Wheels, isLoading, isError } = useGetWheels({
+    brand: brand ?? undefined, 
+    category: category ?? undefined, 
+    tireSize: tireSize ?? undefined,
+    make: make ?? undefined
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedMakes, setSelectedMakes] = useState<string[]>([]);

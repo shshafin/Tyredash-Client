@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@heroui/button"
 import { Input } from "@heroui/input"
 import { Search } from "lucide-react"
+import { useGetBrands } from "@/src/hooks/brand.hook"
 
 interface BrandSelectorProps {
   setMainStep: (step: any) => void
@@ -15,108 +16,10 @@ const BrandSelector = ({ setMainStep, selectedBrand, setSelectedBrand }: BrandSe
   const [productType, setProductType] = useState("tires")
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedBrandName, setSelectedBrandName] = useState("")
+  const {data: bd} = useGetBrands({});
 
-  // Tire brands
-  const tireBrands = [
-    "Arisun Tires",
-    "Arizonian Tires",
-    "Atlas Tires",
-    "Atturo Tires",
-    "Barum Tires",
-    "BFGoodrich Tires",
-    "Braven Tires",
-    "Bridgestone Tires",
-    "Carlisle Tires",
-    "Coker Tires",
-    "Continental Tires",
-    "Cooper Tires",
-    "Corsa Tires",
-    "Dunlop Tires",
-    "E-Z-Go Tires",
-    "Falken Tires",
-    "Firestone Tires",
-    "GBC Motorsports Tires",
-    "Goodyear Tires",
-    "General Tires",
-    "Gladiator Tires",
-    "GMZ Racing Tires",
-    "Giti Tires",
-    "GT Radial Tires",
-    "Hankook Tires",
-    "Hartland Tires",
-    "Interco Tires",
-    "Ironman Tires",
-    "ITP Tires",
-    "Kanati Tires",
-    "Kelly Tires",
-    "Kumho Tires",
-    "Laufenn Tires",
-    "Michelin Tires",
-    "Mohave Tires",
-    "Mickey Thompson Tires",
-    "Milestar Tires",
-    "Maxxis Tires",
-    "Nankang Tires",
-    "Nordman Tires",
-    "Nexen Tires",
-    "Nitto Tires",
-    "Nokian Tyres",
-    "Ohtsu Tires",
-    "Phantom Tires",
-    "Pirelli Tires",
-    "Pit Bull Tires",
-    "Pathfinder Tires",
-  ]
-
-  // Wheel brands
-  const wheelBrands = [
-    "Fuel Wheels",
-    "Black Rhino Wheels",
-    "Vision Wheels",
-    "Konig Wheels",
-    "Method Wheels",
-    "Rotiform Wheels",
-    "Enkei Wheels",
-    "BBS Wheels",
-    "OZ Racing Wheels",
-    "Vossen Wheels",
-    "Forgiato Wheels",
-    "HRE Wheels",
-    "ADV.1 Wheels",
-    "Vorsteiner Wheels",
-    "Rohana Wheels",
-    "Niche Wheels",
-    "TSW Wheels",
-    "Avant Garde Wheels",
-    "Ferrada Wheels",
-    "Stance Wheels",
-    "Concavo Wheels",
-    "Savini Wheels",
-    "Asanti Wheels",
-    "Lexani Wheels",
-    "DUB Wheels",
-    "KMC Wheels",
-    "Moto Metal Wheels",
-    "Hostile Wheels",
-    "Ballistic Wheels",
-    "Gear Alloy Wheels",
-    "Ultra Wheels",
-    "Pro Comp Wheels",
-    "Dick Cepek Wheels",
-    "Mickey Thompson Wheels",
-    "Pacer Wheels",
-    "American Racing Wheels",
-    "Cragar Wheels",
-    "Centerline Wheels",
-    "Weld Racing Wheels",
-    "Raceline Wheels",
-    "XD Series Wheels",
-    "Mayhem Wheels",
-    "Mamba Wheels",
-    "Helo Wheels",
-  ]
-
-  const currentBrands = productType === "tires" ? tireBrands : wheelBrands
+  // const currentBrands = productType === "tires" ? tireBrands : wheelBrands
+  const currentBrands: string[] = bd?.data?.map((brand: any) => brand?.name || '');
 
   // Filter brands based on search term
   const filteredBrands = currentBrands.filter((brand) => brand.toLowerCase().includes(searchTerm.toLowerCase()))

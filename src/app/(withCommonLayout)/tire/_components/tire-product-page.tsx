@@ -22,9 +22,15 @@ import { CategoryDropdown } from "./dropdowns/CategoryDropdown";
 import { useSearchParams } from "next/navigation";
 
 const TireProductPage = () => {
-    const searchParams = useSearchParams();
-    const brand = searchParams.get('brand');
-  const { data: Tires, isLoading, isError } = useGetTires({brand: brand ?? undefined,});
+  const searchParams = useSearchParams();
+  const brand = searchParams.get('brand');
+  const category = searchParams.get('category');
+  const tireSize = searchParams.get('tireSize');
+  const { data: Tires, isLoading, isError } = useGetTires({
+    brand: brand ?? undefined, 
+    category: category ?? undefined, 
+    tireSize: tireSize ?? undefined
+  });
   console.log(Tires, "Tires");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);

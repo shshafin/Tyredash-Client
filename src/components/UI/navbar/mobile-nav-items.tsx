@@ -4,128 +4,51 @@ import { useState } from "react"
 import { NavbarMenuItem } from "@heroui/navbar"
 import { Link } from "@heroui/link"
 import { Accordion, AccordionItem } from "@heroui/accordion"
-import { ChevronDown, ChevronRight, Star, Search, Package } from "lucide-react"
+import { ChevronDown, ChevronRight, Search, Package } from "lucide-react"
 import NextLink from "next/link"
 import { Divider } from "@heroui/divider"
+import { siteConfig } from "@/src/config/site"
+import { useGetBrands } from "@/src/hooks/brand.hook"
+import { useGetCategories } from "@/src/hooks/categories.hook"
+import { useGetTyreSizes } from "@/src/hooks/tyreSize.hook"
+import { useGetMakes } from "@/src/hooks/makes.hook"
 
-const siteConfig = {
-  navMenuItems: [
-    {
-      label: "TIRES",
-      href: "/tire",
-      hasDropdown: true,
-    },
-    {
-      label: "WHEELS",
-      href: "/wheel",
-      hasDropdown: true,
-    },
-    {
-      label: "ACCESSORIES",
-      href: "/accessories",
-    //   hasDropdown: true,
-    },
-    {
-      label: "APPOINTMENTS",
-      href: "/appointments",
-    },
-    {
-      label: "TIPS & GUIDES",
-      href: "/tips-guide",
-    },
-    {
-      label: "FINANCING",
-      href: "/financing",
-    //   hasDropdown: true,
-    },
-    {
-      label: "FLEET",
-      href: "/fleet",
-    },
-    {
-      label: "DEALS",
-      href: "/deals",
-    },
-  ],
-}
+const MobileTabContent = ({ tabs, activeTab, setActiveTab }: any) => (
+  <div className="space-y-4">
+    {/* Tab Buttons */}
+    <div className="grid grid-cols-2 gap-2">
+      {tabs.map((tab: any) => (
+        <button
+          key={tab.id}
+          onClick={() => setActiveTab(tab.id)}
+          className={`p-3 rounded-lg text-left transition-colors ${
+            activeTab === tab.id ? "bg-primary text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+          }`}
+        >
+          <div className="font-semibold text-xs">{tab.title}</div>
+          <div className="text-xs opacity-80 mt-1">{tab.description}</div>
+        </button>
+      ))}
+    </div>
 
-// Mobile tire dropdown data
-const mobileTireData = {
-  quickActions: [
-    // { title: "🔍 TIRE FINDER", href: "/tire-finder", description: "Find the perfect tire for your vehicle" },
-    { title: "🚗 SHOP BY VEHICLE", href: "/tire/shop-by-vehicle", description: "Browse by your car model" },
-    { title: "📏 SHOP BY SIZE", href: "/tire/shop-by-size", description: "Search by tire size" },
-    // { title: "⭐ TIRE PACKAGES", href: "/tire/packages", description: "Wheel & tire combos" },
-  ],
-  brands: [
-    { name: "Michelin Tires", href: "/tire/brand/michelin" },
-    { name: "Goodyear Tires", href: "/tire/brand/goodyear" },
-    { name: "Bridgestone Tires", href: "/tire/brand/bridgestone" },
-    { name: "Continental Tires", href: "/tire/brand/continental" },
-    { name: "Pirelli Tires", href: "/tire/brand/pirelli" },
-    { name: "Dunlop Tires", href: "/tire/brand/dunlop" },
-  ],
-  types: [
-    { name: "All-Season Tires", href: "/tire/type/all-season", popular: true },
-    { name: "All-Terrain Tires", href: "/tire/type/all-terrain", popular: true },
-    { name: "Mud Terrain Tires", href: "/tire/type/mud-terrain" },
-    { name: "Summer Tires", href: "/tire/type/summer" },
-    { name: "Winter Tires", href: "/tire/type/winter" },
-    { name: "Performance Tires", href: "/tire/type/performance" },
-  ],
-  vehicleTypes: [
-    { name: "Car Tires", href: "/tire/vehicle/car", icon: "🚗" },
-    { name: "Truck/SUV Tires", href: "/tire/vehicle/truck-suv", icon: "🚙" },
-    { name: "ATV/UTV Tires", href: "/tire/vehicle/atv-utv", icon: "🏍️" },
-    { name: "Trailer Tires", href: "/tire/vehicle/trailer", icon: "🚛" },
-    { name: "Motorcycle Tires", href: "/tire/vehicle/motorcycle", icon: "🏍️" },
-  ],
-}
-
-// Mobile wheel dropdown data
-const mobileWheelData = {
-  quickActions: [
-    { title: "🔍 WHEEL FINDER", href: "/wheel/finder", description: "Find wheels for your vehicle" },
-    { title: "🚗 SHOP BY VEHICLE", href: "/wheel/shop-by-vehicle", description: "Browse by your car model" },
-    { title: "📏 SHOP BY SIZE", href: "/wheel/shop-by-size", description: "Search by wheel size" },
-    { title: "⭐ WHEEL PACKAGES", href: "/wheel/packages", description: "Wheel & tire combos" },
-    { title: "🎨 WHEEL VISUALIZER", href: "/wheel/visualizer", description: "See wheels on your car" },
-  ],
-  brands: [
-    { name: "Fuel Wheels", href: "/wheel/brand/fuel" },
-    { name: "Black Rhino Wheels", href: "/wheel/brand/black-rhino" },
-    { name: "Vision Wheels", href: "/wheel/brand/vision" },
-    { name: "Konig Wheels", href: "/wheel/brand/konig" },
-    { name: "Method Wheels", href: "/wheel/brand/method" },
-    { name: "Rotiform Wheels", href: "/wheel/brand/rotiform" },
-  ],
-  styles: [
-    { name: "Chrome Wheels", href: "/wheel/style/chrome", popular: true },
-    { name: "Painted Wheels", href: "/wheel/style/painted" },
-    { name: "Machined Wheels", href: "/wheel/style/machined", popular: true },
-    { name: "Mesh Wheels", href: "/wheel/style/mesh" },
-    { name: "Forged Wheels", href: "/wheel/style/forged" },
-    { name: "Cast Wheels", href: "/wheel/style/cast" },
-  ],
-  vehicleTypes: [
-    { name: "Truck Wheels", href: "/wheel/vehicle/truck", icon: "🚙" },
-    { name: "Car Wheels", href: "/wheel/vehicle/car", icon: "🚗" },
-    { name: "Trailer Wheels", href: "/wheel/vehicle/trailer", icon: "🚛" },
-    { name: "ATV/UTV Wheels", href: "/wheel/vehicle/atv-utv", icon: "🏍️" },
-    { name: "Motorcycle Wheels", href: "/wheel/vehicle/motorcycle", icon: "🏍️" },
-  ],
-}
-
-const MobileQuickActions = ({ actions }: { actions: any[] }) => (
-  <div className="space-y-3 mb-6">
-    {actions.map((action, index) => (
-      <NextLink key={index} href={action.href}>
-        <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-4 border border-primary/20">
-          <div className="font-semibold text-primary text-sm">{action.title}</div>
-          <div className="text-xs text-gray-600 mt-1">{action.description}</div>
-        </div>
-      </NextLink>
-    ))}
+    {/* Active Tab Content */}
+    <div className="bg-gray-50 rounded-lg p-4">
+      {tabs
+        .filter((tab: any) => tab.id === activeTab)
+        .map((tab: any) => (
+          <div key={tab.id} className="space-y-2">
+            <h4 className="font-semibold text-sm text-gray-800 mb-3">{tab.title}</h4>
+            {tab.content.map((item: any, index: number) => (
+              <NextLink key={index} href={item.href}>
+                <div className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-white transition-colors">
+                  <span className="text-sm text-gray-700">{item.name}</span>
+                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                </div>
+              </NextLink>
+            ))}
+          </div>
+        ))}
+    </div>
   </div>
 )
 
@@ -168,165 +91,329 @@ const MobileCategorySection = ({
   </div>
 )
 
-const TireMobileDropdown = () => (
-  <div className="px-4 py-2">
-    <MobileQuickActions actions={mobileTireData.quickActions} />
+const TireMobileDropdown = () => {
+  const [activeTab, setActiveTab] = useState("vehicle1354")
+  const mobileTireData = {
+    tabs: [
+      // {
+      //   id: "finder",
+      //   title: "🔍 TIRE FINDER",
+      //   description: "Find the perfect tire for your vehicle",
+      //   content: [
+      //     { name: "Search by Vehicle", href: "/tire-finder/vehicle" },
+      //     { name: "Search by Size", href: "/tire-finder/size" },
+      //     { name: "Tire Size Guide", href: "/tire-finder/guide" },
+      //     { name: "Tire Comparison Tool", href: "/tire-finder/compare" },
+      //   ],
+      // },
+      {
+        id: "vehicle",
+        title: "🚗 SHOP BY VEHICLE",
+        description: "Browse by your car model",
+        content: [
+          { name: "Car Tires", href: "/tire/vehicle/car" },
+          { name: "Truck/SUV Tires", href: "/tire/vehicle/truck-suv" },
+          { name: "ATV/UTV Tires", href: "/tire/vehicle/atv-utv" },
+          { name: "Trailer Tires", href: "/tire/vehicle/trailer" },
+          { name: "Motorcycle Tires", href: "/tire/vehicle/motorcycle" },
+        ],
+      },
+      {
+        id: "size",
+        title: "📏 SHOP BY SIZE",
+        description: "Search by tire size",
+        content: [
+          { name: "215/60R16", href: "/tire/size/215-60-16" },
+          { name: "225/65R17", href: "/tire/size/225-65-17" },
+          { name: "235/55R18", href: "/tire/size/235-55-18" },
+          { name: "245/45R19", href: "/tire/size/245-45-19" },
+          { name: "Size Calculator", href: "/tire/tools/calculator" },
+        ],
+      },
+      // {
+      //   id: "packages",
+      //   title: "⭐ TIRE PACKAGES",
+      //   description: "Wheel & tire combos",
+      //   content: [
+      //     { name: "Complete Packages", href: "/packages/complete" },
+      //     { name: "Winter Packages", href: "/packages/winter" },
+      //     { name: "Performance Packages", href: "/packages/performance" },
+      //     { name: "Off-Road Packages", href: "/packages/off-road" },
+      //   ],
+      // },
+    ],
+    brands: [
+      { name: "Michelin Tires", href: "/tire/brand/michelin" },
+      { name: "Goodyear Tires", href: "/tire/brand/goodyear" },
+      { name: "Bridgestone Tires", href: "/tire/brand/bridgestone" },
+      { name: "Continental Tires", href: "/tire/brand/continental" },
+      { name: "Pirelli Tires", href: "/tire/brand/pirelli" },
+      { name: "Dunlop Tires", href: "/tire/brand/dunlop" },
+    ],
+    types: [
+      { name: "All-Season Tires", href: "/tire/type/all-season", popular: true },
+      { name: "All-Terrain Tires", href: "/tire/type/all-terrain", popular: true },
+      { name: "Mud Terrain Tires", href: "/tire/type/mud-terrain" },
+      { name: "Summer Tires", href: "/tire/type/summer" },
+      { name: "Winter Tires", href: "/tire/type/winter" },
+      { name: "Performance Tires", href: "/tire/type/performance" },
+    ],
+  }
 
-    <Accordion variant="splitted" className="px-0">
-      <AccordionItem
-        key="brands"
-        aria-label="Tire Brands"
-        title={
-          <div className="flex items-center gap-2">
-            <Package className="h-4 w-4" />
-            <span className="font-semibold">Tire Brands</span>
-          </div>
-        }
-      >
-        <MobileCategorySection title="Popular Brands" items={mobileTireData.brands} viewAllHref="/tire/brands" />
-      </AccordionItem>
+  return (
+    <div className="px-4 py-2">
+      <MobileTabContent tabs={mobileTireData.tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <AccordionItem
-        key="types"
-        aria-label="Tire Types"
-        title={
-          <div className="flex items-center gap-2">
-            <Search className="h-4 w-4" />
-            <span className="font-semibold">Tire Types</span>
-          </div>
-        }
-      >
-        <MobileCategorySection title="Tire Categories" items={mobileTireData.types} viewAllHref="/tire/types" />
-      </AccordionItem>
+      <Accordion variant="splitted" className="px-0 mt-6">
+        <AccordionItem
+          key="brands"
+          aria-label="Tire Brands"
+          title={
+            <div className="flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              <span className="font-semibold">Tire Brands</span>
+            </div>
+          }
+        >
+          <MobileCategorySection title="Popular Brands" items={mobileTireData.brands} viewAllHref="/tire/brands" />
+        </AccordionItem>
 
-      <AccordionItem
-        key="vehicles"
-        aria-label="Vehicle Types"
-        title={
-          <div className="flex items-center gap-2">
-            <Star className="h-4 w-4" />
-            <span className="font-semibold">Vehicle Types</span>
-          </div>
-        }
-      >
-        <MobileCategorySection
-          title="Shop by Vehicle"
-          items={mobileTireData.vehicleTypes}
-          viewAllHref="/tire/vehicles"
-        />
-      </AccordionItem>
-    </Accordion>
-  </div>
-)
+        <AccordionItem
+          key="types"
+          aria-label="Tire Types"
+          title={
+            <div className="flex items-center gap-2">
+              <Search className="h-4 w-4" />
+              <span className="font-semibold">Tire Types</span>
+            </div>
+          }
+        >
+          <MobileCategorySection title="Tire Categories" items={mobileTireData.types} viewAllHref="/tire/types" />
+        </AccordionItem>
+      </Accordion>
+    </div>
+  )
+}
 
-const WheelMobileDropdown = () => (
-  <div className="px-4 py-2">
-    <MobileQuickActions actions={mobileWheelData.quickActions} />
+const WheelMobileDropdown = () => {
+  const [activeTab, setActiveTab] = useState("shop")
+  const {data:bd} = useGetBrands({limit: 6});
+  const {data:cd} = useGetCategories({limit: 6});
+  const {data:tsd} = useGetTyreSizes({});
+  const {data:md} = useGetMakes({limit: 6});
+  const modifiedBrands = bd?.data?.map((brand: any, index: number) => {
+    return {
+      id: brand?._id,
+      name: brand?.name || '',
+      href: `/wheel?brand=${brand?._id}`
+    };
+  });
+  const modifiedCategories = cd?.data?.map((cat: any, index: number) => {
+    return {
+      id: cat?._id,
+      name: cat?.name || '',
+      href: `/wheel?category=${cat?._id}`
+    };
+  });
+  const modifiedTireSizes = tsd?.data?.map((ts: any, index: number) => {
+    return {
+      id: ts?._id,
+      name: ts?.tireSize || '',
+      href: `/wheel?tireSize=${ts?._id}`
+    };
+  });
+  const modifiedMakes = md?.data?.map((ts: any, index: number) => {
+    return {
+      id: ts?._id,
+      name: ts?.make || '',
+      href: `/wheel?make=${ts?._id}`
+    };
+  });
+  const mobileWheelData = {
+  tabs: [
+    {
+      id: "shop",
+      title: "🛒 SHOP WHEELS",
+      description: "Browse all wheel categories",
+      content: [
+        { name: "All Wheels", href: "/wheel/all" },
+        { name: "New Arrivals", href: "/wheel/new" },
+        { name: "Best Sellers", href: "/wheel/bestsellers" },
+        { name: "Clearance", href: "/wheel/clearance" },
+      ],
+    },
+    {
+      id: "vehicle",
+      title: "🚗 SHOP BY VEHICLE",
+      description: "Browse by your car model",
+      content: modifiedCategories || [],
+    },
+    {
+      id: "size",
+      title: "📏 SHOP BY SIZE",
+      description: "Search by wheel size",
+      content: modifiedTireSizes || [],
+    },
+    // {
+    //   id: "packages",
+    //   title: "⭐ WHEEL PACKAGES",
+    //   description: "Wheel & tire combos",
+    //   content: [
+    //     { name: "Complete Packages", href: "/packages/complete" },
+    //     { name: "Off-Road Packages", href: "/packages/off-road" },
+    //     { name: "Performance Packages", href: "/packages/performance" },
+    //     { name: "Luxury Packages", href: "/packages/luxury" },
+    //   ],
+    // },
+    // {
+    //   id: "visualizer",
+    //   title: "🎨 WHEEL VISUALIZER",
+    //   description: "See wheels on your car",
+    //   content: [
+    //     { name: "Upload Your Car Photo", href: "/wheel/visualizer/upload" },
+    //     { name: "Browse by Make/Model", href: "/wheel/visualizer/browse" },
+    //     { name: "AR Wheel Preview", href: "/wheel/visualizer/ar" },
+    //     { name: "360° Wheel View", href: "/wheel/visualizer/360" },
+    //   ],
+    // },
+  ],
+  brands: modifiedBrands || [],
+  styles: [
+    { name: "Chrome Wheels", href: "/wheel/style/chrome", popular: true },
+    { name: "Painted Wheels", href: "/wheel/style/painted" },
+    { name: "Machined Wheels", href: "/wheel/style/machined", popular: true },
+    { name: "Mesh Wheels", href: "/wheel/style/mesh" },
+    { name: "Forged Wheels", href: "/wheel/style/forged" },
+    { name: "Cast Wheels", href: "/wheel/style/cast" },
+  ],
+}
 
-    <Accordion variant="splitted" className="px-0">
-      <AccordionItem
-        key="brands"
-        aria-label="Wheel Brands"
-        title={
-          <div className="flex items-center gap-2">
-            <Package className="h-4 w-4" />
-            <span className="font-semibold">Wheel Brands</span>
-          </div>
-        }
-      >
-        <MobileCategorySection title="Popular Brands" items={mobileWheelData.brands} viewAllHref="/wheel/brands" />
-      </AccordionItem>
+  return (
+    <div className="px-4 py-2">
+      <MobileTabContent tabs={mobileWheelData.tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <AccordionItem
-        key="styles"
-        aria-label="Wheel Styles"
-        title={
-          <div className="flex items-center gap-2">
-            <Search className="h-4 w-4" />
-            <span className="font-semibold">Wheel Styles</span>
-          </div>
-        }
-      >
-        <MobileCategorySection title="Wheel Finishes" items={mobileWheelData.styles} viewAllHref="/wheel/styles" />
-      </AccordionItem>
+      <Accordion variant="splitted" className="px-0 mt-6">
+        <AccordionItem
+          key="brands"
+          aria-label="Wheel Brands"
+          title={
+            <div className="flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              <span className="font-semibold">Wheel Brands</span>
+            </div>
+          }
+        >
+          <MobileCategorySection title="Popular Brands" items={mobileWheelData.brands} viewAllHref="/wheel/brands" />
+        </AccordionItem>
 
-      <AccordionItem
-        key="vehicles"
-        aria-label="Vehicle Types"
-        title={
-          <div className="flex items-center gap-2">
-            <Star className="h-4 w-4" />
-            <span className="font-semibold">Vehicle Types</span>
-          </div>
-        }
-      >
-        <MobileCategorySection
-          title="Shop by Vehicle"
-          items={mobileWheelData.vehicleTypes}
-          viewAllHref="/wheel/vehicles"
-        />
-      </AccordionItem>
-    </Accordion>
-  </div>
-)
+        <AccordionItem
+          key="styles"
+          aria-label="Wheel Styles"
+          title={
+            <div className="flex items-center gap-2">
+              <Search className="h-4 w-4" />
+              <span className="font-semibold">Wheel Styles</span>
+            </div>
+          }
+        >
+          <MobileCategorySection title="Wheel Finishes" items={mobileWheelData.styles} viewAllHref="/wheel/styles" />
+        </AccordionItem>
+      </Accordion>
+    </div>
+  )
+}
 
-const AccessoriesMobileDropdown = () => (
-  <div className="px-4 py-2 space-y-3">
-    <NextLink href="/accessories/tire-accessories">
-      <div className="flex items-center justify-between py-3 px-3 rounded-md hover:bg-gray-50">
-        <span className="text-sm text-gray-700">🔧 Tire Accessories</span>
-        <ChevronRight className="h-4 w-4 text-gray-400" />
-      </div>
-    </NextLink>
-    <NextLink href="/accessories/wheel-accessories">
-      <div className="flex items-center justify-between py-3 px-3 rounded-md hover:bg-gray-50">
-        <span className="text-sm text-gray-700">⚙️ Wheel Accessories</span>
-        <ChevronRight className="h-4 w-4 text-gray-400" />
-      </div>
-    </NextLink>
-    <NextLink href="/accessories/tools">
-      <div className="flex items-center justify-between py-3 px-3 rounded-md hover:bg-gray-50">
-        <span className="text-sm text-gray-700">🛠️ Tools & Equipment</span>
-        <ChevronRight className="h-4 w-4 text-gray-400" />
-      </div>
-    </NextLink>
-    <NextLink href="/accessories/maintenance">
-      <div className="flex items-center justify-between py-3 px-3 rounded-md hover:bg-gray-50">
-        <span className="text-sm text-gray-700">🧽 Maintenance Products</span>
-        <ChevronRight className="h-4 w-4 text-gray-400" />
-      </div>
-    </NextLink>
-  </div>
-)
+const AccessoriesMobileDropdown = () => {
+  const [activeTab, setActiveTab] = useState("tire-accessories")
 
-const FinancingMobileDropdown = () => (
-  <div className="px-4 py-2 space-y-3">
-    <NextLink href="/financing/options">
-      <div className="flex items-center justify-between py-3 px-3 rounded-md hover:bg-gray-50">
-        <span className="text-sm text-gray-700">💳 Financing Options</span>
-        <ChevronRight className="h-4 w-4 text-gray-400" />
-      </div>
-    </NextLink>
-    <NextLink href="/financing/apply">
-      <div className="flex items-center justify-between py-3 px-3 rounded-md hover:bg-gray-50">
-        <span className="text-sm text-gray-700">📝 Apply Now</span>
-        <ChevronRight className="h-4 w-4 text-gray-400" />
-      </div>
-    </NextLink>
-    <NextLink href="/financing/calculator">
-      <div className="flex items-center justify-between py-3 px-3 rounded-md hover:bg-gray-50">
-        <span className="text-sm text-gray-700">🧮 Payment Calculator</span>
-        <ChevronRight className="h-4 w-4 text-gray-400" />
-      </div>
-    </NextLink>
-    <NextLink href="/financing/credit-check">
-      <div className="flex items-center justify-between py-3 px-3 rounded-md hover:bg-gray-50">
-        <span className="text-sm text-gray-700">📊 Credit Check</span>
-        <ChevronRight className="h-4 w-4 text-gray-400" />
-      </div>
-    </NextLink>
-  </div>
-)
+  const accessoriesTabs = [
+    {
+      id: "tire-accessories",
+      title: "🔧 TIRE ACCESSORIES",
+      description: "Tire-related accessories",
+      content: [
+        { name: "Tire Pressure Monitors", href: "/accessories/tire/tpms" },
+        { name: "Tire Chains", href: "/accessories/tire/chains" },
+        { name: "Tire Covers", href: "/accessories/tire/covers" },
+        { name: "Valve Stems", href: "/accessories/tire/valve-stems" },
+      ],
+    },
+    {
+      id: "wheel-accessories",
+      title: "⚙️ WHEEL ACCESSORIES",
+      description: "Wheel-related accessories",
+      content: [
+        { name: "Lug Nuts", href: "/accessories/wheel/lug-nuts" },
+        { name: "Center Caps", href: "/accessories/wheel/center-caps" },
+        { name: "Wheel Locks", href: "/accessories/wheel/locks" },
+        { name: "Spacers", href: "/accessories/wheel/spacers" },
+      ],
+    },
+    {
+      id: "tools",
+      title: "🛠️ TOOLS & EQUIPMENT",
+      description: "Installation and maintenance tools",
+      content: [
+        { name: "Tire Irons", href: "/accessories/tools/tire-irons" },
+        { name: "Jack Stands", href: "/accessories/tools/jack-stands" },
+        { name: "Torque Wrenches", href: "/accessories/tools/torque-wrenches" },
+        { name: "Tire Gauges", href: "/accessories/tools/gauges" },
+      ],
+    },
+  ]
+
+  return (
+    <div className="px-4 py-2">
+      <MobileTabContent tabs={accessoriesTabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+    </div>
+  )
+}
+
+const FinancingMobileDropdown = () => {
+  const [activeTab, setActiveTab] = useState("options")
+
+  const financingTabs = [
+    {
+      id: "options",
+      title: "💳 FINANCING OPTIONS",
+      description: "Available financing plans",
+      content: [
+        { name: "0% APR Financing", href: "/financing/zero-apr" },
+        { name: "Low Monthly Payments", href: "/financing/low-payments" },
+        { name: "No Credit Check", href: "/financing/no-credit-check" },
+        { name: "Bad Credit OK", href: "/financing/bad-credit" },
+      ],
+    },
+    {
+      id: "apply",
+      title: "📝 APPLY NOW",
+      description: "Start your application",
+      content: [
+        { name: "Quick Application", href: "/financing/apply/quick" },
+        { name: "Pre-Qualification", href: "/financing/apply/prequalify" },
+        { name: "Check Your Rate", href: "/financing/apply/check-rate" },
+        { name: "Application Status", href: "/financing/apply/status" },
+      ],
+    },
+    {
+      id: "tools",
+      title: "🧮 TOOLS & CALCULATORS",
+      description: "Financial planning tools",
+      content: [
+        { name: "Payment Calculator", href: "/financing/calculator" },
+        { name: "Credit Score Check", href: "/financing/credit-check" },
+        { name: "Trade-In Value", href: "/financing/trade-in" },
+        { name: "Rebates & Offers", href: "/financing/rebates" },
+      ],
+    },
+  ]
+
+  return (
+    <div className="px-4 py-2">
+      <MobileTabContent tabs={financingTabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+    </div>
+  )
+}
 
 const MobileNavItems = () => {
   const [expandedItems, setExpandedItems] = useState<string[]>([])
@@ -341,10 +428,10 @@ const MobileNavItems = () => {
         return <TireMobileDropdown />
       case "WHEELS":
         return <WheelMobileDropdown />
-    //   case "ACCESSORIES":
-    //     return <AccessoriesMobileDropdown />
-    //   case "FINANCING":
-    //     return <FinancingMobileDropdown />
+      case "ACCESSORIES":
+        return <AccessoriesMobileDropdown />
+      case "FINANCING":
+        return <FinancingMobileDropdown />
       default:
         return null
     }

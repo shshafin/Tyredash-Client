@@ -6,178 +6,207 @@ import NextLink from "next/link"
 import { clsx } from "clsx"
 import { ChevronDown } from "lucide-react"
 import { link as linkStyles } from "@heroui/theme";
-
-const navItems = [
-    {
-      label: "TIRES",
-      href: "/tire",
-      hasDropdown: true,
-    },
-    {
-      label: "WHEELS",
-      href: "/wheel",
-      hasDropdown: true,
-    },
-    {
-      label: "ACCESSORIES",
-      href: "/accessories",
-    //   hasDropdown: true,
-    },
-    {
-      label: "APPOINTMENTS",
-      href: "/appointments",
-    },
-    {
-      label: "TIPS & GUIDES",
-      href: "/tips-guide",
-    },
-    {
-      label: "FINANCING",
-      href: "/financing",
-    //   hasDropdown: true,
-    },
-    {
-      label: "FLEET",
-      href: "/fleet",
-    },
-    {
-      label: "DEALS",
-      href: "/deals",
-    },
-];
-
-// Tire dropdown data
-const tireDropdownData = {
-  leftSections: [
-    // { title: "TREADWELL TIRE FINDER", href: "/tire-finder", highlight: true },
-    { title: "SHOP BY VEHICLE", href: "/tire/shop-by-vehicle", highlight: false },
-    { title: "SHOP BY SIZE", href: "/tire/shop-by-size" },
-    // { title: "WHEEL AND TIRE PACKAGES", href: "/tire/packages", highlight: true },
-  ],
-  brands: [
-    { name: "Michelin Tires", href: "/tire/brand/michelin" },
-    { name: "Goodyear Tires", href: "/tire/brand/goodyear" },
-    { name: "Bridgestone Tires", href: "/tire/brand/bridgestone" },
-    { name: "Continental Tires", href: "/tire/brand/continental" },
-  ],
-  types: [
-    { name: "All-Season Tires", href: "/tire/type/all-season" },
-    { name: "All-Terrain Tires", href: "/tire/type/all-terrain" },
-    { name: "Mud Terrain Tires", href: "/tire/type/mud-terrain" },
-    { name: "Summer Tires", href: "/tire/type/summer" },
-  ],
-  vehicleTypes: [
-    { name: "Car Tires", href: "/tire/vehicle/car" },
-    { name: "Truck/SUV Tires", href: "/tire/vehicle/truck-suv" },
-    { name: "ATV/UTV Tires", href: "/tire/vehicle/atv-utv" },
-    { name: "Trailer Tires", href: "/tire/vehicle/trailer" },
-  ],
-}
-
-// Wheel dropdown data
-const wheelDropdownData = {
-  leftSections: [
-    { title: "SHOP WHEELS", href: "/wheel/shop" },
-    { title: "SHOP BY VEHICLE", href: "/wheel/shop-by-vehicle" },
-    { title: "SHOP BY SIZE", href: "/wheel/shop-by-size", highlight: false },
-    // { title: "WHEEL AND TIRE PACKAGES", href: "/wheel/packages", highlight: true },
-  ],
-  brands: [
-    { name: "Fuel Wheels", href: "/wheel/brand/fuel" },
-    { name: "Black Rhino Wheels", href: "/wheel/brand/black-rhino" },
-    { name: "Vision Wheels", href: "/wheel/brand/vision" },
-    { name: "Konig Wheels", href: "/wheel/brand/konig" },
-  ],
-  styles: [
-    { name: "Chrome Wheels", href: "/wheel/style/chrome" },
-    { name: "Painted Wheels", href: "/wheel/style/painted" },
-    { name: "Machined Wheels", href: "/wheel/style/machined" },
-    { name: "Mesh Wheels", href: "/wheel/style/mesh" },
-  ],
-  vehicleTypes: [
-    { name: "Truck Wheels", href: "/wheel/vehicle/truck" },
-    { name: "Car Wheels", href: "/wheel/vehicle/car" },
-    { name: "Trailer Wheels", href: "/wheel/vehicle/trailer" },
-    { name: "ATV/UTV Wheels", href: "/wheel/vehicle/atv-utv" },
-  ],
-}
+import { siteConfig } from "@/src/config/site"
+import { useGetBrands } from "@/src/hooks/brand.hook"
+import { useGetCategories } from "@/src/hooks/categories.hook"
+import { useGetTyreSizes } from "@/src/hooks/tyreSize.hook"
+import { useGetMakes } from "@/src/hooks/makes.hook"
 
 const TireDropdown = () => {
+  const [activeTab, setActiveTab] = useState("vehicle")
+  const {data:bd} = useGetBrands({limit: 6});
+  const {data:cd} = useGetCategories({limit: 6});
+  const {data:tsd} = useGetTyreSizes({});
+  const modifiedBrands = bd?.data?.map((brand: any, index: number) => {
+    return {
+      id: brand?._id,
+      name: brand?.name || '',
+      href: `/tire?brand=${brand?._id}`
+    };
+  });
+  const modifiedCategories = cd?.data?.map((cat: any, index: number) => {
+    return {
+      id: cat?._id,
+      name: cat?.name || '',
+      href: `/tire?category=${cat?._id}`
+    };
+  });
+  const modifiedTireSizes = tsd?.data?.map((ts: any, index: number) => {
+    return {
+      id: ts?._id,
+      name: ts?.tireSize || '',
+      href: `/tire?tireSize=${ts?._id}`
+    };
+  });
+  const tireDropdownData = {
+  // Tire dropdown data with tabs
+    tabs: [
+      // {
+      //   id: "finder",
+      //   title: "TREADWELL TIRE FINDER",
+      //   highlight: true,
+      //   content: {
+      //     sections: [
+      //       {
+      //         title: "FIND YOUR PERFECT TIRE",
+      //         items: [
+      //           { name: "Search by Vehicle", href: "/tire-finder/vehicle" },
+      //           { name: "Search by Size", href: "/tire-finder/size" },
+      //           { name: "Tire Size Guide", href: "/tire-finder/guide" },
+      //           { name: "Tire Comparison Tool", href: "/tire-finder/compare" },
+      //         ],
+      //       },
+      //       {
+      //         title: "POPULAR SEARCHES",
+      //         items: [
+      //           { name: "All-Season Tires", href: "/tire/type/all-season" },
+      //           { name: "Winter Tires", href: "/tire/type/winter" },
+      //           { name: "Performance Tires", href: "/tire/type/performance" },
+      //           { name: "Truck Tires", href: "/tire/vehicle/truck" },
+      //         ],
+      //       },
+      //     ],
+      //   },
+      // },
+      {
+        id: "vehicle",
+        title: "SHOP BY VEHICLE",
+        content: {
+          sections: [
+            {
+              title: "VEHICLE TYPE",
+              items: [
+                { name: "Car Tires", href: "/tire/vehicle/car" },
+                { name: "Truck/SUV Tires", href: "/tire/vehicle/truck-suv" },
+                { name: "ATV/UTV Tires", href: "/tire/vehicle/atv-utv" },
+                { name: "Trailer Tires", href: "/tire/vehicle/trailer" },
+                { name: "Motorcycle Tires", href: "/tire/vehicle/motorcycle" },
+              ],
+            },
+            {
+              title: "Tire Type",
+              items: modifiedCategories || [],
+            },
+          ],
+        },
+      },
+      {
+        id: "size",
+        title: "SHOP BY SIZE",
+        content: {
+          sections: [
+            {
+              title: "POPULAR SIZES",
+              items: modifiedTireSizes || [],
+            }
+          ],
+        },
+      },
+      // {
+      //   id: "packages",
+      //   title: "WHEEL AND TIRE PACKAGES",
+      //   highlight: true,
+      //   content: {
+      //     sections: [
+      //       {
+      //         title: "PACKAGE DEALS",
+      //         items: [
+      //           { name: "Complete Packages", href: "/packages/complete" },
+      //           { name: "Winter Packages", href: "/packages/winter" },
+      //           { name: "Performance Packages", href: "/packages/performance" },
+      //           { name: "Off-Road Packages", href: "/packages/off-road" },
+      //         ],
+      //       },
+      //       {
+      //         title: "SAVINGS",
+      //         items: [
+      //           { name: "Bundle Discounts", href: "/packages/discounts" },
+      //           { name: "Installation Deals", href: "/packages/installation" },
+      //           { name: "Financing Options", href: "/packages/financing" },
+      //           { name: "Trade-In Program", href: "/packages/trade-in" },
+      //         ],
+      //       },
+      //     ],
+      //   },
+      // },
+    ],
+    brands: modifiedBrands || [],
+    types: [
+      { name: "All-Season Tires", href: "/tire/type/all-season" },
+      { name: "All-Terrain Tires", href: "/tire/type/all-terrain" },
+      { name: "Mud Terrain Tires", href: "/tire/type/mud-terrain" },
+      { name: "Summer Tires", href: "/tire/type/summer" },
+    ],
+  }
+  const activeTabData = tireDropdownData.tabs.find((tab) => tab.id === activeTab)
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-6 w-[800px]">
+    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-6 w-[900px]">
       <div className="grid grid-cols-4 gap-6">
-        {/* Left Section */}
-        <div className="space-y-4">
-          {tireDropdownData.leftSections.map((section, index) => (
-            <div key={index}>
-              <NextLink
-                href={section.href}
-                className={clsx(
-                  "block text-sm font-medium hover:text-primary transition-colors",
-                  section.highlight ? "text-yellow-600 bg-yellow-50 px-2 py-1 rounded" : "text-gray-700",
-                )}
-              >
-                {section.title}
-              </NextLink>
-            </div>
+        {/* Left Tabs Section */}
+        <div className="space-y-2">
+          {tireDropdownData.tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={clsx(
+                "block w-full text-left text-sm font-medium px-3 py-2 rounded transition-colors",
+                activeTab === tab.id
+                  ? "bg-primary text-white"
+                  : "text-gray-700 hover:bg-gray-100",
+              )}
+            >
+              {tab.title}
+            </button>
           ))}
         </div>
 
-        {/* Tire Brand Column */}
-        <div>
-          <h3 className="font-semibold text-gray-800 mb-3 text-sm">TIRE BRAND</h3>
-          <div className="space-y-2">
-            {tireDropdownData.brands.map((brand, index) => (
-              <NextLink
-                key={index}
-                href={brand.href}
-                className="block text-sm text-gray-600 hover:text-primary transition-colors"
-              >
-                {brand.name}
-              </NextLink>
-            ))}
-            <NextLink href="/tire/brands" className="block text-sm text-blue-600 hover:text-blue-800 font-medium">
-              View All
-            </NextLink>
-          </div>
-        </div>
+        {/* Right Content Section */}
+        <div className="col-span-3">
+          {activeTabData && (
+            <div className="grid grid-cols-3 gap-6">
+              {/* Dynamic Content Sections */}
+              {activeTabData.content.sections.map((section, index) => (
+                <div key={index}>
+                  <h3 className="font-semibold text-gray-800 mb-3 text-sm">{section.title}</h3>
+                  <div className="space-y-2">
+                    {section.items.map((item: any, itemIndex: number) => (
+                      <NextLink
+                        key={itemIndex}
+                        href={item.href}
+                        className="block text-sm text-gray-600 hover:text-primary transition-colors"
+                      >
+                        {item.name}
+                      </NextLink>
+                    ))}
+                  </div>
+                </div>
+              ))}
 
-        {/* Tire Type Column */}
-        <div>
-          <h3 className="font-semibold text-gray-800 mb-3 text-sm">TIRE TYPE</h3>
-          <div className="space-y-2">
-            {tireDropdownData.types.map((type, index) => (
-              <NextLink
-                key={index}
-                href={type.href}
-                className="block text-sm text-gray-600 hover:text-primary transition-colors"
-              >
-                {type.name}
-              </NextLink>
-            ))}
-            <NextLink href="/tire/types" className="block text-sm text-blue-600 hover:text-blue-800 font-medium">
-              View All
-            </NextLink>
-          </div>
-        </div>
-
-        {/* Vehicle Type Column */}
-        <div>
-          <h3 className="font-semibold text-gray-800 mb-3 text-sm">VEHICLE TYPE</h3>
-          <div className="space-y-2">
-            {tireDropdownData.vehicleTypes.map((vehicle, index) => (
-              <NextLink
-                key={index}
-                href={vehicle.href}
-                className="block text-sm text-gray-600 hover:text-primary transition-colors"
-              >
-                {vehicle.name}
-              </NextLink>
-            ))}
-            <NextLink href="/tire/vehicles" className="block text-sm text-blue-600 hover:text-blue-800 font-medium">
-              View All
-            </NextLink>
-          </div>
+              {/* Static Brands Column (always show for some tabs) */}
+              {(activeTab === "finder" || activeTab === "vehicle") && (
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-3 text-sm">TIRE BRANDS</h3>
+                  <div className="space-y-2">
+                    {tireDropdownData.brands.map((brand: any, index: any) => (
+                      <NextLink
+                        key={index}
+                        href={brand.href}
+                        className="block text-sm text-gray-600 hover:text-primary transition-colors"
+                      >
+                        {brand.name}
+                      </NextLink>
+                    ))}
+                    {/* <NextLink
+                      href="/tire/brands"
+                      className="block text-sm text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      View All Brands
+                    </NextLink> */}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -185,96 +214,379 @@ const TireDropdown = () => {
 }
 
 const WheelDropdown = () => {
+  const [activeTab, setActiveTab] = useState("shop")
+  const {data:bd} = useGetBrands({limit: 6});
+  const {data:cd} = useGetCategories({limit: 6});
+  const {data:tsd} = useGetTyreSizes({});
+  const {data:md} = useGetMakes({limit: 6});
+  const modifiedBrands = bd?.data?.map((brand: any, index: number) => {
+    return {
+      id: brand?._id,
+      name: brand?.name || '',
+      href: `/wheel?brand=${brand?._id}`
+    };
+  });
+  const modifiedCategories = cd?.data?.map((cat: any, index: number) => {
+    return {
+      id: cat?._id,
+      name: cat?.name || '',
+      href: `/wheel?category=${cat?._id}`
+    };
+  });
+  const modifiedTireSizes = tsd?.data?.map((ts: any, index: number) => {
+    return {
+      id: ts?._id,
+      name: ts?.tireSize || '',
+      href: `/wheel?tireSize=${ts?._id}`
+    };
+  });
+  const modifiedMakes = md?.data?.map((ts: any, index: number) => {
+    return {
+      id: ts?._id,
+      name: ts?.make || '',
+      href: `/wheel?make=${ts?._id}`
+    };
+  });
+  const wheelDropdownData = {
+  tabs: [
+    {
+      id: "shop",
+      title: "SHOP WHEELS",
+      content: {
+        sections: [
+          {
+            title: "WHEEL STYLE",
+            items: [
+              { name: "All Wheels", href: "/wheel/all" },
+              { name: "New Arrivals", href: "/wheel/new" },
+              { name: "Best Sellers", href: "/wheel/bestsellers" },
+              { name: "Clearance", href: "/wheel/clearance" },
+            ],
+          },
+          {
+            title: "VEHICLE TYPES",
+            items: modifiedCategories || [],
+          },
+        ],
+      },
+    },
+    {
+      id: "vehicle",
+      title: "SHOP BY VEHICLE",
+      content: {
+        sections: [
+          {
+            title: "VEHICLE TYPE",
+            items: modifiedCategories || [],
+          },
+          {
+            title: "POPULAR MAKES",
+            items: modifiedMakes || [],
+          },
+        ],
+      },
+    },
+    {
+      id: "size",
+      title: "SHOP BY SIZE",
+      content: {
+        sections: [
+          {
+            title: "POPULAR SIZES",
+            items: modifiedTireSizes || [],
+          }
+        ],
+      },
+    },
+    // {
+    //   id: "packages",
+    //   title: "WHEEL AND TIRE PACKAGES",
+    //   highlight: true,
+    //   content: {
+    //     sections: [
+    //       {
+    //         title: "PACKAGE DEALS",
+    //         items: [
+    //           { name: "Complete Packages", href: "/packages/complete" },
+    //           { name: "Off-Road Packages", href: "/packages/off-road" },
+    //           { name: "Performance Packages", href: "/packages/performance" },
+    //           { name: "Luxury Packages", href: "/packages/luxury" },
+    //         ],
+    //       },
+    //       {
+    //         title: "SERVICES",
+    //         items: [
+    //           { name: "Installation Service", href: "/packages/installation" },
+    //           { name: "Balancing & Alignment", href: "/packages/balancing" },
+    //           { name: "TPMS Service", href: "/packages/tpms" },
+    //           { name: "Road Hazard Warranty", href: "/packages/warranty" },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // },
+    // {
+    //   id: "visualizer",
+    //   title: "WHEEL VISUALIZER",
+    //   content: {
+    //     sections: [
+    //       {
+    //         title: "VISUALIZATION TOOLS",
+    //         items: [
+    //           { name: "Upload Your Car Photo", href: "/wheel/visualizer/upload" },
+    //           { name: "Browse by Make/Model", href: "/wheel/visualizer/browse" },
+    //           { name: "AR Wheel Preview", href: "/wheel/visualizer/ar" },
+    //           { name: "360° Wheel View", href: "/wheel/visualizer/360" },
+    //         ],
+    //       },
+    //       {
+    //         title: "POPULAR VISUALIZATIONS",
+    //         items: [
+    //           { name: "Truck Visualizations", href: "/wheel/visualizer/truck" },
+    //           { name: "Car Visualizations", href: "/wheel/visualizer/car" },
+    //           { name: "SUV Visualizations", href: "/wheel/visualizer/suv" },
+    //           { name: "Sports Car Visualizations", href: "/wheel/visualizer/sports" },
+    //         ],
+    //       },
+    //     ],
+    //   },
+    // },
+  ],
+  brands: modifiedBrands || [],
+}
+  const activeTabData = wheelDropdownData.tabs.find((tab) => tab.id === activeTab)
+
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-6 w-[800px]">
+    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-6 w-[900px]">
       <div className="grid grid-cols-4 gap-6">
-        {/* Left Section */}
-        <div className="space-y-4">
-          {wheelDropdownData.leftSections.map((section, index) => (
-            <div key={index}>
-              <NextLink
-                href={section.href}
-                className={clsx(
-                  "block text-sm font-medium hover:text-primary transition-colors",
-                  section.highlight ? "text-yellow-600 bg-yellow-50 px-2 py-1 rounded" : "text-gray-700",
-                )}
-              >
-                {section.title}
-              </NextLink>
-            </div>
-          ))}
-          {/* <div className="mt-6">
-            <NextLink
-              href="/wheel/visualizer"
-              className="block text-sm font-medium text-gray-700 hover:text-primary transition-colors"
+        {/* Left Tabs Section */}
+        <div className="space-y-2">
+          {wheelDropdownData.tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={clsx(
+                "block w-full text-left text-sm font-medium px-3 py-2 rounded transition-colors",
+                activeTab === tab.id
+                  ? "bg-primary text-white"
+                  : "text-gray-700 hover:bg-gray-100",
+              )}
             >
-              WHEEL VISUALIZER
-            </NextLink>
-          </div> */}
+              {tab.title}
+            </button>
+          ))}
         </div>
 
-        {/* Wheel Brand Column */}
-        <div>
-          <h3 className="font-semibold text-gray-800 mb-3 text-sm">WHEEL BRAND</h3>
-          <div className="space-y-2">
-            {wheelDropdownData.brands.map((brand, index) => (
-              <NextLink
-                key={index}
-                href={brand.href}
-                className="block text-sm text-gray-600 hover:text-primary transition-colors"
-              >
-                {brand.name}
-              </NextLink>
-            ))}
-            <NextLink href="/wheel/brands" className="block text-sm text-blue-600 hover:text-blue-800 font-medium">
-              View All
-            </NextLink>
-          </div>
-        </div>
+        {/* Right Content Section */}
+        <div className="col-span-3">
+          {activeTabData && (
+            <div className="grid grid-cols-3 gap-6">
+              {/* Dynamic Content Sections */}
+              {activeTabData.content.sections.map((section, index) => (
+                <div key={index}>
+                  <h3 className="font-semibold text-gray-800 mb-3 text-sm">{section.title}</h3>
+                  <div className="space-y-2">
+                    {section.items.map((item: any, itemIndex: number) => (
+                      <NextLink
+                        key={itemIndex}
+                        href={item.href}
+                        className="block text-sm text-gray-600 hover:text-primary transition-colors"
+                      >
+                        {item.name}
+                      </NextLink>
+                    ))}
+                  </div>
+                </div>
+              ))}
 
-        {/* Wheel Style Column */}
-        <div>
-          <h3 className="font-semibold text-gray-800 mb-3 text-sm">WHEEL STYLE</h3>
-          <div className="space-y-2">
-            {wheelDropdownData.styles.map((style, index) => (
-              <NextLink
-                key={index}
-                href={style.href}
-                className="block text-sm text-gray-600 hover:text-primary transition-colors"
-              >
-                {style.name}
-              </NextLink>
-            ))}
-            <NextLink href="/wheel/styles" className="block text-sm text-blue-600 hover:text-blue-800 font-medium">
-              View All
-            </NextLink>
-          </div>
-        </div>
-
-        {/* Vehicle Type Column */}
-        <div>
-          <h3 className="font-semibold text-gray-800 mb-3 text-sm">VEHICLE TYPE</h3>
-          <div className="space-y-2">
-            {wheelDropdownData.vehicleTypes.map((vehicle, index) => (
-              <NextLink
-                key={index}
-                href={vehicle.href}
-                className="block text-sm text-gray-600 hover:text-primary transition-colors"
-              >
-                {vehicle.name}
-              </NextLink>
-            ))}
-            <NextLink href="/wheel/vehicles" className="block text-sm text-blue-600 hover:text-blue-800 font-medium">
-              View All
-            </NextLink>
-          </div>
+              {/* Static Brands/Styles Column (always show for some tabs) */}
+              {(activeTab === "shop" || activeTab === "vehicle") && (
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-3 text-sm">WHEEL BRANDS</h3>
+                  <div className="space-y-2">
+                    {wheelDropdownData.brands.map((brand: any, index: number) => (
+                      <NextLink
+                        key={index}
+                        href={brand.href}
+                        className="block text-sm text-gray-600 hover:text-primary transition-colors"
+                      >
+                        {brand.name}
+                      </NextLink>
+                    ))}
+                    {/* <NextLink
+                      href="/wheel/brands"
+                      className="block text-sm text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      View All Brands
+                    </NextLink> */}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
   )
 }
 
-const DesktopNavItems = () => {
+const AccessoriesDropdown = () => {
+  const [activeTab, setActiveTab] = useState("tire-accessories")
+
+  const accessoriesTabs = [
+    {
+      id: "tire-accessories",
+      title: "TIRE ACCESSORIES",
+      content: [
+        { name: "Tire Pressure Monitors", href: "/accessories/tire/tpms" },
+        { name: "Tire Chains", href: "/accessories/tire/chains" },
+        { name: "Tire Covers", href: "/accessories/tire/covers" },
+        { name: "Valve Stems", href: "/accessories/tire/valve-stems" },
+      ],
+    },
+    {
+      id: "wheel-accessories",
+      title: "WHEEL ACCESSORIES",
+      content: [
+        { name: "Lug Nuts", href: "/accessories/wheel/lug-nuts" },
+        { name: "Center Caps", href: "/accessories/wheel/center-caps" },
+        { name: "Wheel Locks", href: "/accessories/wheel/locks" },
+        { name: "Spacers", href: "/accessories/wheel/spacers" },
+      ],
+    },
+    {
+      id: "tools",
+      title: "TOOLS & EQUIPMENT",
+      content: [
+        { name: "Tire Irons", href: "/accessories/tools/tire-irons" },
+        { name: "Jack Stands", href: "/accessories/tools/jack-stands" },
+        { name: "Torque Wrenches", href: "/accessories/tools/torque-wrenches" },
+        { name: "Tire Gauges", href: "/accessories/tools/gauges" },
+      ],
+    },
+  ]
+
+  const activeTabData = accessoriesTabs.find((tab) => tab.id === activeTab)
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 w-[600px]">
+      <div className="grid grid-cols-3 gap-4">
+        {/* Left Tabs */}
+        <div className="space-y-2">
+          {accessoriesTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={clsx(
+                "block w-full text-left text-sm font-medium px-3 py-2 rounded transition-colors",
+                activeTab === tab.id ? "bg-primary text-white" : "text-gray-700 hover:bg-gray-100",
+              )}
+            >
+              {tab.title}
+            </button>
+          ))}
+        </div>
+
+        {/* Right Content */}
+        <div className="col-span-2">
+          {activeTabData && (
+            <div className="space-y-2">
+              {activeTabData.content.map((item, index) => (
+                <NextLink
+                  key={index}
+                  href={item.href}
+                  className="block text-sm text-gray-600 hover:text-primary transition-colors"
+                >
+                  {item.name}
+                </NextLink>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const FinancingDropdown = () => {
+  const [activeTab, setActiveTab] = useState("options")
+
+  const financingTabs = [
+    {
+      id: "options",
+      title: "FINANCING OPTIONS",
+      content: [
+        { name: "0% APR Financing", href: "/financing/zero-apr" },
+        { name: "Low Monthly Payments", href: "/financing/low-payments" },
+        { name: "No Credit Check", href: "/financing/no-credit-check" },
+        { name: "Bad Credit OK", href: "/financing/bad-credit" },
+      ],
+    },
+    {
+      id: "apply",
+      title: "APPLY NOW",
+      content: [
+        { name: "Quick Application", href: "/financing/apply/quick" },
+        { name: "Pre-Qualification", href: "/financing/apply/prequalify" },
+        { name: "Check Your Rate", href: "/financing/apply/check-rate" },
+        { name: "Application Status", href: "/financing/apply/status" },
+      ],
+    },
+    {
+      id: "tools",
+      title: "TOOLS & CALCULATORS",
+      content: [
+        { name: "Payment Calculator", href: "/financing/calculator" },
+        { name: "Credit Score Check", href: "/financing/credit-check" },
+        { name: "Trade-In Value", href: "/financing/trade-in" },
+        { name: "Rebates & Offers", href: "/financing/rebates" },
+      ],
+    },
+  ]
+
+  const activeTabData = financingTabs.find((tab) => tab.id === activeTab)
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 w-[500px]">
+      <div className="grid grid-cols-2 gap-4">
+        {/* Left Tabs */}
+        <div className="space-y-2">
+          {financingTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={clsx(
+                "block w-full text-left text-sm font-medium px-3 py-2 rounded transition-colors",
+                activeTab === tab.id ? "bg-primary text-white" : "text-gray-700 hover:bg-gray-100",
+              )}
+            >
+              {tab.title}
+            </button>
+          ))}
+        </div>
+
+        {/* Right Content */}
+        <div>
+          {activeTabData && (
+            <div className="space-y-2">
+              {activeTabData.content.map((item, index) => (
+                <NextLink
+                  key={index}
+                  href={item.href}
+                  className="block text-sm text-gray-600 hover:text-primary transition-colors"
+                >
+                  {item.name}
+                </NextLink>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const DeskTopNavItems = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null)
 
   const renderDropdown = (label: string) => {
@@ -284,40 +596,9 @@ const DesktopNavItems = () => {
       case "WHEELS":
         return <WheelDropdown />
       case "ACCESSORIES":
-        return (
-          <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 w-[400px]">
-            <div className="space-y-2">
-              <NextLink href="/accessories/tire-accessories" className="block text-sm text-gray-600 hover:text-primary">
-                Tire Accessories
-              </NextLink>
-              <NextLink
-                href="/accessories/wheel-accessories"
-                className="block text-sm text-gray-600 hover:text-primary"
-              >
-                Wheel Accessories
-              </NextLink>
-              <NextLink href="/accessories/tools" className="block text-sm text-gray-600 hover:text-primary">
-                Tools & Equipment
-              </NextLink>
-            </div>
-          </div>
-        )
+        return <AccessoriesDropdown />
       case "FINANCING":
-        return (
-          <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 w-[300px]">
-            <div className="space-y-2">
-              <NextLink href="/financing/options" className="block text-sm text-gray-600 hover:text-primary">
-                Financing Options
-              </NextLink>
-              <NextLink href="/financing/apply" className="block text-sm text-gray-600 hover:text-primary">
-                Apply Now
-              </NextLink>
-              <NextLink href="/financing/calculator" className="block text-sm text-gray-600 hover:text-primary">
-                Payment Calculator
-              </NextLink>
-            </div>
-          </div>
-        )
+        return <FinancingDropdown />
       default:
         return null
     }
@@ -326,7 +607,7 @@ const DesktopNavItems = () => {
   return (
     <div className="mx-auto">
       <ul className="flex gap-3 md:gap-2">
-        {navItems.map((item: any) => (
+        {siteConfig.navItems.map((item) => (
           <NavbarItem key={item.href}>
             {item.hasDropdown ? (
               <div
@@ -341,7 +622,7 @@ const DesktopNavItems = () => {
                   )}
                 >
                   {item.label}
-                  <ChevronDown className="h-4 w-4 ml-1" />
+                  <ChevronDown className="h-3 w-3" />
                 </div>
                 {hoveredItem === item.label && (
                   <div className="absolute top-full left-0 mt-1 z-50">{renderDropdown(item.label)}</div>
@@ -365,4 +646,4 @@ const DesktopNavItems = () => {
   )
 }
 
-export default DesktopNavItems
+export default DeskTopNavItems

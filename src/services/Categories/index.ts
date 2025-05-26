@@ -53,9 +53,11 @@ export const deleteCategory = async (id: string): Promise<any> => {
   }
 };
 
-export const getCategories = async () => {
+export const getCategories = async (params: any) => {
   try {
-    const { data } = await axiosInstance.get("/categories");
+    const { data } = await axiosInstance.get("/categories", {
+      params,
+    });
 
     return data;
   } catch (error: any) {

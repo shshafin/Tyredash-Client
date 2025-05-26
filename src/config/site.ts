@@ -8,10 +8,17 @@ export const siteConfig = {
     {
       label: "TIRES",
       href: "/tire",
+      hasDropdown: true,
     },
     {
       label: "WHEELS",
       href: "/wheel",
+      hasDropdown: true,
+    },
+    {
+      label: "ACCESSORIES",
+      href: "/accessories",
+      // hasDropdown: true,
     },
     {
       label: "APPOINTMENTS",
@@ -24,6 +31,7 @@ export const siteConfig = {
     {
       label: "FINANCING",
       href: "/financing",
+      // hasDropdown: true,
     },
     {
       label: "FLEET",
@@ -38,10 +46,17 @@ export const siteConfig = {
     {
       label: "TIRES",
       href: "/tire",
+      hasDropdown: true,
     },
     {
       label: "WHEELS",
       href: "/wheel",
+      hasDropdown: true,
+    },
+    {
+      label: "ACCESSORIES",
+      href: "/accessories",
+      // hasDropdown: true,
     },
     {
       label: "APPOINTMENTS",
@@ -54,6 +69,7 @@ export const siteConfig = {
     {
       label: "FINANCING",
       href: "/financing",
+      // hasDropdown: true,
     },
     {
       label: "FLEET",

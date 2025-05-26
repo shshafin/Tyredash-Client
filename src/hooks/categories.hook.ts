@@ -40,9 +40,9 @@ export const useDeleteCategory = ({ onSuccess = () => {}, id }: any) => {
   });
 };
 
-export const useGetCategories = () => {
+export const useGetCategories = (params: any) => {
   return useQuery({
     queryKey: ["GET_CATEGORIES"],
-    queryFn: async () => await getCategories(),
+    queryFn: async () => await getCategories(params),
   });
 };
