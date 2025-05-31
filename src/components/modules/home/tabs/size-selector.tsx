@@ -1,8 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@heroui/button"
-import { HelpCircle } from "lucide-react"
+import { HelpCircle, Loader2 } from 'lucide-react'
+import { useGetTireWidths } from "@/src/hooks/tireWidth.hook"
+import { useGetTireRatios } from "@/src/hooks/tireRatio.hook"
+import { useGetTireDiameters } from "@/src/hooks/tireDiameter.hook"
+import { useGetWheelWidths } from "@/src/hooks/wheelWidth.hook"
+import { useGetWheelRatios } from "@/src/hooks/wheelRatio.hook"
+import { useGetWheelDiameters } from "@/src/hooks/wheelDiameter.hook"
 
 interface SizeSelectorProps {
   setMainStep: (step: any) => void
@@ -12,49 +18,94 @@ interface SizeSelectorProps {
 
 const SizeSelector = ({ setMainStep, selectedSize, setSelectedSize }: SizeSelectorProps) => {
   const [activeStep, setActiveStep] = useState(1)
-  const [selectedWidth, setSelectedWidth] = useState("")
-  const [selectedRatio, setSelectedRatio] = useState("")
-  const [selectedDiameter, setSelectedDiameter] = useState("")
-  const [productType, setProductType] = useState("tires")
-
-  // Width options
-  const widthOptions = [
-    "105",
-    "115",
-    "125",
-    "135",
-    "145",
-    "155",
-    "165",
-    "175",
-    "185",
-    "195",
-    "205",
-    "215",
-    "225",
-    "235",
-    "245",
-    "255",
-    "265",
-    "270",
-  ]
-
+  const [selectedWidth, setSelectedWidth] = useState<any>(null)
+  const [selectedRatio, setSelectedRatio] = useState<any>(null)
+  const [selectedDiameter, setSelectedDiameter] = useState<any>(null)
+  const [productType, setProductType] = useState("tire")
   const [showAllWidths, setShowAllWidths] = useState(false)
+
+  // Tire size hooks
+  const {
+    data: tireWidths = {},
+    isLoading: tireWidthsLoading,
+    isError: tireWidthsError,
+  } = useGetTireWidths({})
+
+  const {
+    data: tireRatios = {},
+    isLoading: tireRatiosLoading,
+    isError: tireRatiosError,
+  } = useGetTireRatios({});
+
+  const {
+    data: tireDiameters = {},
+    isLoading: tireDiametersLoading,
+    isError: tireDiametersError,
+  } = useGetTireDiameters({});
+
+  // Wheel size hooks
+  const {
+    data: wheelWidths = {},
+    isLoading: wheelWidthsLoading,
+    isError: wheelWidthsError,
+  } = useGetWheelWidths({})
+
+  const {
+    data: wheelRatios = {},
+    isLoading: wheelRatiosLoading,
+    isError: wheelRatiosError,
+  } = useGetWheelRatios({});
+
+  const {
+    data: wheelDiameters = {},
+    isLoading: wheelDiametersLoading,
+    isError: wheelDiametersError,
+  } = useGetWheelDiameters({});
+
+  // Determine current options and loading/error states based on product type
+  const widthOptions = productType === "tire" ? tireWidths?.data || [] : wheelWidths?.data || []
+  const ratioOptions = productType === "tire" ? tireRatios?.data || [] : wheelRatios?.data || []
+  const diameterOptions = productType === "tire" ? tireDiameters?.data || [] : wheelDiameters?.data || []
+  const isWidthLoading = productType === "tire" ? tireWidthsLoading : wheelWidthsLoading
+  const isRatioLoading = productType === "tire" ? tireRatiosLoading : wheelRatiosLoading
+  const isDiameterLoading = productType === "tire" ? tireDiametersLoading : wheelDiametersLoading
+
+  const isWidthError = productType === "tire" ? tireWidthsError : wheelWidthsError
+  const isRatioError = productType === "tire" ? tireRatiosError : wheelRatiosError
+  const isDiameterError = productType === "tire" ? tireDiametersError : wheelDiametersError
+
+  const isLoading =
+    isWidthLoading ||
+    (activeStep === 2 && isRatioLoading) ||
+    (activeStep === 3 && isDiameterLoading)
+
+  const isError =
+    isWidthError ||
+    (activeStep === 2 && isRatioError) ||
+    (activeStep === 3 && isDiameterError)
+
+  // Limit displayed widths if there are many
   const displayedWidths = showAllWidths ? widthOptions : widthOptions.slice(0, 18)
 
-  // Ratio options (aspect ratios)
-  const ratioOptions = ["30", "35", "40", "45", "50", "55", "60", "65", "70", "75", "80", "85"]
-
-  // Diameter options (rim sizes)
-  const diameterOptions = ["13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "24", "26"]
+  // Reset selections when product type changes
+  useEffect(() => {
+    setSelectedWidth("")
+    setSelectedRatio("")
+    setSelectedDiameter("")
+    setActiveStep(1)
+    setShowAllWidths(false)
+  }, [productType])
 
   const handleWidthSelect = (width: string) => {
     setSelectedWidth(width)
+    setSelectedRatio("")
+    setSelectedDiameter("")
     setActiveStep(2)
   }
 
   const handleRatioSelect = (ratio: string) => {
     setSelectedRatio(ratio)
+    setSelectedDiameter("")
     setActiveStep(3)
   }
 
@@ -63,12 +114,17 @@ const SizeSelector = ({ setMainStep, selectedSize, setSelectedSize }: SizeSelect
   }
 
   const handleViewProducts = () => {
-    const sizeString = `${selectedWidth}/${selectedRatio}R${selectedDiameter}`
+    const sizeString =
+      productType === "tire"
+        ? `${selectedWidth?.width}/${selectedRatio?.ratio}R${selectedDiameter?.diameter}`
+        : `${selectedWidth?.width}/${selectedRatio?.ratio}x${selectedDiameter?.diameter}`
+
     setSelectedSize({
       width: selectedWidth,
       ratio: selectedRatio,
       diameter: selectedDiameter,
       fullSize: sizeString,
+      productType,
     })
     // Navigate to results or next step
     setMainStep("results")
@@ -97,19 +153,19 @@ const SizeSelector = ({ setMainStep, selectedSize, setSelectedSize }: SizeSelect
         <div className="flex bg-gray-100 rounded-lg p-1">
           <Button
             className={`px-8 py-2 rounded-md transition-colors ${
-              productType === "tires" ? "bg-slate-600 text-white" : "bg-transparent text-gray-600 hover:bg-gray-200"
+              productType === "tire" ? "bg-slate-600 text-white" : "bg-transparent text-gray-600 hover:bg-gray-200"
             }`}
-            onPress={() => setProductType("tires")}
+            onPress={() => setProductType("tire")}
           >
-            Tires
+            Tire
           </Button>
           <Button
             className={`px-8 py-2 rounded-md transition-colors ${
-              productType === "wheels" ? "bg-slate-600 text-white" : "bg-transparent text-gray-600 hover:bg-gray-200"
+              productType === "wheel" ? "bg-slate-600 text-white" : "bg-transparent text-gray-600 hover:bg-gray-200"
             }`}
-            onPress={() => setProductType("wheels")}
+            onPress={() => setProductType("wheel")}
           >
-            Wheels
+            Wheel
           </Button>
         </div>
       </div>
@@ -170,7 +226,16 @@ const SizeSelector = ({ setMainStep, selectedSize, setSelectedSize }: SizeSelect
       {(selectedWidth || selectedRatio || selectedDiameter) && (
         <div className="text-center mb-6">
           <div className="text-lg font-semibold text-gray-700">
-            Selected Size: {selectedWidth || "___"}/{selectedRatio || "__"}R{selectedDiameter || "__"}
+            Selected Size:{" "}
+            {productType === "tire" ? (
+              <>
+                {selectedWidth?.width || "___"}/{selectedRatio?.ratio || "__"}R{selectedDiameter?.diameter || "__"}
+              </>
+            ) : (
+              <>
+                {selectedWidth?.width || "___"}/{selectedRatio?.ratio || "__"}x{selectedDiameter?.diameter || "__"}
+              </>
+            )}
           </div>
         </div>
       )}
@@ -178,53 +243,92 @@ const SizeSelector = ({ setMainStep, selectedSize, setSelectedSize }: SizeSelect
       {/* Step 1: Width Selection */}
       {activeStep === 1 && (
         <div>
-          <h3 className="text-xl font-semibold text-center mb-6">Select Tire Width</h3>
-          <div className="grid grid-cols-6 gap-3 mb-6">
-            {displayedWidths.map((width) => (
-              <Button
-                key={width}
-                variant="bordered"
-                className={`h-12 ${
-                  selectedWidth === width
-                    ? "border-orange-500 bg-orange-50 text-orange-600"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
-                onPress={() => handleWidthSelect(width)}
-              >
-                {width}
-              </Button>
-            ))}
-          </div>
-          {!showAllWidths && (
-            <div className="text-center">
-              <Button variant="ghost" className="text-blue-600" onPress={() => setShowAllWidths(true)}>
-                + see all
+          <h3 className="text-xl font-semibold text-center mb-6">
+            Select {productType === "tire" ? "Tire" : "Wheel"} Width
+          </h3>
+
+          {isWidthLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : isWidthError ? (
+            <div className="text-center py-8">
+              <p className="text-red-500 mb-4">Failed to load width options</p>
+              <Button color="primary" onPress={() => window.location.reload()}>
+                Retry
               </Button>
             </div>
+          ) : widthOptions.length > 0 ? (
+            <>
+              <div className="grid grid-cols-6 gap-3 mb-6">
+                {displayedWidths.map((width: any) => (
+                  <Button
+                    key={width._id}
+                    variant="bordered"
+                    className={`h-12 ${
+                      selectedWidth === width?._id
+                        ? "border-orange-500 bg-orange-50 text-orange-600"
+                        : "border-gray-300 hover:border-gray-400"
+                    }`}
+                    onPress={() => handleWidthSelect(width)}
+                  >
+                    {width?.width}
+                    {productType === "wheel" && '"'}
+                  </Button>
+                ))}
+              </div>
+              {widthOptions.length > 18 && !showAllWidths && (
+                <div className="text-center">
+                  <Button variant="ghost" className="text-blue-600" onPress={() => setShowAllWidths(true)}>
+                    + see all
+                  </Button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="text-center py-8 text-gray-500">No width options available</div>
           )}
         </div>
       )}
 
-      {/* Step 2: Ratio Selection */}
+      {/* Step 2: Ratio Selection (Both Tires and Wheels) */}
       {activeStep === 2 && (
         <div>
-          <h3 className="text-xl font-semibold text-center mb-6">Select Aspect Ratio</h3>
-          <div className="grid grid-cols-6 gap-3 mb-6">
-            {ratioOptions.map((ratio) => (
-              <Button
-                key={ratio}
-                variant="bordered"
-                className={`h-12 ${
-                  selectedRatio === ratio
-                    ? "border-orange-500 bg-orange-50 text-orange-600"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
-                onPress={() => handleRatioSelect(ratio)}
-              >
-                {ratio}
+          <h3 className="text-xl font-semibold text-center mb-6">
+            Select {productType === "tire" ? "Aspect Ratio" : "Wheel Ratio"}
+          </h3>
+
+          {isRatioLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : isRatioError ? (
+            <div className="text-center py-8">
+              <p className="text-red-500 mb-4">Failed to load ratio options</p>
+              <Button color="primary" onPress={() => window.location.reload()}>
+                Retry
               </Button>
-            ))}
-          </div>
+            </div>
+          ) : ratioOptions.length > 0 ? (
+            <div className="grid grid-cols-6 gap-3 mb-6">
+              {ratioOptions.map((ratio: any) => (
+                <Button
+                  key={ratio?._id}
+                  variant="bordered"
+                  className={`h-12 ${
+                    selectedRatio === ratio?._id
+                      ? "border-orange-500 bg-orange-50 text-orange-600"
+                      : "border-gray-300 hover:border-gray-400"
+                  }`}
+                  onPress={() => handleRatioSelect(ratio)}
+                >
+                  {ratio?.ratio}
+                </Button>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">No ratio options available for the selected width</div>
+          )}
         </div>
       )}
 
@@ -232,22 +336,40 @@ const SizeSelector = ({ setMainStep, selectedSize, setSelectedSize }: SizeSelect
       {activeStep === 3 && (
         <div>
           <h3 className="text-xl font-semibold text-center mb-6">Select Rim Diameter</h3>
-          <div className="grid grid-cols-6 gap-3 mb-6">
-            {diameterOptions.map((diameter) => (
-              <Button
-                key={diameter}
-                variant="bordered"
-                className={`h-12 ${
-                  selectedDiameter === diameter
-                    ? "border-orange-500 bg-orange-50 text-orange-600"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
-                onPress={() => handleDiameterSelect(diameter)}
-              >
-                {diameter}"
+
+          {isDiameterLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : isDiameterError ? (
+            <div className="text-center py-8">
+              <p className="text-red-500 mb-4">Failed to load diameter options</p>
+              <Button color="primary" onPress={() => window.location.reload()}>
+                Retry
               </Button>
-            ))}
-          </div>
+            </div>
+          ) : diameterOptions.length > 0 ? (
+            <div className="grid grid-cols-6 gap-3 mb-6">
+              {diameterOptions.map((diameter: any) => (
+                <Button
+                  key={diameter?._id}
+                  variant="bordered"
+                  className={`h-12 ${
+                    selectedDiameter === diameter?._id
+                      ? "border-orange-500 bg-orange-50 text-orange-600"
+                      : "border-gray-300 hover:border-gray-400"
+                  }`}
+                  onPress={() => handleDiameterSelect(diameter)}
+                >
+                  {diameter?.diameter}"
+                </Button>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              No diameter options available for the selected width and ratio
+            </div>
+          )}
         </div>
       )}
 

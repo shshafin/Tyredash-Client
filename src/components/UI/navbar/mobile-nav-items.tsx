@@ -119,7 +119,7 @@ const TireMobileDropdown = () => {
   const modifiedVehicleTypes = vtd?.data?.map((vt: any, index: number) => {
     return {
       id: vt?._id,
-      name: vt?.tireSize || '',
+      name: vt?.vehicleType || '',
       href: `/tire?vehicleType=${vt?._id}`
     };
   });
@@ -194,7 +194,7 @@ const WheelMobileDropdown = () => {
   const modifiedWheelWidthTypes = wwt?.data?.map((ww: any, index: number) => {
     return {
       id: ww?._id,
-      name: ww?.name || '',
+      name: ww?.widthType || '',
       href: `/wheel?widthType=${ww?._id}`
     };
   });
@@ -215,7 +215,7 @@ const WheelMobileDropdown = () => {
   const modifiedVehicleTypes = vtd?.data?.map((vt: any, index: number) => {
     return {
       id: vt?._id,
-      name: vt?.tireSize || '',
+      name: vt?.vehicleType || '',
       href: `/tire?vehicleType=${vt?._id}`
     };
   }); 
