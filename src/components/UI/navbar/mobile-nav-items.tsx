@@ -12,6 +12,8 @@ import { useGetBrands } from "@/src/hooks/brand.hook"
 import { useGetCategories } from "@/src/hooks/categories.hook"
 import { useGetTyreSizes } from "@/src/hooks/tyreSize.hook"
 import { useGetMakes } from "@/src/hooks/makes.hook"
+import { useGetVehicleTypes } from "@/src/hooks/vehicleType.hook"
+import { useGetWheelWidthTypes } from "@/src/hooks/wheelWhidthType"
 
 const MobileTabContent = ({ tabs, activeTab, setActiveTab }: any) => (
   <div className="space-y-4">
@@ -26,7 +28,7 @@ const MobileTabContent = ({ tabs, activeTab, setActiveTab }: any) => (
           }`}
         >
           <div className="font-semibold text-xs">{tab.title}</div>
-          <div className="text-xs opacity-80 mt-1">{tab.description}</div>
+          {/* <div className="text-xs opacity-80 mt-1">{tab.description}</div> */}
         </button>
       ))}
     </div>
@@ -55,13 +57,9 @@ const MobileTabContent = ({ tabs, activeTab, setActiveTab }: any) => (
 const MobileCategorySection = ({
   title,
   items,
-  showViewAll = true,
-  viewAllHref,
 }: {
   title: string
   items: any[]
-  showViewAll?: boolean
-  viewAllHref?: string
 }) => (
   <div className="mb-6">
     <h3 className="font-bold text-gray-800 mb-3 text-sm uppercase tracking-wide">{title}</h3>
@@ -80,84 +78,68 @@ const MobileCategorySection = ({
           </div>
         </NextLink>
       ))}
-      {showViewAll && viewAllHref && (
+      {/* {showViewAll && viewAllHref && (
         <NextLink href={viewAllHref}>
           <div className="py-2 px-3 text-center">
             <span className="text-sm text-primary font-medium">View All {title}</span>
           </div>
         </NextLink>
-      )}
+      )} */}
     </div>
   </div>
 )
 
 const TireMobileDropdown = () => {
-  const [activeTab, setActiveTab] = useState("vehicle1354")
+  const [activeTab, setActiveTab] = useState("vehicle")
+  const {data:bd} = useGetBrands({limit: 6});
+  const {data:cd} = useGetCategories({limit: 6});
+  const {data:vtd} = useGetVehicleTypes({limit: 6});
+  const {data:tsd} = useGetTyreSizes({});
+  const modifiedBrands = bd?.data?.map((brand: any, index: number) => {
+    return {
+      id: brand?._id,
+      name: brand?.name || '',
+      href: `/tire?brand=${brand?._id}`
+    };
+  });
+  const modifiedCategories = cd?.data?.map((cat: any, index: number) => {
+    return {
+      id: cat?._id,
+      name: cat?.name || '',
+      href: `/tire?category=${cat?._id}`
+    };
+  });  
+  const modifiedTireSizes = tsd?.data?.map((ts: any, index: number) => {
+    return {
+      id: ts?._id,
+      name: ts?.tireSize || '',
+      href: `/tire?tireSize=${ts?._id}`
+    };
+  });  
+  const modifiedVehicleTypes = vtd?.data?.map((vt: any, index: number) => {
+    return {
+      id: vt?._id,
+      name: vt?.tireSize || '',
+      href: `/tire?vehicleType=${vt?._id}`
+    };
+  });
   const mobileTireData = {
     tabs: [
-      // {
-      //   id: "finder",
-      //   title: "🔍 TIRE FINDER",
-      //   description: "Find the perfect tire for your vehicle",
-      //   content: [
-      //     { name: "Search by Vehicle", href: "/tire-finder/vehicle" },
-      //     { name: "Search by Size", href: "/tire-finder/size" },
-      //     { name: "Tire Size Guide", href: "/tire-finder/guide" },
-      //     { name: "Tire Comparison Tool", href: "/tire-finder/compare" },
-      //   ],
-      // },
       {
         id: "vehicle",
         title: "🚗 SHOP BY VEHICLE",
         description: "Browse by your car model",
-        content: [
-          { name: "Car Tires", href: "/tire/vehicle/car" },
-          { name: "Truck/SUV Tires", href: "/tire/vehicle/truck-suv" },
-          { name: "ATV/UTV Tires", href: "/tire/vehicle/atv-utv" },
-          { name: "Trailer Tires", href: "/tire/vehicle/trailer" },
-          { name: "Motorcycle Tires", href: "/tire/vehicle/motorcycle" },
-        ],
+        content: modifiedVehicleTypes || [],
       },
       {
         id: "size",
         title: "📏 SHOP BY SIZE",
         description: "Search by tire size",
-        content: [
-          { name: "215/60R16", href: "/tire/size/215-60-16" },
-          { name: "225/65R17", href: "/tire/size/225-65-17" },
-          { name: "235/55R18", href: "/tire/size/235-55-18" },
-          { name: "245/45R19", href: "/tire/size/245-45-19" },
-          { name: "Size Calculator", href: "/tire/tools/calculator" },
-        ],
+        content: modifiedTireSizes || [],
       },
-      // {
-      //   id: "packages",
-      //   title: "⭐ TIRE PACKAGES",
-      //   description: "Wheel & tire combos",
-      //   content: [
-      //     { name: "Complete Packages", href: "/packages/complete" },
-      //     { name: "Winter Packages", href: "/packages/winter" },
-      //     { name: "Performance Packages", href: "/packages/performance" },
-      //     { name: "Off-Road Packages", href: "/packages/off-road" },
-      //   ],
-      // },
     ],
-    brands: [
-      { name: "Michelin Tires", href: "/tire/brand/michelin" },
-      { name: "Goodyear Tires", href: "/tire/brand/goodyear" },
-      { name: "Bridgestone Tires", href: "/tire/brand/bridgestone" },
-      { name: "Continental Tires", href: "/tire/brand/continental" },
-      { name: "Pirelli Tires", href: "/tire/brand/pirelli" },
-      { name: "Dunlop Tires", href: "/tire/brand/dunlop" },
-    ],
-    types: [
-      { name: "All-Season Tires", href: "/tire/type/all-season", popular: true },
-      { name: "All-Terrain Tires", href: "/tire/type/all-terrain", popular: true },
-      { name: "Mud Terrain Tires", href: "/tire/type/mud-terrain" },
-      { name: "Summer Tires", href: "/tire/type/summer" },
-      { name: "Winter Tires", href: "/tire/type/winter" },
-      { name: "Performance Tires", href: "/tire/type/performance" },
-    ],
+    brands: modifiedBrands || [],
+    types: modifiedCategories || [],
   }
 
   return (
@@ -175,7 +157,7 @@ const TireMobileDropdown = () => {
             </div>
           }
         >
-          <MobileCategorySection title="Popular Brands" items={mobileTireData.brands} viewAllHref="/tire/brands" />
+          <MobileCategorySection title="Popular Brands" items={mobileTireData.brands} />
         </AccordionItem>
 
         <AccordionItem
@@ -188,7 +170,7 @@ const TireMobileDropdown = () => {
             </div>
           }
         >
-          <MobileCategorySection title="Tire Categories" items={mobileTireData.types} viewAllHref="/tire/types" />
+          <MobileCategorySection title="Tire Categories" items={mobileTireData.types} />
         </AccordionItem>
       </Accordion>
     </div>
@@ -198,9 +180,10 @@ const TireMobileDropdown = () => {
 const WheelMobileDropdown = () => {
   const [activeTab, setActiveTab] = useState("shop")
   const {data:bd} = useGetBrands({limit: 6});
-  const {data:cd} = useGetCategories({limit: 6});
   const {data:tsd} = useGetTyreSizes({});
   const {data:md} = useGetMakes({limit: 6});
+  const {data:vtd} = useGetVehicleTypes({limit: 6});
+  const {data:wwt} = useGetWheelWidthTypes({limit: 6});
   const modifiedBrands = bd?.data?.map((brand: any, index: number) => {
     return {
       id: brand?._id,
@@ -208,11 +191,11 @@ const WheelMobileDropdown = () => {
       href: `/wheel?brand=${brand?._id}`
     };
   });
-  const modifiedCategories = cd?.data?.map((cat: any, index: number) => {
+  const modifiedWheelWidthTypes = wwt?.data?.map((ww: any, index: number) => {
     return {
-      id: cat?._id,
-      name: cat?.name || '',
-      href: `/wheel?category=${cat?._id}`
+      id: ww?._id,
+      name: ww?.name || '',
+      href: `/wheel?widthType=${ww?._id}`
     };
   });
   const modifiedTireSizes = tsd?.data?.map((ts: any, index: number) => {
@@ -229,24 +212,26 @@ const WheelMobileDropdown = () => {
       href: `/wheel?make=${ts?._id}`
     };
   });
+  const modifiedVehicleTypes = vtd?.data?.map((vt: any, index: number) => {
+    return {
+      id: vt?._id,
+      name: vt?.tireSize || '',
+      href: `/tire?vehicleType=${vt?._id}`
+    };
+  }); 
   const mobileWheelData = {
   tabs: [
     {
       id: "shop",
       title: "🛒 SHOP WHEELS",
       description: "Browse all wheel categories",
-      content: [
-        { name: "All Wheels", href: "/wheel/all" },
-        { name: "New Arrivals", href: "/wheel/new" },
-        { name: "Best Sellers", href: "/wheel/bestsellers" },
-        { name: "Clearance", href: "/wheel/clearance" },
-      ],
+      content: modifiedWheelWidthTypes || [],
     },
     {
       id: "vehicle",
       title: "🚗 SHOP BY VEHICLE",
       description: "Browse by your car model",
-      content: modifiedCategories || [],
+      content: modifiedVehicleTypes || [],
     },
     {
       id: "size",
@@ -254,38 +239,9 @@ const WheelMobileDropdown = () => {
       description: "Search by wheel size",
       content: modifiedTireSizes || [],
     },
-    // {
-    //   id: "packages",
-    //   title: "⭐ WHEEL PACKAGES",
-    //   description: "Wheel & tire combos",
-    //   content: [
-    //     { name: "Complete Packages", href: "/packages/complete" },
-    //     { name: "Off-Road Packages", href: "/packages/off-road" },
-    //     { name: "Performance Packages", href: "/packages/performance" },
-    //     { name: "Luxury Packages", href: "/packages/luxury" },
-    //   ],
-    // },
-    // {
-    //   id: "visualizer",
-    //   title: "🎨 WHEEL VISUALIZER",
-    //   description: "See wheels on your car",
-    //   content: [
-    //     { name: "Upload Your Car Photo", href: "/wheel/visualizer/upload" },
-    //     { name: "Browse by Make/Model", href: "/wheel/visualizer/browse" },
-    //     { name: "AR Wheel Preview", href: "/wheel/visualizer/ar" },
-    //     { name: "360° Wheel View", href: "/wheel/visualizer/360" },
-    //   ],
-    // },
   ],
   brands: modifiedBrands || [],
-  styles: [
-    { name: "Chrome Wheels", href: "/wheel/style/chrome", popular: true },
-    { name: "Painted Wheels", href: "/wheel/style/painted" },
-    { name: "Machined Wheels", href: "/wheel/style/machined", popular: true },
-    { name: "Mesh Wheels", href: "/wheel/style/mesh" },
-    { name: "Forged Wheels", href: "/wheel/style/forged" },
-    { name: "Cast Wheels", href: "/wheel/style/cast" },
-  ],
+  styles: modifiedWheelWidthTypes || [],
 }
 
   return (
@@ -303,7 +259,7 @@ const WheelMobileDropdown = () => {
             </div>
           }
         >
-          <MobileCategorySection title="Popular Brands" items={mobileWheelData.brands} viewAllHref="/wheel/brands" />
+          <MobileCategorySection title="Popular Brands" items={mobileWheelData.brands} />
         </AccordionItem>
 
         <AccordionItem
@@ -316,7 +272,7 @@ const WheelMobileDropdown = () => {
             </div>
           }
         >
-          <MobileCategorySection title="Wheel Finishes" items={mobileWheelData.styles} viewAllHref="/wheel/styles" />
+          <MobileCategorySection title="Wheel Finishes" items={mobileWheelData.styles} />
         </AccordionItem>
       </Accordion>
     </div>
@@ -446,7 +402,7 @@ const MobileNavItems = () => {
               <div className="w-full">
                 <button
                   onClick={() => toggleExpanded(item.label)}
-                  className="flex items-center justify-between w-full py-3 px-2 text-left hover:bg-gray-50 rounded-md transition-colors"
+                  className="flex items-center justify-between w-full py-3 px-2 text-left rounded-md transition-colors"
                 >
                   <span
                     className={`text-lg font-medium ${

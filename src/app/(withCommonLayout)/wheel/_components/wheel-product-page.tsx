@@ -28,11 +28,15 @@ const WheelProductPage = () => {
   const category = searchParams.get('category');
   const tireSize = searchParams.get('tireSize');
   const make = searchParams.get('make');  
+  const vehicleType = searchParams.get('vehicleType');
+  const widthType = searchParams.get('widthType');
   const { data: Wheels, isLoading, isError } = useGetWheels({
     brand: brand ?? undefined, 
     category: category ?? undefined, 
     tireSize: tireSize ?? undefined,
-    make: make ?? undefined
+    make: make ?? undefined,
+    vehicleType: vehicleType ?? undefined,
+    widthType: widthType ?? undefined,
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);

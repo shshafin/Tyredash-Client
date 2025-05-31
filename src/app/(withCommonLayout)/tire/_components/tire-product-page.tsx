@@ -26,10 +26,12 @@ const TireProductPage = () => {
   const brand = searchParams.get('brand');
   const category = searchParams.get('category');
   const tireSize = searchParams.get('tireSize');
+  const vehicleType = searchParams.get('vehicleType');
   const { data: Tires, isLoading, isError } = useGetTires({
     brand: brand ?? undefined, 
     category: category ?? undefined, 
-    tireSize: tireSize ?? undefined
+    tireSize: tireSize ?? undefined,
+    vehicleType: vehicleType ?? undefined,
   });
   console.log(Tires, "Tires");
   const [searchTerm, setSearchTerm] = useState("");

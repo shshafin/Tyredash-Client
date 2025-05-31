@@ -11,11 +11,14 @@ import { useGetBrands } from "@/src/hooks/brand.hook"
 import { useGetCategories } from "@/src/hooks/categories.hook"
 import { useGetTyreSizes } from "@/src/hooks/tyreSize.hook"
 import { useGetMakes } from "@/src/hooks/makes.hook"
+import { useGetVehicleTypes } from "@/src/hooks/vehicleType.hook"
+import { useGetWheelWidthTypes } from "@/src/hooks/wheelWhidthType"
 
 const TireDropdown = () => {
   const [activeTab, setActiveTab] = useState("vehicle")
   const {data:bd} = useGetBrands({limit: 6});
   const {data:cd} = useGetCategories({limit: 6});
+  const {data:vtd} = useGetVehicleTypes({limit: 6});
   const {data:tsd} = useGetTyreSizes({});
   const modifiedBrands = bd?.data?.map((brand: any, index: number) => {
     return {
@@ -38,36 +41,16 @@ const TireDropdown = () => {
       href: `/tire?tireSize=${ts?._id}`
     };
   });
+  const modifiedVehicleTypes = vtd?.data?.map((vt: any, index: number) => {
+    return {
+      id: vt?._id,
+      name: vt?.tireSize || '',
+      href: `/tire?vehicleType=${vt?._id}`
+    };
+  });
   const tireDropdownData = {
   // Tire dropdown data with tabs
     tabs: [
-      // {
-      //   id: "finder",
-      //   title: "TREADWELL TIRE FINDER",
-      //   highlight: true,
-      //   content: {
-      //     sections: [
-      //       {
-      //         title: "FIND YOUR PERFECT TIRE",
-      //         items: [
-      //           { name: "Search by Vehicle", href: "/tire-finder/vehicle" },
-      //           { name: "Search by Size", href: "/tire-finder/size" },
-      //           { name: "Tire Size Guide", href: "/tire-finder/guide" },
-      //           { name: "Tire Comparison Tool", href: "/tire-finder/compare" },
-      //         ],
-      //       },
-      //       {
-      //         title: "POPULAR SEARCHES",
-      //         items: [
-      //           { name: "All-Season Tires", href: "/tire/type/all-season" },
-      //           { name: "Winter Tires", href: "/tire/type/winter" },
-      //           { name: "Performance Tires", href: "/tire/type/performance" },
-      //           { name: "Truck Tires", href: "/tire/vehicle/truck" },
-      //         ],
-      //       },
-      //     ],
-      //   },
-      // },
       {
         id: "vehicle",
         title: "SHOP BY VEHICLE",
@@ -75,13 +58,7 @@ const TireDropdown = () => {
           sections: [
             {
               title: "VEHICLE TYPE",
-              items: [
-                { name: "Car Tires", href: "/tire/vehicle/car" },
-                { name: "Truck/SUV Tires", href: "/tire/vehicle/truck-suv" },
-                { name: "ATV/UTV Tires", href: "/tire/vehicle/atv-utv" },
-                { name: "Trailer Tires", href: "/tire/vehicle/trailer" },
-                { name: "Motorcycle Tires", href: "/tire/vehicle/motorcycle" },
-              ],
+              items: modifiedVehicleTypes || [],
             },
             {
               title: "Tire Type",
@@ -102,41 +79,8 @@ const TireDropdown = () => {
           ],
         },
       },
-      // {
-      //   id: "packages",
-      //   title: "WHEEL AND TIRE PACKAGES",
-      //   highlight: true,
-      //   content: {
-      //     sections: [
-      //       {
-      //         title: "PACKAGE DEALS",
-      //         items: [
-      //           { name: "Complete Packages", href: "/packages/complete" },
-      //           { name: "Winter Packages", href: "/packages/winter" },
-      //           { name: "Performance Packages", href: "/packages/performance" },
-      //           { name: "Off-Road Packages", href: "/packages/off-road" },
-      //         ],
-      //       },
-      //       {
-      //         title: "SAVINGS",
-      //         items: [
-      //           { name: "Bundle Discounts", href: "/packages/discounts" },
-      //           { name: "Installation Deals", href: "/packages/installation" },
-      //           { name: "Financing Options", href: "/packages/financing" },
-      //           { name: "Trade-In Program", href: "/packages/trade-in" },
-      //         ],
-      //       },
-      //     ],
-      //   },
-      // },
     ],
     brands: modifiedBrands || [],
-    types: [
-      { name: "All-Season Tires", href: "/tire/type/all-season" },
-      { name: "All-Terrain Tires", href: "/tire/type/all-terrain" },
-      { name: "Mud Terrain Tires", href: "/tire/type/mud-terrain" },
-      { name: "Summer Tires", href: "/tire/type/summer" },
-    ],
   }
   const activeTabData = tireDropdownData.tabs.find((tab) => tab.id === activeTab)
   return (
@@ -216,9 +160,10 @@ const TireDropdown = () => {
 const WheelDropdown = () => {
   const [activeTab, setActiveTab] = useState("shop")
   const {data:bd} = useGetBrands({limit: 6});
-  const {data:cd} = useGetCategories({limit: 6});
   const {data:tsd} = useGetTyreSizes({});
   const {data:md} = useGetMakes({limit: 6});
+  const {data:vtd} = useGetVehicleTypes({limit: 6});
+  const {data:wwt} = useGetWheelWidthTypes({limit: 6});
   const modifiedBrands = bd?.data?.map((brand: any, index: number) => {
     return {
       id: brand?._id,
@@ -226,11 +171,11 @@ const WheelDropdown = () => {
       href: `/wheel?brand=${brand?._id}`
     };
   });
-  const modifiedCategories = cd?.data?.map((cat: any, index: number) => {
+  const modifiedWheelWidthTypes = wwt?.data?.map((ww: any, index: number) => {
     return {
-      id: cat?._id,
-      name: cat?.name || '',
-      href: `/wheel?category=${cat?._id}`
+      id: ww?._id,
+      name: ww?.name || '',
+      href: `/wheel?wheelWidthType=${ww?._id}`
     };
   });
   const modifiedTireSizes = tsd?.data?.map((ts: any, index: number) => {
@@ -247,6 +192,13 @@ const WheelDropdown = () => {
       href: `/wheel?make=${ts?._id}`
     };
   });
+  const modifiedVehicleTypes = vtd?.data?.map((vt: any, index: number) => {
+    return {
+      id: vt?._id,
+      name: vt?.tireSize || '',
+      href: `/tire?vehicleType=${vt?._id}`
+    };
+  }); 
   const wheelDropdownData = {
   tabs: [
     {
@@ -256,16 +208,11 @@ const WheelDropdown = () => {
         sections: [
           {
             title: "WHEEL STYLE",
-            items: [
-              { name: "All Wheels", href: "/wheel/all" },
-              { name: "New Arrivals", href: "/wheel/new" },
-              { name: "Best Sellers", href: "/wheel/bestsellers" },
-              { name: "Clearance", href: "/wheel/clearance" },
-            ],
+            items: modifiedWheelWidthTypes || []
           },
           {
             title: "VEHICLE TYPES",
-            items: modifiedCategories || [],
+            items: modifiedVehicleTypes || [],
           },
         ],
       },
@@ -277,7 +224,7 @@ const WheelDropdown = () => {
         sections: [
           {
             title: "VEHICLE TYPE",
-            items: modifiedCategories || [],
+            items: modifiedVehicleTypes || [],
           },
           {
             title: "POPULAR MAKES",
@@ -298,59 +245,6 @@ const WheelDropdown = () => {
         ],
       },
     },
-    // {
-    //   id: "packages",
-    //   title: "WHEEL AND TIRE PACKAGES",
-    //   highlight: true,
-    //   content: {
-    //     sections: [
-    //       {
-    //         title: "PACKAGE DEALS",
-    //         items: [
-    //           { name: "Complete Packages", href: "/packages/complete" },
-    //           { name: "Off-Road Packages", href: "/packages/off-road" },
-    //           { name: "Performance Packages", href: "/packages/performance" },
-    //           { name: "Luxury Packages", href: "/packages/luxury" },
-    //         ],
-    //       },
-    //       {
-    //         title: "SERVICES",
-    //         items: [
-    //           { name: "Installation Service", href: "/packages/installation" },
-    //           { name: "Balancing & Alignment", href: "/packages/balancing" },
-    //           { name: "TPMS Service", href: "/packages/tpms" },
-    //           { name: "Road Hazard Warranty", href: "/packages/warranty" },
-    //         ],
-    //       },
-    //     ],
-    //   },
-    // },
-    // {
-    //   id: "visualizer",
-    //   title: "WHEEL VISUALIZER",
-    //   content: {
-    //     sections: [
-    //       {
-    //         title: "VISUALIZATION TOOLS",
-    //         items: [
-    //           { name: "Upload Your Car Photo", href: "/wheel/visualizer/upload" },
-    //           { name: "Browse by Make/Model", href: "/wheel/visualizer/browse" },
-    //           { name: "AR Wheel Preview", href: "/wheel/visualizer/ar" },
-    //           { name: "360° Wheel View", href: "/wheel/visualizer/360" },
-    //         ],
-    //       },
-    //       {
-    //         title: "POPULAR VISUALIZATIONS",
-    //         items: [
-    //           { name: "Truck Visualizations", href: "/wheel/visualizer/truck" },
-    //           { name: "Car Visualizations", href: "/wheel/visualizer/car" },
-    //           { name: "SUV Visualizations", href: "/wheel/visualizer/suv" },
-    //           { name: "Sports Car Visualizations", href: "/wheel/visualizer/sports" },
-    //         ],
-    //       },
-    //     ],
-    //   },
-    // },
   ],
   brands: modifiedBrands || [],
 }
