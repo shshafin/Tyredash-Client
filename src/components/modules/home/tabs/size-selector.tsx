@@ -114,20 +114,14 @@ const SizeSelector = ({ setMainStep, selectedSize, setSelectedSize }: SizeSelect
   }
 
   const handleViewProducts = () => {
-    const sizeString =
-      productType === "tire"
-        ? `${selectedWidth?.width}/${selectedRatio?.ratio}R${selectedDiameter?.diameter}`
-        : `${selectedWidth?.width}/${selectedRatio?.ratio}x${selectedDiameter?.diameter}`
-
     setSelectedSize({
       width: selectedWidth,
       ratio: selectedRatio,
       diameter: selectedDiameter,
-      fullSize: sizeString,
       productType,
     })
     // Navigate to results or next step
-    setMainStep("results")
+    setMainStep(3)
   }
 
   const canProceed = selectedWidth && selectedRatio && selectedDiameter

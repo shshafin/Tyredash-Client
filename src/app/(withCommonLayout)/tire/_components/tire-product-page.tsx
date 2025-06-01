@@ -27,11 +27,19 @@ const TireProductPage = () => {
   const category = searchParams.get('category');
   const tireSize = searchParams.get('tireSize');
   const vehicleType = searchParams.get('vehicleType');
+  const drivingType = searchParams.get('drivingType');
+  const width = searchParams.get('width');
+  const ratio = searchParams.get('ratio');
+  const diameter = searchParams.get('diameter');
   const { data: Tires, isLoading, isError } = useGetTires({
     brand: brand ?? undefined, 
     category: category ?? undefined, 
     tireSize: tireSize ?? undefined,
     vehicleType: vehicleType ?? undefined,
+    drivingType: drivingType ?? undefined,
+    width: width ?? undefined,
+    ratio: ratio ?? undefined,
+    diameter: diameter ?? undefined,
   });
   console.log(Tires, "Tires");
   const [searchTerm, setSearchTerm] = useState("");

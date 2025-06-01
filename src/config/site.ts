@@ -21,8 +21,8 @@ export const siteConfig = {
       // hasDropdown: true,
     },
     {
-      label: "APPOINTMENTS",
-      href: "/appointments",
+      label: "APPOINTMENT",
+      href: "/appointment",
     },
     {
       label: "TIPS & GUIDE",
@@ -59,8 +59,8 @@ export const siteConfig = {
       // hasDropdown: true,
     },
     {
-      label: "APPOINTMENTS",
-      href: "/appointments",
+      label: "APPOINTMENT",
+      href: "/appointment",
     },
     {
       label: "TIPS & GUIDE",

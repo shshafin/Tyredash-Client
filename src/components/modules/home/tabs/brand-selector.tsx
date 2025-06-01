@@ -13,28 +13,26 @@ interface BrandSelectorProps {
 }
 
 const BrandSelector = ({ setMainStep, selectedBrand, setSelectedBrand }: BrandSelectorProps) => {
-  const [productType, setProductType] = useState("tires")
+  const [productType, setProductType] = useState("tire")
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedBrandName, setSelectedBrandName] = useState("")
+  const [selectedBrandName, setSelectedBrandName] = useState<any>(null)
   const {data: bd} = useGetBrands({});
-
-  // const currentBrands = productType === "tires" ? tireBrands : wheelBrands
-  const currentBrands: string[] = bd?.data?.map((brand: any) => brand?.name || '');
+  const currentBrands: any[] = bd?.data || [];
 
   // Filter brands based on search term
-  const filteredBrands = currentBrands.filter((brand) => brand.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredBrands = currentBrands.filter((brand) => brand?.name?.toLowerCase().includes(searchTerm.toLowerCase()))
 
   const handleBrandSelect = (brand: string) => {
     setSelectedBrandName(brand)
     setSelectedBrand({
-      name: brand,
-      type: productType,
+      brand: brand,
+      productType,
     })
   }
 
   const handleViewProducts = () => {
     if (selectedBrandName) {
-      setMainStep("results")
+      setMainStep(3)
     }
   }
 
@@ -45,27 +43,27 @@ const BrandSelector = ({ setMainStep, selectedBrand, setSelectedBrand }: BrandSe
         <div className="flex bg-gray-100 rounded-lg p-1">
           <Button
             className={`px-8 py-2 rounded-md transition-colors ${
-              productType === "tires" ? "bg-slate-600 text-white" : "bg-transparent text-gray-600 hover:bg-gray-200"
+              productType === "tire" ? "bg-slate-600 text-white" : "bg-transparent text-gray-600 hover:bg-gray-200"
             }`}
             onPress={() => {
-              setProductType("tires")
+              setProductType("tire")
               setSelectedBrandName("")
               setSearchTerm("")
             }}
           >
-            Tires
+            Tire
           </Button>
           <Button
             className={`px-8 py-2 rounded-md transition-colors ${
-              productType === "wheels" ? "bg-slate-600 text-white" : "bg-transparent text-gray-600 hover:bg-gray-200"
+              productType === "wheel" ? "bg-slate-600 text-white" : "bg-transparent text-gray-600 hover:bg-gray-200"
             }`}
             onPress={() => {
-              setProductType("wheels")
+              setProductType("wheel")
               setSelectedBrandName("")
               setSearchTerm("")
             }}
           >
-            Wheels
+            Wheel
           </Button>
         </div>
       </div>
@@ -85,7 +83,7 @@ const BrandSelector = ({ setMainStep, selectedBrand, setSelectedBrand }: BrandSe
       {selectedBrandName && (
         <div className="text-center mb-6">
           <div className="text-lg font-semibold text-gray-700">
-            Selected Brand: <span className="text-orange-600">{selectedBrandName}</span>
+            Selected Brand: <span className="text-orange-600">{selectedBrandName?.name}</span>
           </div>
         </div>
       )}
@@ -97,13 +95,13 @@ const BrandSelector = ({ setMainStep, selectedBrand, setSelectedBrand }: BrandSe
             key={index}
             variant="bordered"
             className={`h-14 text-sm font-medium ${
-              selectedBrandName === brand
+              selectedBrandName?.name === brand?.name
                 ? "border-orange-500 bg-orange-50 text-orange-600"
                 : "border-gray-300 hover:border-gray-400 text-gray-700"
             }`}
             onPress={() => handleBrandSelect(brand)}
           >
-            {brand}
+            {brand?.name}
           </Button>
         ))}
       </div>
@@ -132,7 +130,7 @@ const BrandSelector = ({ setMainStep, selectedBrand, setSelectedBrand }: BrandSe
             className="px-12 py-3 bg-red-400 hover:bg-red-500"
             onPress={handleViewProducts}
           >
-            VIEW {selectedBrandName.toUpperCase()}
+            VIEW {selectedBrandName.name.toUpperCase()}
           </Button>
         </div>
       )}
