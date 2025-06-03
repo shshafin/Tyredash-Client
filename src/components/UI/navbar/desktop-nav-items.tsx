@@ -175,7 +175,7 @@ const WheelDropdown = () => {
     return {
       id: ww?._id,
       name: ww?.widthType || '',
-      href: `/wheel?wheelWidthType=${ww?._id}`
+      href: `/wheel?widthType=${ww?._id}`
     };
   });
   const modifiedTireSizes = tsd?.data?.map((ts: any, index: number) => {

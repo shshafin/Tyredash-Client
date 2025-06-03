@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useKeenSlider } from "keen-slider/react";
 import { ChevronLeft, ChevronRight, ExternalLink, Heart, ShoppingCart, Star } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -108,6 +109,10 @@ const ProductCard = ({ tire }: { tire: any }) => {
         <div className="absolute top-2 right-2 flex gap-1.5">
           <button
             onClick={()=>{
+              if (!user) {
+                    toast.error("Please login to add items to cart")
+                    redirect('/login?redirect=/tire')
+                  }
               handleAddItemToWishlist({
                 product: tire?._id, 
                 productType: 'tire'
@@ -172,6 +177,10 @@ const ProductCard = ({ tire }: { tire: any }) => {
             <button 
             disabled={isPending} 
             onClick={()=>{
+              if (!user) {
+                    toast.error("Please login to add items to cart")
+                    redirect('/login?redirect=/tire')
+                  }
               handleAddItemToCart({
                 productId: tire?._id, 
                 productType: 'tire', 

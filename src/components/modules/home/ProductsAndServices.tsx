@@ -201,12 +201,12 @@ const ShoppingForStep = ({ pType, vehicle, selectedSize, selectedBrand, shopping
 
   const categories = [
     {
-      name: "Tires",
+      name: "Tire",
       image: "/t.webp",
       link: "/tire",
     },
     {
-      name: "Wheels",
+      name: "Wheel",
       image: "/w.webp",
       link: "/wheel",
     },
