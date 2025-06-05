@@ -7,30 +7,53 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js"
 import { Button } from "@heroui/button"
 import { Spinner } from "@heroui/spinner"
 import { useCreateOrder } from "@/src/hooks/order.hook"
-import { useCreatePayment } from "@/src/hooks/payment.hook"
+import { useCreatePayment, useVerifyStripePayment } from "@/src/hooks/payment.hook"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 interface StripePaymentFormProps {
   amount: number
-  onSuccess: () => void
-  isProcessing: boolean
   paymentData: any
 }
 
-export default function StripePaymentForm({ amount, onSuccess, paymentData }: StripePaymentFormProps) {
+export default function StripePaymentForm({ amount, paymentData }: StripePaymentFormProps) {
   const stripe = useStripe()
   const elements = useElements()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const {mutate: handleCreateOrder} = useCreateOrder({
+  const router = useRouter();
+
+   const {mutate: handleVerifyStripePayment} = useVerifyStripePayment({
     onSuccess: async(data: any) => {
-      console.log({orderData: data}, 'stripe_pay')
-      onSuccess();
+      console.log(data, 'stripe_pay');
+      setLoading(false);
+      router.push('/order-confirmation');
     },
-  })
+    onError: async (error: any) => {
+      toast.error(error.message || "Failed to verify payment!");
+      setLoading(false);
+    } 
+  }); 
+
   const {mutate: handleCreatePayment} = useCreatePayment({
     onSuccess: async(data: any) => {
-    console.log({paymentData: data}, 'stripe_pay')
+      console.log(data, 'stripe_pay');
+      const {paymentId, sessionId} = data.data || {};
+      handleVerifyStripePayment({paymentId, sessionId});
+    },
+    onError: async (error: any) => {
+      toast.error(error.message || "Failed to create payment!");
+      setLoading(false);
+    } 
+  });
+
+  const handleSubmit = async () => {
+    if (!stripe || !elements) {
+      // Stripe.js has not loaded yet
+      toast.error("Failed to load stripe!");
+      return
+    }
+    setLoading(true)
     const cardElement = elements?.getElement(CardElement);
     if (!cardElement) {
       setError("Card element not found");
@@ -48,28 +71,10 @@ export default function StripePaymentForm({ amount, onSuccess, paymentData }: St
       setError(error.message || "Payment failed");
       setLoading(false);
     } else {
-      // Send paymentMethod.id to your server for processing
-      handleCreateOrder({
-        paymentId: data?.data._id
-      })
-      setLoading(false);
+      handleCreatePayment({
+        ...paymentData,
+      });
     }
-    },
-  });
-
-  const handleSubmit = async () => {
-    console.log('stripe_pay');
-    if (!stripe || !elements) {
-      // Stripe.js has not loaded yet
-      toast.error("Failed to load stripe!");
-      return
-    }
-
-    setLoading(true)
-    setError(null)
-    handleCreatePayment({
-      ...paymentData,
-    });
   }
 
   const cardElementOptions = {

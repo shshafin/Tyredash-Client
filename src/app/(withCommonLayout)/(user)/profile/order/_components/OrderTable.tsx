@@ -12,7 +12,7 @@ import { toast } from "sonner"
 
 export const columns = [
   { name: "ORDER ID", uid: "orderId" },
-  { name: "CUSTOMER", uid: "customer" },
+  // { name: "CUSTOMER", uid: "customer" },
   { name: "EMAIL", uid: "email" },
   { name: "TOTAL", uid: "totalPrice" },
   { name: "ITEMS", uid: "totalItems" },
@@ -108,15 +108,15 @@ export default function OrderTable({ orders }: any) {
       case "orderId":
         return <span className="font-mono text-sm">#{order._id.slice(-8).toUpperCase()}</span>
 
-      case "customer":
-        return (
-          <div>
-            <div className="font-medium">
-              {order.user?.firstName} {order.user?.lastName}
-            </div>
-            <div className="text-sm text-gray-500">{order.user?.phone}</div>
-          </div>
-        )
+      // case "customer":
+      //   return (
+      //     <div>
+      //       <div className="font-medium">
+      //         {order.user?.firstName} {order.user?.lastName}
+      //       </div>
+      //       <div className="text-sm text-gray-500">{order.user?.phone}</div>
+      //     </div>
+      //   )
 
       case "email":
         return <span className="text-sm">{order.user?.email}</span>

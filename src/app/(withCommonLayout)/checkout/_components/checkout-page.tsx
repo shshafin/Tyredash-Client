@@ -9,7 +9,6 @@ import { Button } from "@heroui/button"
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card"
 import { Input } from "@heroui/input"
 import { Checkbox } from "@heroui/checkbox"
-import { Select, SelectItem } from "@heroui/select"
 import { ArrowLeft, CreditCard, Loader2, ShieldCheck } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -20,6 +19,8 @@ import StripePaymentForm from "./payment/stripe-payment-form"
 import { loadStripe } from "@stripe/stripe-js"
 import { PayPalScriptProvider } from "@paypal/react-paypal-js"
 import PayPalPaymentButton from "./payment/paypal-payment-button"
+import { useCreatePayment } from "@/src/hooks/payment.hook"
+import { Spinner } from "@heroui/spinner"
 
 // Types for our cart data
 interface CartItem {
@@ -341,8 +342,6 @@ const CheckoutPage = () => {
                   </CardBody>
                 </Card>
               )}
-
-              
             </div>
           </div>
 
@@ -421,25 +420,6 @@ const CheckoutPage = () => {
                         Credit Card
                       </label>
                     </div>
-
-                    {paymentMethod === "stripe" && (
-                      <Elements stripe={stripePromise}>
-                      <StripePaymentForm
-                        amount={totalPrice.toFixed(2)}
-                        onSuccess={()=>console.log("hello")}
-                        isProcessing={false}
-                        paymentData={
-                          {
-                            cartId: _id,
-                            shippingAddress,
-                            billingAddress,
-                            paymentMethod,
-                          }
-                        }
-                      />
-                    </Elements>
-                    )}
-
                     <div className="flex items-center gap-2">
                       <input
                         type="radio"
@@ -452,39 +432,43 @@ const CheckoutPage = () => {
                       />
                       <label htmlFor="paypal">PayPal</label>
                     </div>
-
-                    {paymentMethod === "paypal" && (
-                      <PayPalScriptProvider options={paypalOptions}>
-                      <PayPalPaymentButton
-                        amount={totalPrice.toFixed(2)}
-                        onSuccess={()=>console.log("hello")}
-                        isProcessing={false}
-                        paymentData={
-                          {
-                            cartId: _id,
-                            shippingAddress,
-                            billingAddress,
-                            paymentMethod,
-                          }
-                      }
-                      />
-                    </PayPalScriptProvider>
-                    )}
                   </div>
                 </CardBody>
               </Card>
               </CardBody>
               <CardFooter>
-                {/* <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    "Place Order"
-                  )}
-                </Button> */}
+                {
+                  paymentMethod === 'stripe' && (
+                    <StripeButton 
+                      amount={totalPrice.toFixed(2)}
+                      paymentData={
+                            {
+                              cartId: _id,
+                              shippingAddress,
+                              billingAddress,
+                              paymentMethod,
+                            }
+                      }
+                      isDisabled={!validateAddresses()}
+                      />
+                  )
+                }
+                {
+                  paymentMethod === 'paypal' && (
+                    <PaypalCheckoutButton 
+                      amount={totalPrice.toFixed(2)}
+                      paymentData={
+                            {
+                              cartId: _id,
+                              shippingAddress,
+                              billingAddress,
+                              paymentMethod,
+                            }
+                          }
+                          isDisabled={!validateAddresses()}
+                      />
+                  )
+                }
               </CardFooter>
             </Card>
           </div>
@@ -495,3 +479,70 @@ const CheckoutPage = () => {
 }
 
 export default CheckoutPage
+
+const StripeButton = ({ amount, paymentData, isDisabled }: any) => {
+  const router = useRouter();
+    const {mutate: handleCreatePayment, isPending: isCreatingPayment} = useCreatePayment({
+      onSuccess: async(data: any) => {
+        console.log(data, 'stripe_pay');
+        const {paymentId, sessionId, url} = data.data || {};
+         window.location.href = url;
+      },
+      onError: async (error: any) => {
+        toast.error(error.message || "Failed to create payment!");
+        router.push('/payment/cancel');
+      } 
+    });
+  return (
+    <Button
+            color="primary"
+            className="w-full h-12 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300"
+            disabled={isCreatingPayment || isDisabled}
+            onPress={()=>{
+              handleCreatePayment({...paymentData});
+            }}
+          >
+            {isCreatingPayment ? (
+              <div className="flex items-center justify-center">
+                <Spinner size="sm" color="white" className="mr-2" />
+                Processing...
+              </div>
+            ) : (
+              `Pay $${amount.toLocaleString()}`
+            )}
+          </Button>
+  )
+}
+
+const PaypalCheckoutButton = ({ amount, paymentData, isDisabled }: any) => {
+  const router = useRouter();
+    const {mutate: handleCreatePayment, isPending: isCreatingPayment} = useCreatePayment({
+      onSuccess: async(data: any) => {
+        const approvalLink = data.links.find(
+          (link: any) => link.rel === "approve"
+        );
+        if (approvalLink) {
+          window.location.href = approvalLink.href;
+        } else {
+          alert("Approval link not found.");
+        }
+      },
+      onError: async (error: any) => {
+        toast.error(error.message || "Failed to create payment!");
+        router.push('/payment/cancel');
+      } 
+    });
+
+  return (
+    <Button 
+    color="primary"
+            className="w-full h-12 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300"
+            disabled={isCreatingPayment || isDisabled}
+            onPress={()=>{
+              handleCreatePayment({...paymentData});
+            }}
+    >
+      {isCreatingPayment ? "Redirecting..." : `Pay $${amount.toLocaleString()} with Paypal`}
+    </Button>
+  );
+};

@@ -27,9 +27,9 @@ export const createOrder = async ( order: any): Promise<any> => {
   }
 };
 
-export const updateOrderStatus = async (id: string, info: any): Promise<any> => {
+export const updateOrderStatus = async (item: any): Promise<any> => {
   try {
-    const { data } = await axiosInstance.patch(`/order/${id}/status`, {...info}, {
+    const { data } = await axiosInstance.patch(`/order/${item?.id}/status`, {status: item?.status}, {
       headers: {
         "Content-Type": "application/json",
       },

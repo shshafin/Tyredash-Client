@@ -28,16 +28,15 @@ export const useCreateOrder = ({onSuccess}: any):  UseMutationResult<any, Error>
 
 // Mutation: UPDATE ORDER STATUS
 export const useUpdateOrderStatus = (
-  {id,
-  onSuccess} : any
+  {onSuccess} : any
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["UPDATE_ORDER_STATUS"],
-    mutationFn: async (item: any) => await updateOrderStatus(id, item),
+    mutationFn: async (item: any) => await updateOrderStatus(item),
     onSuccess: () => {
       toast.success("Order updated successfully");
-      queryClient.invalidateQueries({queryKey: ["GET_ORDERS", id]});
+      queryClient.invalidateQueries({queryKey: ["GET_ORDERS"]});
       onSuccess?.();
     },
     onError: (error: any) => {

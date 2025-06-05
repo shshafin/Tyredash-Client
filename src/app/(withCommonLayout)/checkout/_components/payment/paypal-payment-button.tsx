@@ -3,35 +3,42 @@
 import { PayPalButtons } from "@paypal/react-paypal-js"
 import { Spinner } from "@heroui/spinner"
 import { useState } from "react"
-import { useCreateOrder } from "@/src/hooks/order.hook"
-import { useCreatePayment } from "@/src/hooks/payment.hook"
+import { useCreatePayment, useVerifyPaypalPayment } from "@/src/hooks/payment.hook"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 interface PayPalPaymentButtonProps {
   amount: number
-  onSuccess: () => void
-  isProcessing: boolean
   paymentData: any
 }
 
-export default function PayPalPaymentButton({ amount, onSuccess, isProcessing, paymentData }: PayPalPaymentButtonProps) {
-  const [transactionId, setTransactionId] = useState<string | null>(null)
+export default function PayPalPaymentButton({ amount, paymentData }: PayPalPaymentButtonProps) {
+  const [loading, setLoading] = useState(false)
+  const router = useRouter();
 
-  const { mutate: handleCreateOrder } = useCreateOrder({
-    onSuccess: (data: any) => {
-      // Booking created, now wait for PayPal payment approval
-      setTransactionId(data?.data?.transactionId)
+   const {mutate: handleVerifyPaypalPayment} = useVerifyPaypalPayment({
+    onSuccess: async(data: any) => {
+      console.log(data, 'paypal_pay_verify');
+      setLoading(false);
+      router.push('/order-confirmation');
     },
-  })
+    onError: async (error: any) => {
+      toast.error(error.message || "Failed to verify payment!");
+      setLoading(false);
+    } 
+  }); 
 
-  const { mutate: handleCreatePayment } = useCreatePayment({
-    onSuccess: (data: any) => {
-      handleCreateOrder({
-        paymentId: data?.data._id
-      })
-      // Payment saved successfully
-      onSuccess()
+  const {mutate: handleCreatePayment} = useCreatePayment({
+    onSuccess: async(data: any) => {
+      console.log(data, 'paypal_pay');
+      const {paymentId, orderId} = data.data || {};
+      handleVerifyPaypalPayment({paymentId, orderId});
     },
-  })
+    onError: async (error: any) => {
+      toast.error(error.message || "Failed to create payment!");
+      setLoading(false);
+    } 
+  });
 
   // Create order (PayPal will call this)
   const createOrder = (data: any, actions: any) => {
@@ -68,7 +75,7 @@ export default function PayPalPaymentButton({ amount, onSuccess, isProcessing, p
         </div>
       </div>
 
-      {isProcessing ? (
+      {loading ? (
         <div className="flex justify-center py-6">
           <Spinner size="lg" color="primary" />
           <span className="ml-3">Processing your payment...</span>
@@ -78,7 +85,7 @@ export default function PayPalPaymentButton({ amount, onSuccess, isProcessing, p
           createOrder={createOrder}
           onApprove={onApprove}
           style={{ layout: "vertical", color: "blue", shape: "rect", label: "pay" }}
-          disabled={isProcessing}
+          disabled={loading}
         />
       )}
 

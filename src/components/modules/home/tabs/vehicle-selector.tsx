@@ -3,7 +3,7 @@
 import { useGetMakes } from "@/src/hooks/makes.hook";
 import { useGetModels } from "@/src/hooks/model.hook";
 import { useGetTrims } from "@/src/hooks/trim.hook";
-import { useGetFilteredTyreSizes } from "@/src/hooks/tyreSize.hook";
+import { useGetFilteredTyreSizes, useGetTyreSizes } from "@/src/hooks/tyreSize.hook";
 import { useGetYears } from "@/src/hooks/years.hook";
 import { useState } from "react";
 import { Button } from "@heroui/button";
@@ -24,27 +24,32 @@ const VehicleSelector = ({ setMainStep, vehicle, setVehicle }: any) => {
     data: makes,
     isLoading: isMakesLoading,
     isError: isMakesError,
-  } = useGetMakes({});
+  } = useGetMakes({year: vehicle.year});
   const {
     data: models,
     isLoading: isModelsLoading,
     isError: isModelsError,
-  } = useGetModels({});
+  } = useGetModels({make: vehicle.make});
   const {
     data: trims,
     isLoading: isTrimsLoading,
     isError: isTrimsError,
-  } = useGetTrims({});
+  } = useGetTrims({model: vehicle.model});
   const {
     data: tyreSizes,
     isLoading: isTyreSizesLoading,
     isError: isTyreSizesError,
-  } = useGetFilteredTyreSizes(
-    vehicle.year,
-    vehicle.make,
-    vehicle.model,
-    vehicle.trim,
-  );
+  } = useGetTyreSizes({trim: vehicle.trim})
+  // const {
+  //   data: tyreSizes,
+  //   isLoading: isTyreSizesLoading,
+  //   isError: isTyreSizesError,
+  // } = useGetFilteredTyreSizes(
+  //   vehicle.year,
+  //   vehicle.make,
+  //   vehicle.model,
+  //   vehicle.trim,
+  // );
   const steps = ["Year", "Make", "Model", "Trim", "Tire Size"];
 
   const handleStepClick = (stepIndex: number) => {
