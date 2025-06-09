@@ -21,6 +21,9 @@ import { VehicleInfo } from "@/src/types";
 import WheelProductListView from "./wheel-product-list-view";
 import { CategoryDropdown } from "./dropdowns/CategoryDropdown";
 import { useSearchParams } from "next/navigation";
+import { WidthDropdown } from "./dropdowns/WidthDropdown";
+import { RatioDropdown } from "./dropdowns/RatioDropdown";
+import { DiameterDropdown } from "./dropdowns/DiameterDropdown";
 
 const WheelProductPage = () => {
   const searchParams = useSearchParams();
@@ -56,6 +59,9 @@ const WheelProductPage = () => {
   );
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedWidths, setSelectedWidths] = useState<string[]>([]);
+  const [selectedRatios, setSelectedRatios] = useState<string[]>([]);
+  const [selectedDiameters, setSelectedDiameters] = useState<string[]>([]);  
   const [filteredWheels, setFilteredWheels] = useState<any[]>([]);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
@@ -286,6 +292,22 @@ const WheelProductPage = () => {
         ...(new Set(Wheels.data.map((wheel: any) => wheel.year.year)) as any),
       ].sort((a, b) => Number.parseInt(b) - Number.parseInt(a))
     : [];
+  const widths: any = Wheels?.data
+    ? [
+        ...(new Set(Wheels.data.map((tire: any) => tire.width?.width)) as any),
+      ].sort()
+    : [];
+  const ratios: any = Wheels?.data
+    ? [
+        ...(new Set(Wheels.data.map((tire: any) => tire.ratio?.ratio)) as any),
+      ].sort()
+    : [];
+  const diameters: any = Wheels?.data
+    ? [
+        ...(new Set(Wheels.data.map((tire: any) => tire.diameter?.diameter)) as any),
+      ].sort()
+    : []; 
+
 
   // Toggle brand selection
   const toggleBrand = (brand: string) => {
@@ -339,6 +361,26 @@ const WheelProductPage = () => {
       prev.includes(year) ? prev.filter((y) => y !== year) : [...prev, year],
     );
   };
+  // Toggle width selection
+  const toggleWidth = (width: string) => {
+    setSelectedWidths((prev) =>
+      prev.includes(width) ? prev.filter((b) => b !== width) : [...prev, width],
+    );
+  };
+
+  // Toggle ratio selection
+  const toggleRatio = (ratio: string) => {
+    setSelectedRatios((prev) =>
+      prev.includes(ratio) ? prev.filter((b) => b !== ratio) : [...prev, ratio],
+    );
+  };
+
+  // Toggle diameter selection
+  const toggleDiameter = (diameter: string) => {
+    setSelectedDiameters((prev) =>
+      prev.includes(diameter) ? prev.filter((b) => b !== diameter) : [...prev, diameter],
+    );
+  };
 
   // Clear all filters
   const clearFilters = () => {
@@ -350,6 +392,9 @@ const WheelProductPage = () => {
     setSelectedDrivingTypes([]);
     setSelectedCategories([]);
     setSelectedTrims([]);
+    setSelectedWidths([]);
+    setSelectedRatios([]);
+    setSelectedDiameters([]);
   };
 
   // Sidebar filters component
@@ -393,7 +438,7 @@ const WheelProductPage = () => {
           />
         </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+        {/* <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
           <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
             Makes
           </h3>
@@ -435,6 +480,39 @@ const WheelProductPage = () => {
             years={years}
             selectedYears={selectedYears}
             setSelectedYears={setSelectedYears}
+          />
+        </div> */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Widths
+          </h3>
+
+          <WidthDropdown
+            widths={widths}
+            selectedWidths={selectedWidths}
+            setSelectedWidths={setSelectedWidths}
+          />
+        </div>
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Ratios
+          </h3>
+
+          <RatioDropdown
+            ratios={ratios}
+            selectedRatios={selectedRatios}
+            setSelectedRatios={setSelectedRatios}
+          />
+        </div>
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+            Diameters
+          </h3>
+
+          <DiameterDropdown
+            diameters={diameters}
+            selectedDiameters={selectedDiameters}
+            setSelectedDiameters={setSelectedDiameters}
           />
         </div>
         {/* 
@@ -485,6 +563,9 @@ const WheelProductPage = () => {
       selectedTrims.length > 0 ||
       selectedCategories.length > 0 ||
       selectedDrivingTypes.length > 0 ||
+      selectedWidths.length > 0 ||
+      selectedRatios.length > 0 ||
+      selectedDiameters.length > 0 ||
       selectedModels.length > 0;
 
     if (!hasActiveFilters) return null;
@@ -615,6 +696,51 @@ const WheelProductPage = () => {
             </button>
           </span>
         ))}
+        {selectedWidths.map((width) => (
+          <span
+            key={width}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
+            {width}
+            <button
+              onClick={() => toggleWidth(width)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${width} filter`}
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        ))}
+        {selectedRatios.map((ratio) => (
+          <span
+            key={ratio}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
+            {ratio}
+            <button
+              onClick={() => toggleRatio(ratio)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${ratio} filter`}
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        ))}
+        {selectedDiameters.map((diameter) => (
+          <span
+            key={diameter}
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-sm"
+          >
+            {diameter}
+            <button
+              onClick={() => toggleDiameter(diameter)}
+              className="ml-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 p-0.5"
+              aria-label={`Remove ${diameter} filter`}
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </span>
+        ))}        
 
         {hasActiveFilters && (
           <button
