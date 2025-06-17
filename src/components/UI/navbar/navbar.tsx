@@ -243,26 +243,3 @@ export const Navbar = () => {
     </>
   );
 };
-
-// const DeskTopNavItems = () => {
-//   return (
-//    <div className="mx-auto">
-//               <ul className="flex gap-3 md:gap-2">
-//                 {siteConfig.navItems.map((item) => (
-//                   <NavbarItem key={item.href}>
-//                     <NextLink
-//                       href={item.href}
-//                       className={clsx(
-//                         linkStyles({ color: "foreground" }),
-//                         "data-[active=true]:text-primary data-[active=true]:font-medium text-sm md:text-xs bg-default-100 md:px-1 lg:px-2 py-2 rounded-md",
-//                       )}
-//                     >
-//                       {item.label}
-//                     </NextLink>
-//                   </NavbarItem>
-//                 ))}
-//               </ul>
-//             </div> 
-    
-//   )
-// }

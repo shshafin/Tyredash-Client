@@ -5,6 +5,7 @@ import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface Deal {
   id: number;
@@ -100,9 +101,11 @@ const DealsCarousel = ({ data }: { data: Deal[] }) => {
       </button>
 
       <div className="text-center mt-6">
-        <button className="border-2 border-red-600 text-red-600 font-semibold px-6 py-2 rounded hover:bg-red-50">
-          SEE ALL CURRENT DEALS
-        </button>
+        <Link href='/deals'>
+          <button className="border-2 border-red-600 text-red-600 font-semibold px-6 py-2 rounded hover:bg-red-50">
+            SEE ALL CURRENT DEALS
+          </button>
+        </Link>
       </div>
     </div>
   );

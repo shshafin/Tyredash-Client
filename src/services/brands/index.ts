@@ -53,3 +53,14 @@ export const getBrands = async (params: any) => {
     throw new Error(error.message);
   }
 };
+
+export const getSingleBrand = async (brandId: any) => {
+  try {
+    const { data } = await axiosInstance.get(`/brand${brandId}`);
+
+    return data;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
+
